@@ -1,75 +1,36 @@
-# Lineage Lit 📚
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-> *A Goodreads alternative focused on creator lineage and influences.*
+## Getting Started
 
-**The Problem:** Goodreads is old, clunky, and reader-centric. Everyone uses it, but nobody loves it.
+First, run the development server:
 
-**The Vision:** Track books, articles, and screenplays through the **creator's lens**. Where did writers learn their craft? What influenced their work?
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
 
-**The Magic:** Discover the lineage of ideas - trace influences from Hemingway to hip-hop, from ancient poets to modern screenwriters.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Core Concepts
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-### 🧬 Creator Lineage
-- Every work has influences
-- Every writer has teachers (literal and inspirational)
-- Every story exists in a web of creative DNA
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-### 🎯 Smart Recommendations
-Not "people who liked X also liked Y" but:
-- "This writer was influenced by the same Japanese poets as your favorite author"
-- "This screenplay carries the same narrative DNA as the novel you loved"
-- "These works share thematic lineage"
+## Learn More
 
-### 🧠 Brain Mapping
-"What parts of your brain are getting lit up?"
-- Track which influences resonate with you
-- Discover patterns in your own creative lineage
-- Map your intellectual DNA
+To learn more about Next.js, take a look at the following resources:
 
-## Tech Stack (Initial Thoughts)
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-- **Frontend:** React + TypeScript + Tailwind
-- **Backend:** Python (FastAPI) or Node.js
-- **Database:** PostgreSQL + Neo4j (for graph relationships)
-- **Data Source:** Initial manual curation, later scraping/public APIs
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## MVP Features
+## Deploy on Vercel
 
-1. [ ] Basic book/work database
-2. [ ] Creator profiles with influence tracking
-3. [ ] Lineage visualization (graph view)
-4. [ ] Recommendation engine based on influence overlap
-5. [ ] User reading tracking
-6. [ ] Mobile-responsive design
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-## Roadmap
-
-### Phase 1: Prototype
-- [ ] Design mockups
-- [ ] Basic data model
-- [ ] Simple web interface
-- [ ] 50 curated works with lineage data
-
-### Phase 2: MVP
-- [ ] User accounts
-- [ ] Search and discovery
-- [ ] Graph visualization
-- [ ] Recommendation engine v1
-
-### Phase 3: Scale
-- [ ] Mobile app
-- [ ] Data import (Goodreads, LibraryThing)
-- [ ] Community contributions
-- [ ] API for researchers
-
-## Inspiration
-
-- **Goodreads:** The incumbent, but dated
-- **Wikipedia:** "Influenced by" sections
-- **Literary criticism:** Academic tracing of influences
-- **Spotify Wrapped:** "Your year in reading" but with lineage
-
----
-
-*Built with ⚡ by Spark and Jeeves*
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
