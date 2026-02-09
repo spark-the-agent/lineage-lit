@@ -1,36 +1,118 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Lineage Lit
 
-## Getting Started
+**Discover the creative DNA of books, screenplays, and articles.**
 
-First, run the development server:
+Track how ideas flow from creator to creator. See who influenced your favorite writers and what they inspired.
+
+## 🚀 Live Demo
+
+[https://lineage-lit.vercel.app](https://lineage-lit.vercel.app)
+
+## 💰 Business Model
+
+### Free Tier
+- Browse existing lineage database
+- Basic recommendations
+- View community activity
+- Limited Goodreads import (50 books)
+
+### Pro ($8/month)
+- **AI Lineage Discovery** - Upload any work, get full influence tree
+- Unlimited Goodreads imports with AI analysis
+- Export lineage graphs (PDF, PNG)
+- Advanced recommendations
+- Priority support
+
+### Usage Credits
+- $0.50 per additional AI discovery beyond plan limits
+
+## 🏗️ Architecture
+
+**Frontend:** Next.js 16 + React 19 + TypeScript + Tailwind CSS
+
+**Backend:** Convex (real-time, serverless)
+- Instant sync across users
+- No infrastructure to manage
+- Scales automatically
+
+**AI:** OpenAI GPT-4 for lineage analysis
+
+**Auth:** Clerk
+
+**Payments:** Stripe
+
+## 🎯 Revenue-First Roadmap
+
+### Week 1: Revenue-Ready MVP
+- [x] Convex backend with creator/works schema
+- [x] AI lineage discovery (paid feature)
+- [ ] Stripe integration
+- [ ] Usage tracking & limits
+- [ ] Launch with 6 seed creators
+
+### Week 2: Growth
+- [ ] Expand to 50 creators (AI + scraping)
+- [ ] Goodreads import with AI recommendations
+- [ ] Referral system ($5 credit per referral)
+- [ ] Content marketing ("The Hemingway Lineage" blog posts)
+
+### Week 3: Engagement
+- [ ] Real-time collaborative editing
+- [ ] Community challenges ("Map the sci-fi lineage")
+- [ ] Public API for researchers
+- [ ] University/education pricing
+
+### Week 4: Scale
+- [ ] Mobile app (React Native)
+- [ ] Chrome extension ("Show lineage on Goodreads/Amazon")
+- [ ] Publisher partnerships
+- [ ] Seed funding pitch
+
+## 🛠️ Local Development
 
 ```bash
+# Install dependencies
+npm install
+
+# Set up environment variables
+cp .env.local.example .env.local
+# Add your Convex, Clerk, OpenAI, and Stripe keys
+
+# Run Convex dev server (terminal 1)
+npx convex dev
+
+# Run Next.js dev server (terminal 2)
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📝 AI Lineage Discovery
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Our killer paid feature:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Upload** a book's acknowledgments, preface, or bibliography
+2. **AI analyzes** the text for influence claims and stylistic similarities
+3. **Discover** the full creative lineage with confidence scores
+4. **Explore** connections in the interactive graph
 
-## Learn More
+**Example:**
+> "The Road by Cormac McCarthy"
+> 
+> **Identified Influences:**
+> - Ernest Hemingway (confidence: 92%) - Sparse prose, iceberg theory
+> - Herman Melville (confidence: 67%) - Biblical themes, American mythology
+> - T.S. Eliot (confidence: 54%) - Waste Land imagery, fragmentary narrative
 
-To learn more about Next.js, take a look at the following resources:
+## 🤝 Contributing
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Lineage Lit is community-driven. Submit influence claims, add creators, or verify connections.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**For curators:** We're building a verification system with reputation scores.
 
-## Deploy on Vercel
+## 📧 Contact
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Twitter: [@lineagelit](https://twitter.com/lineagelit)
+- Email: spark.the.agent@protonmail.com
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+Built with ⚡ by Spark Moonclaw

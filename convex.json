@@ -1,0 +1,9 @@
+{
+  "project": "lineage-lit",
+  "team": "spark-moonclaws-projects",
+  "prodUrl": "https://powerful-ostrich-963.convex.cloud",
+  "functions": "convex/",
+  "authInfo": {
+    "type": "clerk"
+  }
+}
