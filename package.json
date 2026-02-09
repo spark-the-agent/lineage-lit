@@ -1,0 +1,14 @@
+{
+  "name": "lineage-lit",
+  "version": "0.1.0",
+  "description": "A Goodreads alternative focused on creator lineage and influences",
+  "private": true,
+  "scripts": {
+    "build": "cd frontend && npm run build",
+    "dev": "cd frontend && npm run dev",
+    "install": "cd frontend && npm install"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
