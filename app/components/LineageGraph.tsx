@@ -27,13 +27,19 @@ interface LineageGraphProps {
 export default function LineageGraph({ creators, highlightedCreator }: LineageGraphProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
-  const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
+  const [dimensions, setDimensions] = useState({ width: 800, height: 400 });
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const updateDimensions = () => {
       if (svgRef.current?.parentElement) {
         const { width } = svgRef.current.parentElement.getBoundingClientRect();
-        setDimensions({ width: width - 32, height: 500 });
+        const mobile = width < 640;
+        setIsMobile(mobile);
+        setDimensions({ 
+          width: width - 32, 
+          height: mobile ? 350 : 500 
+        });
       }
     };
     updateDimensions();
@@ -60,7 +66,7 @@ export default function LineageGraph({ creators, highlightedCreator }: LineageGr
     creators.forEach((creator, i) => {
       if (!nodeSet.has(creator.id)) {
         const angle = (i / creators.length) * 2 * Math.PI;
-        const radius = 150;
+        const radius = isMobile ? 80 : 150;
         nodes.push({
           id: creator.id,
           name: creator.name,
@@ -71,12 +77,12 @@ export default function LineageGraph({ creators, highlightedCreator }: LineageGr
         nodeSet.add(creator.id);
       }
 
-      // Add works as nodes
-      creator.works.forEach((work, j) => {
+      // Add works as nodes (limit on mobile)
+      creator.works.slice(0, isMobile ? 2 : undefined).forEach((work, j) => {
         const workId = `work-${work.id}`;
         if (!nodeSet.has(workId)) {
           const angle = (i / creators.length) * 2 * Math.PI + (j * 0.2);
-          const radius = 250;
+          const radius = isMobile ? 140 : 250;
           nodes.push({
             id: workId,
             name: work.title,
@@ -104,8 +110,8 @@ export default function LineageGraph({ creators, highlightedCreator }: LineageGr
           const dx = nodes[j].x! - nodes[i].x!;
           const dy = nodes[j].y! - nodes[i].y!;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 80 && dist > 0) {
-            const force = 100 / dist;
+          if (dist < (isMobile ? 60 : 80) && dist > 0) {
+            const force = (isMobile ? 80 : 100) / dist;
             const fx = (dx / dist) * force;
             const fy = (dy / dist) * force;
             nodes[i].x! -= fx;
@@ -132,7 +138,7 @@ export default function LineageGraph({ creators, highlightedCreator }: LineageGr
           const dx = targetNode.x! - sourceNode.x!;
           const dy = targetNode.y! - sourceNode.y!;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          const targetDist = link.type === 'influenced' ? 120 : 80;
+          const targetDist = link.type === 'influenced' ? (isMobile ? 100 : 120) : (isMobile ? 60 : 80);
           if (dist > 0) {
             const force = (dist - targetDist) * 0.05;
             const fx = (dx / dist) * force;
@@ -147,7 +153,7 @@ export default function LineageGraph({ creators, highlightedCreator }: LineageGr
     };
 
     // Run simulation
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < (isMobile ? 50 : 100); i++) {
       simulation();
     }
 
@@ -187,54 +193,59 @@ export default function LineageGraph({ creators, highlightedCreator }: LineageGr
       const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
       circle.setAttribute('cx', String(node.x));
       circle.setAttribute('cy', String(node.y));
-      circle.setAttribute('r', isSelected ? '25' : '20');
+      circle.setAttribute('r', isSelected ? (isMobile ? '20' : '25') : (isMobile ? '15' : '20'));
       circle.setAttribute('fill', node.type === 'creator' ? '#18181b' : '#27272a');
       circle.setAttribute('stroke', isHighlighted ? '#f59e0b' : node.type === 'creator' ? '#f59e0b' : '#71717a');
       circle.setAttribute('stroke-width', isHighlighted ? '3' : '2');
       g.appendChild(circle);
 
-      // Label
-      const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      text.setAttribute('x', String(node.x));
-      text.setAttribute('y', String(node.y! + 35));
-      text.setAttribute('text-anchor', 'middle');
-      text.setAttribute('fill', isHighlighted ? '#fbbf24' : '#e4e4e7');
-      text.setAttribute('font-size', '11');
-      text.setAttribute('font-weight', isHighlighted ? '600' : '400');
-      text.textContent = node.name.length > 15 ? node.name.slice(0, 12) + '...' : node.name;
-      g.appendChild(text);
+      // Label (only for creators on mobile, or all on desktop)
+      if (!isMobile || node.type === 'creator') {
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', String(node.x));
+        text.setAttribute('y', String(node.y! + (isMobile ? 28 : 35)));
+        text.setAttribute('text-anchor', 'middle');
+        text.setAttribute('fill', isHighlighted ? '#fbbf24' : '#e4e4e7');
+        text.setAttribute('font-size', isMobile ? '9' : '11');
+        text.setAttribute('font-weight', isHighlighted ? '600' : '400');
+        const displayName = node.name.length > (isMobile ? 12 : 15) 
+          ? node.name.slice(0, isMobile ? 9 : 12) + '...' 
+          : node.name;
+        text.textContent = displayName;
+        g.appendChild(text);
+      }
 
       // Icon indicator
       const icon = document.createElementNS('http://www.w3.org/2000/svg', 'text');
       icon.setAttribute('x', String(node.x));
-      icon.setAttribute('y', String(node.y! + 5));
+      icon.setAttribute('y', String(node.y! + (isMobile ? 4 : 5)));
       icon.setAttribute('text-anchor', 'middle');
       icon.setAttribute('fill', node.type === 'creator' ? '#f59e0b' : '#a1a1aa');
-      icon.setAttribute('font-size', '16');
+      icon.setAttribute('font-size', isMobile ? '12' : '16');
       icon.textContent = node.type === 'creator' ? '👤' : '📖';
       g.appendChild(icon);
 
       svg.appendChild(g);
     });
-  }, [creators, dimensions, selectedNode, highlightedCreator]);
+  }, [creators, dimensions, selectedNode, highlightedCreator, isMobile]);
 
   return (
     <div className="w-full">
-      <div className="flex gap-4 mb-4 text-sm text-zinc-400">
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-amber-500 border-2 border-amber-500"></div>
+      <div className="flex flex-wrap gap-3 sm:gap-4 mb-3 sm:mb-4 text-xs sm:text-sm text-zinc-400">
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-amber-500 border-2 border-amber-500"></div>
           <span>Creator</span>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-zinc-800 border-2 border-zinc-500"></div>
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-zinc-800 border-2 border-zinc-500"></div>
           <span>Work</span>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-0.5 bg-amber-500 border-dashed"></div>
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <div className="w-6 sm:w-8 h-0.5 bg-amber-500 border-dashed border-t border-amber-500"></div>
           <span>Influenced</span>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-0.5 bg-zinc-500"></div>
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <div className="w-6 sm:w-8 h-0.5 bg-zinc-500"></div>
           <span>Created</span>
         </div>
       </div>
@@ -242,11 +253,14 @@ export default function LineageGraph({ creators, highlightedCreator }: LineageGr
         ref={svgRef}
         width={dimensions.width}
         height={dimensions.height}
-        className="bg-zinc-900/30 rounded-xl border border-zinc-800"
+        className="bg-zinc-900/30 rounded-xl border border-zinc-800 w-full touch-pan-y"
+        style={{ maxWidth: '100%' }}
       />
       {selectedNode && (
-        <div className="mt-4 p-4 bg-zinc-900/50 rounded-lg border border-zinc-800">
-          <p className="text-sm text-zinc-400">Selected: <span className="text-amber-400">{selectedNode}</span></p>
+        <div className="mt-3 sm:mt-4 p-3 sm:p-4 bg-zinc-900/50 rounded-lg border border-zinc-800">
+          <p className="text-xs sm:text-sm text-zinc-400">
+            Selected: <span className="text-amber-400 font-medium">{selectedNode}</span>
+          </p>
         </div>
       )}
     </div>

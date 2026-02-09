@@ -1,0 +1,420 @@
+'use client';
+
+import { useState } from 'react';
+import Link from 'next/link';
+import { 
+  Network, Users, Heart, BookOpen, Bookmark, Share2, 
+  UserPlus, UserCheck, Search, Filter, TrendingUp,
+  MessageCircle, Sparkles
+} from 'lucide-react';
+import { 
+  currentUser, 
+  mockUsers, 
+  getActivityFeed, 
+  followUser, 
+  unfollowUser, 
+  isFollowing,
+  formatTimeAgo,
+  getActivityIcon,
+  getActivityText,
+  Activity
+} from '@/lib/social';
+import { getCreatorById } from '@/lib/data';
+
+export default function CommunityPage() {
+  const [activeTab, setActiveTab] = useState<'feed' | 'people'>('feed');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [followingState, setFollowingState] = useState<Record<string, boolean>>(() => {
+    const state: Record<string, boolean> = {};
+    mockUsers.forEach(user => {
+      state[user.id] = isFollowing(user.id);
+    });
+    return state;
+  });
+
+  const activityFeed = getActivityFeed(currentUser.id);
+  
+  const filteredUsers = mockUsers.filter(user => 
+    user.displayName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.bio.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleFollowToggle = (userId: string) => {
+    if (followingState[userId]) {
+      unfollowUser(userId);
+      setFollowingState(prev => ({ ...prev, [userId]: false }));
+    } else {
+      followUser(userId);
+      setFollowingState(prev => ({ ...prev, [userId]: true }));
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-zinc-900 to-zinc-950 text-zinc-100">
+      {/* Header */}
+      <header className="border-b border-zinc-800/50">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2">
+            <Network className="w-8 h-8 text-amber-400" />
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
+              Lineage Lit
+            </h1>
+          </Link>
+          <nav className="flex gap-6 text-sm text-zinc-400">
+            <Link href="/explore" className="hover:text-amber-400 transition">Explore</Link>
+            <Link href="/community" className="text-amber-400">Community</Link>
+            <Link href="/recommendations" className="hover:text-amber-400 transition">For You</Link>
+            <Link href="/profile" className="hover:text-amber-400 transition">Profile</Link>
+          </nav>
+        </div>
+      </header>
+
+      <main className="max-w-7xl mx-auto px-4 py-8">
+        {/* Page Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold flex items-center gap-3">
+            <Users className="w-8 h-8 text-amber-400" />
+            Community
+          </h1>
+          <p className="text-zinc-400 mt-2">
+            Connect with fellow readers and discover what they're exploring
+          </p>
+        </div>
+
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Tabs */}
+            <div className="flex gap-2 border-b border-zinc-800">
+              {(['feed', 'people'] as const).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-6 py-3 text-sm font-medium capitalize transition border-b-2 -mb-[2px] ${
+                    activeTab === tab 
+                      ? 'text-amber-400 border-amber-400' 
+                      : 'text-zinc-500 border-transparent hover:text-zinc-300'
+                  }`}
+                >
+                  {tab === 'feed' ? 'Activity Feed' : 'People'}
+                </button>
+              ))}
+            </div>
+
+            {activeTab === 'feed' ? (
+              <div className="space-y-4">
+                {/* Activity Feed */}
+                {activityFeed.length > 0 ? (
+                  activityFeed.map((activity) => (
+                    <ActivityCard key={activity.id} activity={activity} />
+                  ))
+                ) : (
+                  <div className="text-center py-12 bg-zinc-900/50 rounded-2xl border border-zinc-800">
+                    <Sparkles className="w-12 h-12 text-zinc-600 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-zinc-400">No activity yet</h3>
+                    <p className="text-zinc-500 text-sm mt-2">
+                      Start following people to see their activity here
+                    </p>
+                    <button 
+                      onClick={() => setActiveTab('people')}
+                      className="mt-4 px-4 py-2 bg-amber-500 text-zinc-900 rounded-lg font-medium hover:bg-amber-400 transition"
+                    >
+                      Discover People
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {/* Search */}
+                <div className="relative">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
+                  <input
+                    type="text"
+                    placeholder="Search people..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-12 pr-4 py-3 bg-zinc-900/50 border border-zinc-800 rounded-xl text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-amber-500/50"
+                  />
+                </div>
+
+                {/* People List */}
+                <div className="space-y-3">
+                  {filteredUsers.map((user) => (
+                    <UserCard 
+                      key={user.id} 
+                      user={user} 
+                      isFollowing={followingState[user.id] || false}
+                      onFollowToggle={() => handleFollowToggle(user.id)}
+                    />
+                  ))}
+                  {filteredUsers.length === 0 && (
+                    <div className="text-center py-8 text-zinc-500">
+                      No users found matching "{searchQuery}"
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Your Network Stats */}
+            <div className="bg-zinc-900/50 rounded-2xl p-6 border border-zinc-800">
+              <h3 className="font-semibold mb-4 flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-amber-400" />
+                Your Network
+              </h3>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-zinc-400">Following</span>
+                  <span className="font-medium text-amber-400">{currentUser.following.length}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-zinc-400">Followers</span>
+                  <span className="font-medium text-amber-400">{currentUser.followers.length}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-zinc-400">Network Reach</span>
+                  <span className="font-medium text-amber-400">
+                    {currentUser.following.length + currentUser.followers.length}
+                  </span>
+                </div>
+              </div>
+              <Link 
+                href="/profile" 
+                className="mt-4 block text-center text-sm text-amber-400 hover:text-amber-300 transition"
+              >
+                View Your Profile →
+              </Link>
+            </div>
+
+            {/* Suggested People */}
+            <div className="bg-zinc-900/50 rounded-2xl p-6 border border-zinc-800">
+              <h3 className="font-semibold mb-4 flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-amber-400" />
+                Suggested for You
+              </h3>
+              <div className="space-y-3">
+                {mockUsers
+                  .filter(u => !followingState[u.id] && u.id !== currentUser.id)
+                  .slice(0, 3)
+                  .map((user) => (
+                    <div key={user.id} className="flex items-center gap-3">
+                      <img 
+                        src={user.avatar} 
+                        alt={user.displayName}
+                        className="w-10 h-10 rounded-full bg-zinc-800"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-zinc-200 truncate">{user.displayName}</p>
+                        <p className="text-xs text-zinc-500 truncate">@{user.username}</p>
+                      </div>
+                      <button
+                        onClick={() => handleFollowToggle(user.id)}
+                        className="p-2 text-zinc-400 hover:text-amber-400 hover:bg-amber-500/10 rounded-lg transition"
+                      >
+                        <UserPlus className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+              </div>
+            </div>
+
+            {/* Trending in Community */}
+            <div className="bg-zinc-900/50 rounded-2xl p-6 border border-zinc-800">
+              <h3 className="font-semibold mb-4 flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-amber-400" />
+                Trending Now
+              </h3>
+              <div className="space-y-3">
+                <TrendingItem 
+                  rank={1}
+                  name="Ted Chiang"
+                  change="+45 readers"
+                />
+                <TrendingItem 
+                  rank={2}
+                  name="The Iceberg Theory"
+                  change="+32 discussions"
+                />
+                <TrendingItem 
+                  rank={3}
+                  name="Southern Gothic"
+                  change="+28 mentions"
+                />
+              </div>
+            </div>
+
+            {/* Quick Share */}
+            <div className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 rounded-2xl p-6 border border-amber-500/20">
+              <h3 className="font-semibold mb-2 flex items-center gap-2 text-amber-400">
+                <Share2 className="w-5 h-5" />
+                Share Your Lineage
+              </h3>
+              <p className="text-sm text-zinc-400 mb-4">
+                Share your favorite creators and help others discover great literature.
+              </p>
+              <Link 
+                href="/profile"
+                className="block w-full text-center px-4 py-2 bg-amber-500 text-zinc-900 rounded-lg font-medium hover:bg-amber-400 transition"
+              >
+                Share Now
+              </Link>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="border-t border-zinc-800/50 mt-16 py-8">
+        <div className="max-w-7xl mx-auto px-4 text-center text-zinc-500 text-sm">
+          <p>Built with ⚡ by Spark & Jeeves</p>
+          <p className="mt-2">A prototype for tracking creative lineage</p>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+function ActivityCard({ activity }: { activity: Activity }) {
+  const user = activity.userId === currentUser.id 
+    ? currentUser 
+    : mockUsers.find(u => u.id === activity.userId);
+  
+  if (!user) return null;
+
+  const icon = getActivityIcon(activity.type);
+  const text = getActivityText(activity);
+  const timeAgo = formatTimeAgo(activity.timestamp);
+
+  return (
+    <div className="bg-zinc-900/50 rounded-xl p-4 border border-zinc-800 hover:border-zinc-700 transition">
+      <div className="flex items-start gap-4">
+        <Link href={`/profile`}>
+          <img 
+            src={user.avatar} 
+            alt={user.displayName}
+            className="w-10 h-10 rounded-full bg-zinc-800 hover:ring-2 hover:ring-amber-500/50 transition"
+          />
+        </Link>
+        <div className="flex-1 min-w-0">
+          <p className="text-zinc-200">
+            <span className="font-medium text-amber-400">{user.displayName}</span>
+            {' '}{text.replace(user.displayName, '')}
+          </p>
+          <div className="flex items-center gap-3 mt-2 text-xs text-zinc-500">
+            <span>{timeAgo}</span>
+            <span className="text-xl leading-none">{icon}</span>
+          </div>
+        </div>
+        {activity.targetType === 'creator' && (
+          <Link 
+            href={`/creators/${activity.targetId}`}
+            className="text-xs px-3 py-1 bg-zinc-800 rounded-full text-zinc-400 hover:text-amber-400 hover:bg-zinc-700 transition"
+          >
+            View
+          </Link>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function UserCard({ 
+  user, 
+  isFollowing, 
+  onFollowToggle 
+}: { 
+  user: typeof mockUsers[0]; 
+  isFollowing: boolean;
+  onFollowToggle: () => void;
+}) {
+  return (
+    <div className="bg-zinc-900/50 rounded-xl p-4 border border-zinc-800 hover:border-zinc-700 transition">
+      <div className="flex items-start gap-4">
+        <img 
+          src={user.avatar} 
+          alt={user.displayName}
+          className="w-12 h-12 rounded-full bg-zinc-800"
+        />
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between">
+            <div>
+              <h4 className="font-medium text-zinc-200">{user.displayName}</h4>
+              <p className="text-xs text-zinc-500">@{user.username}</p>
+            </div>
+            <button
+              onClick={onFollowToggle}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition ${
+                isFollowing 
+                  ? 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700' 
+                  : 'bg-amber-500 text-zinc-900 hover:bg-amber-400'
+              }`}
+            >
+              {isFollowing ? (
+                <>
+                  <UserCheck className="w-4 h-4" />
+                  Following
+                </>
+              ) : (
+                <>
+                  <UserPlus className="w-4 h-4" />
+                  Follow
+                </>
+              )}
+            </button>
+          </div>
+          <p className="text-sm text-zinc-400 mt-2 line-clamp-2">{user.bio}</p>
+          
+          {/* Stats */}
+          <div className="flex gap-4 mt-3 text-xs text-zinc-500">
+            <span>{user.readingDNA.totalBooks} books</span>
+            <span>{user.followers.length} followers</span>
+            <span className="text-amber-500/70">
+              {user.readingDNA.literaryDNA.slice(0, 2).join(', ')}
+            </span>
+          </div>
+
+          {/* Recent Activity Preview */}
+          <div className="flex flex-wrap gap-2 mt-3">
+            {user.readingDNA.topAuthors.slice(0, 3).map((authorId) => {
+              const author = getCreatorById(authorId);
+              if (!author) return null;
+              return (
+                <Link
+                  key={authorId}
+                  href={`/creators/${authorId}`}
+                  className="px-2 py-1 bg-zinc-800 rounded text-xs text-zinc-400 hover:text-amber-400 transition"
+                >
+                  {author.name}
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TrendingItem({ rank, name, change }: { rank: number; name: string; change: string }) {
+  return (
+    <div className="flex items-center gap-3">
+      <span className={`w-6 h-6 flex items-center justify-center rounded text-xs font-bold ${
+        rank === 1 ? 'bg-amber-500 text-zinc-900' :
+        rank === 2 ? 'bg-zinc-600 text-zinc-200' :
+        rank === 3 ? 'bg-amber-700 text-zinc-200' :
+        'bg-zinc-800 text-zinc-400'
+      }`}>
+        {rank}
+      </span>
+      <div className="flex-1">
+        <p className="font-medium text-zinc-200 text-sm">{name}</p>
+        <p className="text-xs text-amber-500/70">{change}</p>
+      </div>
+    </div>
+  );
+}
