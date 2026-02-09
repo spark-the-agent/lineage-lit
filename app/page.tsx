@@ -1,4 +1,7 @@
 import { BookOpen, Network, Users, Sparkles } from "lucide-react";
+import LineageGraph from "./components/LineageGraph";
+import ReadingDNA from "./components/ReadingDNA";
+import { creators } from "@/lib/data";
 
 export default function Home() {
   return (
@@ -91,6 +94,23 @@ export default function Home() {
           <Stat number="50+" label="Curated Works" />
           <Stat number="30+" label="Creators" />
           <Stat number="100+" label="Influence Connections" />
+        </div>
+
+        {/* Interactive Lineage Graph */}
+        <div className="mt-16">
+          <h3 className="text-2xl font-semibold mb-6 flex items-center gap-2">
+            <Network className="w-6 h-6 text-amber-400" />
+            Explore the Lineage Graph
+          </h3>
+          <p className="text-zinc-400 mb-6">
+            Click nodes to explore connections. Orange dashed lines show influence relationships.
+          </p>
+          <LineageGraph creators={creators} />
+        </div>
+
+        {/* Reading DNA Feature */}
+        <div className="mt-16">
+          <ReadingDNA />
         </div>
       </main>
 
