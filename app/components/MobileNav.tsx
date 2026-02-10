@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Menu, X, Network, BookOpen, Users, ArrowLeft, Import, Sparkles, User, Zap, BarChart3 } from 'lucide-react';
+import { Menu, X, Network, BookOpen, Users, ArrowLeft, Sparkles, User, Zap, BarChart3, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -16,6 +16,7 @@ const navItems: NavItem[] = [
   { href: '/explore', label: 'Explore', icon: <BookOpen className="w-5 h-5" /> },
   { href: '/six-degrees', label: '6 Degrees', icon: <Zap className="w-5 h-5" /> },
   { href: '/insights', label: 'Insights', icon: <BarChart3 className="w-5 h-5" /> },
+  { href: '/timeline', label: 'Timeline', icon: <Clock className="w-5 h-5" /> },
   { href: '/community', label: 'Community', icon: <Users className="w-5 h-5" /> },
   { href: '/recommendations', label: 'For You', icon: <Sparkles className="w-5 h-5" /> },
   { href: '/profile', label: 'Profile', icon: <User className="w-5 h-5" /> },

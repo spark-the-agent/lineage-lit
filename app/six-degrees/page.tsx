@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { creators } from '@/lib/data';
 import { findPath } from '@/lib/path-finder';
 import PathAnimation from '@/app/components/PathAnimation';
+import MobileNav, { MobileHeaderSpacer, MobileBottomSpacer, DesktopNav } from '@/app/components/MobileNav';
 
 export default function SixDegreesPage() {
   const [fromId, setFromId] = useState('');
@@ -39,20 +40,19 @@ export default function SixDegreesPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-zinc-900 to-zinc-950 text-zinc-100">
-      {/* Header */}
-      <header className="border-b border-zinc-800/50">
+      <MobileNav currentPage="Six Degrees" />
+      <MobileHeaderSpacer />
+
+      {/* Desktop Header */}
+      <header className="border-b border-zinc-800/50 hidden lg:block">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2 min-h-[44px]">
             <Network className="w-8 h-8 text-amber-400" />
             <h1 className="text-2xl font-bold bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
               Lineage Lit
             </h1>
           </Link>
-          <nav className="flex gap-6 text-sm text-zinc-400">
-            <Link href="/explore" className="hover:text-amber-400 transition">Explore</Link>
-            <Link href="/six-degrees" className="text-amber-400">Six Degrees</Link>
-            <Link href="/profile" className="hover:text-amber-400 transition">Profile</Link>
-          </nav>
+          <DesktopNav />
         </div>
       </header>
 
@@ -168,6 +168,7 @@ export default function SixDegreesPage() {
           </div>
         )}
       </main>
+      <MobileBottomSpacer />
     </div>
   );
 }

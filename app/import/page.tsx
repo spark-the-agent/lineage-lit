@@ -1,11 +1,11 @@
 'use client';
 
 import { useState, useCallback, useRef } from 'react';
-import { 
-  Upload, 
-  FileText, 
-  CheckCircle, 
-  AlertCircle, 
+import {
+  Upload,
+  FileText,
+  CheckCircle,
+  AlertCircle,
   X,
   BookOpen,
   Users,
@@ -15,11 +15,13 @@ import {
   Download,
   Search,
   Star,
-  Calendar
+  Calendar,
+  Network
 } from 'lucide-react';
 import Link from 'next/link';
-import { 
-  parseGoodreadsCSV, 
+import MobileNav, { MobileHeaderSpacer, MobileBottomSpacer, DesktopNav } from '@/app/components/MobileNav';
+import {
+  parseGoodreadsCSV,
   validateGoodreadsCSV,
   matchBooksToCreators,
   importBooksWithProgress,
@@ -28,6 +30,7 @@ import {
   ImportProgress,
   MatchedCreator,
 } from '@/lib/import';
+import { usePersistence } from '@/app/components/PersistenceProvider';
 
 interface UploadState {
   status: 'idle' | 'uploading' | 'parsing' | 'validating' | 'importing' | 'complete' | 'error';
@@ -42,6 +45,7 @@ export default function ImportPage() {
   const [errors, setErrors] = useState<string[]>([]);
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { toggleSavedCreator, isCreatorSaved, recordCreatorView } = usePersistence();
 
   const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -104,7 +108,18 @@ export default function ImportPage() {
       // Match to creators
       const matched = matchBooksToCreators(parsedBooks);
       setMatches(matched);
-      
+
+      // Persist high-confidence matches: save creators and record views
+      const highMatches = matched.filter(m => m.confidence === 'high' && m.creatorId);
+      for (const match of highMatches) {
+        if (match.creatorId) {
+          if (!isCreatorSaved(match.creatorId)) {
+            toggleSavedCreator(match.creatorId);
+          }
+          recordCreatorView(match.creatorId);
+        }
+      }
+
       setUploadState({ status: 'complete', message: `Found ${parsedBooks.length} books` });
     } catch (err) {
       setUploadState({ 
@@ -144,24 +159,19 @@ export default function ImportPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-zinc-900 to-zinc-950 text-zinc-100">
-      {/* Header */}
-      <header className="border-b border-zinc-800/50">
+      <MobileNav currentPage="Import" />
+      <MobileHeaderSpacer />
+
+      {/* Desktop Header */}
+      <header className="border-b border-zinc-800/50 hidden lg:block">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
-              <BookOpen className="w-5 h-5 text-zinc-900" />
-            </div>
+          <Link href="/" className="flex items-center gap-2 min-h-[44px]">
+            <Network className="w-8 h-8 text-amber-400" />
             <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
               Lineage Lit
             </h1>
           </Link>
-          <Link 
-            href="/explore" 
-            className="flex items-center gap-2 text-sm text-zinc-400 hover:text-amber-400 transition min-h-[44px] px-3 rounded-lg"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span className="hidden sm:inline">Back to Explore</span>
-          </Link>
+          <DesktopNav />
         </div>
       </header>
 
@@ -453,6 +463,7 @@ export default function ImportPage() {
           </div>
         )}
       </main>
+      <MobileBottomSpacer />
     </div>
   );
 }

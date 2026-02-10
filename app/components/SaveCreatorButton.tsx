@@ -2,23 +2,21 @@
 
 import { useState } from 'react';
 import { Bookmark, Check } from 'lucide-react';
-import { saveCreator, unsaveCreator, isCreatorSaved } from '@/lib/social';
+import { usePersistence } from './PersistenceProvider';
 
 interface SaveCreatorButtonProps {
   creatorId: string;
 }
 
 export default function SaveCreatorButton({ creatorId }: SaveCreatorButtonProps) {
-  const [isSaved, setIsSaved] = useState(() => isCreatorSaved(creatorId));
+  const { isCreatorSaved, toggleSavedCreator } = usePersistence();
   const [showFeedback, setShowFeedback] = useState(false);
 
+  const isSaved = isCreatorSaved(creatorId);
+
   const handleClick = () => {
-    if (isSaved) {
-      unsaveCreator(creatorId);
-      setIsSaved(false);
-    } else {
-      saveCreator(creatorId);
-      setIsSaved(true);
+    const nowSaved = toggleSavedCreator(creatorId);
+    if (nowSaved) {
       setShowFeedback(true);
       setTimeout(() => setShowFeedback(false), 2000);
     }

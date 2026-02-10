@@ -2,6 +2,7 @@ import { getState } from './persistence';
 import { creators } from './data';
 import { findPath } from './path-finder';
 import { analyzeNetwork } from './network-analysis';
+import { getWeeklyChallenge, getChallengeProgress } from './challenges';
 
 export interface Achievement {
   id: string;
@@ -99,6 +100,17 @@ export const achievements: Achievement[] = [
     description: 'Save 5 or more creators to your collection',
     icon: '📚',
     check: () => getState().savedCreators.length >= 5,
+  },
+  {
+    id: 'challenge-champion',
+    name: 'Challenge Champion',
+    description: 'Complete a weekly challenge',
+    icon: '🏅',
+    check: () => {
+      const challenge = getWeeklyChallenge();
+      const progress = getChallengeProgress(challenge);
+      return progress.current >= progress.target;
+    },
   },
 ];
 

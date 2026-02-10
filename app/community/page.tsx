@@ -7,13 +7,11 @@ import {
   UserPlus, UserCheck, Search, TrendingUp,
   Sparkles
 } from 'lucide-react';
-import { 
-  currentUser, 
-  mockUsers, 
-  getActivityFeed, 
-  followUser, 
-  unfollowUser, 
-  isFollowing,
+import MobileNav, { MobileHeaderSpacer, MobileBottomSpacer, DesktopNav } from '@/app/components/MobileNav';
+import {
+  currentUser,
+  mockUsers,
+  getActivityFeed,
   formatTimeAgo,
   getActivityIcon,
   getActivityText,
@@ -23,54 +21,41 @@ import { getCreatorById } from '@/lib/data';
 import Leaderboard from '@/app/components/Leaderboard';
 import DNAComparison from '@/app/components/DNAComparison';
 import WeeklyChallenge from '@/app/components/WeeklyChallenge';
+import { usePersistence } from '@/app/components/PersistenceProvider';
 
 export default function CommunityPage() {
   const [activeTab, setActiveTab] = useState<'feed' | 'people'>('feed');
   const [searchQuery, setSearchQuery] = useState('');
   const [comparingUser, setComparingUser] = useState<typeof mockUsers[0] | null>(null);
-  const [followingState, setFollowingState] = useState<Record<string, boolean>>(() => {
-    const state: Record<string, boolean> = {};
-    mockUsers.forEach(user => {
-      state[user.id] = isFollowing(user.id);
-    });
-    return state;
-  });
+  const { isUserFollowed, toggleFollowedUser } = usePersistence();
 
   const activityFeed = getActivityFeed(currentUser.id);
-  
-  const filteredUsers = mockUsers.filter(user => 
+
+  const filteredUsers = mockUsers.filter(user =>
     user.displayName.toLowerCase().includes(searchQuery.toLowerCase()) ||
     user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
     user.bio.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleFollowToggle = (userId: string) => {
-    if (followingState[userId]) {
-      unfollowUser(userId);
-      setFollowingState(prev => ({ ...prev, [userId]: false }));
-    } else {
-      followUser(userId);
-      setFollowingState(prev => ({ ...prev, [userId]: true }));
-    }
+    toggleFollowedUser(userId);
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-zinc-900 to-zinc-950 text-zinc-100">
-      {/* Header */}
-      <header className="border-b border-zinc-800/50">
+      <MobileNav currentPage="Community" />
+      <MobileHeaderSpacer />
+
+      {/* Desktop Header */}
+      <header className="border-b border-zinc-800/50 hidden lg:block">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2 min-h-[44px]">
             <Network className="w-8 h-8 text-amber-400" />
             <h1 className="text-2xl font-bold bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
               Lineage Lit
             </h1>
           </Link>
-          <nav className="flex gap-6 text-sm text-zinc-400">
-            <Link href="/explore" className="hover:text-amber-400 transition">Explore</Link>
-            <Link href="/community" className="text-amber-400">Community</Link>
-            <Link href="/recommendations" className="hover:text-amber-400 transition">For You</Link>
-            <Link href="/profile" className="hover:text-amber-400 transition">Profile</Link>
-          </nav>
+          <DesktopNav />
         </div>
       </header>
 
@@ -149,7 +134,7 @@ export default function CommunityPage() {
                     <UserCard
                       key={user.id}
                       user={user}
-                      isFollowing={followingState[user.id] || false}
+                      isFollowing={isUserFollowed(user.id) || false}
                       onFollowToggle={() => handleFollowToggle(user.id)}
                       onCompare={() => setComparingUser(user)}
                     />
@@ -204,7 +189,7 @@ export default function CommunityPage() {
               </h3>
               <div className="space-y-3">
                 {mockUsers
-                  .filter(u => !followingState[u.id] && u.id !== currentUser.id)
+                  .filter(u => !isUserFollowed(u.id) && u.id !== currentUser.id)
                   .slice(0, 3)
                   .map((user) => (
                     <div key={user.id} className="flex items-center gap-3">
@@ -295,6 +280,7 @@ export default function CommunityPage() {
           <p className="mt-2">A prototype for tracking creative lineage</p>
         </div>
       </footer>
+      <MobileBottomSpacer />
     </div>
   );
 }

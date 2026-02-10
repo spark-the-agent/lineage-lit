@@ -2,16 +2,17 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { 
-  Network, Sparkles, ThumbsUp, ThumbsDown, Share2, 
+import {
+  Network, Sparkles, ThumbsUp, ThumbsDown, Share2,
   BookOpen, Users, ArrowRight, Lightbulb, GitBranch,
   Target, Clock, TrendingUp, Filter, RefreshCw,
   Check, X, ExternalLink, Bookmark, Heart
 } from 'lucide-react';
-import { currentUser, saveCreator, unsaveCreator, isCreatorSaved, likeWork, unlikeWork, isWorkLiked } from '@/lib/social';
-import { 
-  generateRecommendations, 
-  submitFeedback, 
+import MobileNav, { MobileHeaderSpacer, MobileBottomSpacer, DesktopNav } from '@/app/components/MobileNav';
+import { currentUser } from '@/lib/social';
+import {
+  generateRecommendations,
+  submitFeedback,
   hasFeedback,
   getRecommendationExplanation,
   getAllReasons,
@@ -22,23 +23,24 @@ import {
   RecommendationReason
 } from '@/lib/recommendations';
 import { getCreatorById, Creator } from '@/lib/data';
+import { usePersistence } from '@/app/components/PersistenceProvider';
 
 export default function RecommendationsPage() {
   const [refreshKey, setRefreshKey] = useState(0);
   const [feedbackState, setFeedbackState] = useState<Record<string, 'thumbs_up' | 'thumbs_down'>>({});
   const [expandedReasons, setExpandedReasons] = useState<Set<string>>(new Set());
   const [filterType, setFilterType] = useState<'all' | 'creators' | 'works'>('all');
-  const [savedCreatorsState, setSavedCreatorsState] = useState<Set<string>>(
-    new Set(currentUser.savedCreators)
-  );
-  const [likedWorksState, setLikedWorksState] = useState<Set<string>>(
-    new Set(currentUser.likedWorks)
-  );
+  const { state, toggleSavedCreator, toggleLikedWork, isCreatorSaved, isWorkLiked } = usePersistence();
 
-  // Generate recommendations
+  // Build a dynamic user profile from persistence state for recommendations
   const recommendations = useMemo(() => {
-    return generateRecommendations(currentUser, 20);
-  }, [refreshKey]);
+    const dynamicUser = {
+      ...currentUser,
+      savedCreators: state.savedCreators,
+      likedWorks: state.likedWorks,
+    };
+    return generateRecommendations(dynamicUser, 20);
+  }, [refreshKey, state.savedCreators, state.likedWorks]);
 
   // Filter recommendations
   const filteredRecommendations = useMemo(() => {
@@ -68,31 +70,11 @@ export default function RecommendationsPage() {
   };
 
   const handleSaveCreator = (creatorId: string) => {
-    if (savedCreatorsState.has(creatorId)) {
-      unsaveCreator(creatorId);
-      setSavedCreatorsState(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(creatorId);
-        return newSet;
-      });
-    } else {
-      saveCreator(creatorId);
-      setSavedCreatorsState(prev => new Set(prev).add(creatorId));
-    }
+    toggleSavedCreator(creatorId);
   };
 
   const handleLikeWork = (workId: string) => {
-    if (likedWorksState.has(workId)) {
-      unlikeWork(workId);
-      setLikedWorksState(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(workId);
-        return newSet;
-      });
-    } else {
-      likeWork(workId);
-      setLikedWorksState(prev => new Set(prev).add(workId));
-    }
+    toggleLikedWork(workId);
   };
 
   const topRecommendations = filteredRecommendations.slice(0, 3);
@@ -100,21 +82,19 @@ export default function RecommendationsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-zinc-900 to-zinc-950 text-zinc-100">
-      {/* Header */}
-      <header className="border-b border-zinc-800/50">
+      <MobileNav currentPage="For You" />
+      <MobileHeaderSpacer />
+
+      {/* Desktop Header */}
+      <header className="border-b border-zinc-800/50 hidden lg:block">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2 min-h-[44px]">
             <Network className="w-8 h-8 text-amber-400" />
             <h1 className="text-2xl font-bold bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
               Lineage Lit
             </h1>
           </Link>
-          <nav className="flex gap-6 text-sm text-zinc-400">
-            <Link href="/explore" className="hover:text-amber-400 transition">Explore</Link>
-            <Link href="/community" className="hover:text-amber-400 transition">Community</Link>
-            <Link href="/recommendations" className="text-amber-400">For You</Link>
-            <Link href="/profile" className="hover:text-amber-400 transition">Profile</Link>
-          </nav>
+          <DesktopNav />
         </div>
       </header>
 
@@ -197,8 +177,8 @@ export default function RecommendationsPage() {
                   onFeedback={(f) => handleFeedback(rec, f)}
                   showReasons={expandedReasons.has(rec.id)}
                   onToggleReasons={() => toggleReasons(rec.id)}
-                  isSaved={rec.type === 'creator' ? savedCreatorsState.has(rec.item.id) : undefined}
-                  isLiked={rec.type === 'work' ? likedWorksState.has(rec.item.id) : undefined}
+                  isSaved={rec.type === 'creator' ? isCreatorSaved(rec.item.id) : undefined}
+                  isLiked={rec.type === 'work' ? isWorkLiked(rec.item.id) : undefined}
                   onSave={() => rec.type === 'creator' && handleSaveCreator(rec.item.id)}
                   onLike={() => rec.type === 'work' && handleLikeWork(rec.item.id)}
                 />
@@ -221,8 +201,8 @@ export default function RecommendationsPage() {
                   recommendation={rec}
                   feedback={feedbackState[rec.id]}
                   onFeedback={(f) => handleFeedback(rec, f)}
-                  isSaved={rec.type === 'creator' ? savedCreatorsState.has(rec.item.id) : undefined}
-                  isLiked={rec.type === 'work' ? likedWorksState.has(rec.item.id) : undefined}
+                  isSaved={rec.type === 'creator' ? isCreatorSaved(rec.item.id) : undefined}
+                  isLiked={rec.type === 'work' ? isWorkLiked(rec.item.id) : undefined}
                   onSave={() => rec.type === 'creator' && handleSaveCreator(rec.item.id)}
                   onLike={() => rec.type === 'work' && handleLikeWork(rec.item.id)}
                 />
@@ -286,6 +266,7 @@ export default function RecommendationsPage() {
           <p className="mt-2">A prototype for tracking creative lineage</p>
         </div>
       </footer>
+      <MobileBottomSpacer />
     </div>
   );
 }

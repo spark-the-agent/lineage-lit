@@ -2,42 +2,43 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { 
-  Network, BookOpen, Users, TrendingUp, Award, 
+import {
+  Network, BookOpen, Users, TrendingUp, Award,
   Share2, Bookmark, Heart, Edit3, MapPin, Calendar,
   ChevronRight, ExternalLink, UserPlus, UserCheck
 } from 'lucide-react';
-import { currentUser, getFollowing, getFollowers, saveCreator, unsaveCreator, isCreatorSaved } from '@/lib/social';
+import MobileNav, { MobileHeaderSpacer, MobileBottomSpacer, DesktopNav } from '../components/MobileNav';
+import { currentUser, getFollowing, getFollowers } from '@/lib/social';
 import { creators, getCreatorById } from '@/lib/data';
 import LineageGraph from '../components/LineageGraph';
 import ShareableCard from '../components/ShareableCard';
 import AchievementGrid from '../components/AchievementGrid';
+import { usePersistence } from '../components/PersistenceProvider';
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<'overview' | 'saved' | 'dna' | 'achievements'>('overview');
   const [showShareModal, setShowShareModal] = useState(false);
-  
+  const { state, toggleSavedCreator, isCreatorSaved } = usePersistence();
+
   const following = getFollowing(currentUser.id);
   const followers = getFollowers(currentUser.id);
-  const savedCreatorsList = currentUser.savedCreators.map(id => getCreatorById(id)).filter(Boolean);
+  const savedCreatorsList = state.savedCreators.map(id => getCreatorById(id)).filter(Boolean);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-zinc-900 to-zinc-950 text-zinc-100">
-      {/* Header */}
-      <header className="border-b border-zinc-800/50">
+      <MobileNav currentPage="Profile" />
+      <MobileHeaderSpacer />
+
+      {/* Desktop Header */}
+      <header className="border-b border-zinc-800/50 hidden lg:block">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2 min-h-[44px]">
             <Network className="w-8 h-8 text-amber-400" />
             <h1 className="text-2xl font-bold bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
               Lineage Lit
             </h1>
           </Link>
-          <nav className="flex gap-6 text-sm text-zinc-400">
-            <Link href="/explore" className="hover:text-amber-400 transition">Explore</Link>
-            <Link href="/community" className="hover:text-amber-400 transition">Community</Link>
-            <Link href="/recommendations" className="hover:text-amber-400 transition">For You</Link>
-            <Link href="/profile" className="text-amber-400">Profile</Link>
-          </nav>
+          <DesktopNav />
         </div>
       </header>
 
@@ -279,7 +280,7 @@ export default function ProfilePage() {
                           <p className="text-sm text-zinc-400 mt-2 line-clamp-2">{creator.bio}</p>
                         </Link>
                         <button
-                          onClick={() => unsaveCreator(creator.id)}
+                          onClick={() => toggleSavedCreator(creator.id)}
                           className="p-2 text-amber-400 hover:bg-amber-500/10 rounded-lg transition"
                           title="Remove from saved"
                         >
@@ -305,7 +306,7 @@ export default function ProfilePage() {
               </h3>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {creators
-                  .filter(c => !currentUser.savedCreators.includes(c.id))
+                  .filter(c => !isCreatorSaved(c.id))
                   .slice(0, 3)
                   .map((creator) => (
                     <div
@@ -320,7 +321,7 @@ export default function ProfilePage() {
                           <p className="text-xs text-zinc-500 mt-1">{creator.years}</p>
                         </Link>
                         <button
-                          onClick={() => saveCreator(creator.id)}
+                          onClick={() => toggleSavedCreator(creator.id)}
                           className="p-2 text-zinc-500 hover:text-amber-400 hover:bg-amber-500/10 rounded-lg transition"
                           title="Save creator"
                         >
@@ -488,6 +489,7 @@ export default function ProfilePage() {
           <p className="mt-2">A prototype for tracking creative lineage</p>
         </div>
       </footer>
+      <MobileBottomSpacer />
     </div>
   );
 }
