@@ -149,7 +149,7 @@ export default function Home() {
             {/* Visual Graph Preview */}
             <div className="lg:w-1/3">
               <div className="bg-zinc-950 rounded-xl p-4 border border-zinc-800 h-full min-h-[200px] flex items-center justify-center">
-                <LineageGraph creators={creators.slice(0, 3)} compact />
+                <LineageGraph creators={creators.slice(0, 3)} />
               </div>
             </div>
           </div>
