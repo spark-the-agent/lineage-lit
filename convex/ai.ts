@@ -44,7 +44,14 @@ export const processLineageRequest = internalAction({
   },
 });
 
-async function analyzeLineageWithAI(request: any) {
+type LineageRequestInput = {
+  workTitle: string;
+  workAuthor?: string;
+  workType?: string;
+  sourceText?: string;
+};
+
+async function analyzeLineageWithAI(request: LineageRequestInput) {
   const { workTitle, workAuthor, workType, sourceText } = request;
   
   // Build prompt

@@ -1,4 +1,3 @@
-import { v } from "convex/values";
 import { mutation } from "./_generated/server";
 
 // Seed data migration from mock data

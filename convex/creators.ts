@@ -1,5 +1,5 @@
-import { v } from "convex/values";
-import { query, mutation, action } from "./_generated/server";
+import { v, type GenericId } from "convex/values";
+import { query, mutation } from "./_generated/server";
 import { internal } from "./_generated/api";
 
 // ============== QUERIES ==============
@@ -43,7 +43,7 @@ export const getCreator = query({
     
     // Get influence relationships (full objects)
     const influencedBy = await Promise.all(
-      creator.influencedBy.map(async (slug) => {
+      creator.influencedBy.map(async (slug: string) => {
         const c = await ctx.db
           .query("creators")
           .withIndex("by_slug", (q) => q.eq("slug", slug))
@@ -53,7 +53,7 @@ export const getCreator = query({
     );
     
     const influenced = await Promise.all(
-      creator.influenced.map(async (slug) => {
+      creator.influenced.map(async (slug: string) => {
         const c = await ctx.db
           .query("creators")
           .withIndex("by_slug", (q) => q.eq("slug", slug))
@@ -86,10 +86,10 @@ export const getWork = query({
     
     // Get influence relationships
     const influences = await Promise.all(
-      work.influences.map(id => ctx.db.get(id))
+      work.influences.map((id: GenericId<"works">) => ctx.db.get(id))
     );
     const influenced = await Promise.all(
-      work.influenced.map(id => ctx.db.get(id))
+      work.influenced.map((id: GenericId<"works">) => ctx.db.get(id))
     );
     
     return {
@@ -175,7 +175,7 @@ export const requestLineageDiscovery = mutation({
     
     const requestId = await ctx.db.insert("lineageRequests", {
       // This will be set after auth is added
-      userId: "temp" as any, // Placeholder
+      userId: "temp" as GenericId<"users">, // Placeholder until auth is added
       ...args,
       status: "pending",
       createdAt: Date.now(),
