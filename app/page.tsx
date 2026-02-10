@@ -191,7 +191,7 @@ export default function Home() {
               <Sparkles className="w-5 h-5 text-amber-400" />
               Your Reading DNA
             </h3>
-            <ReadingDNA compact />
+            <ReadingDNA />
             <p className="text-zinc-400 text-sm mt-4">
               Import your reading history to discover your literary influences and find your next favorite book.
             </p>
