@@ -1,4 +1,5 @@
 import { BookOpen, Network, Users, Sparkles, Import, ArrowRight } from "lucide-react";
+import type { Metadata } from "next";
 import LineageGraph from "./components/LineageGraph";
 import ReadingDNA from "./components/ReadingDNA";
 import MobileNav, { MobileHeaderSpacer, MobileBottomSpacer } from "./components/MobileNav";
@@ -6,6 +7,16 @@ import { DesktopNav } from "./components/MobileNav";
 import { creators } from "@/lib/data";
 import Link from "next/link";
 import Image from "next/image";
+
+export const metadata: Metadata = {
+  title: "Lineage Lit - Discover the Lineage of Ideas",
+  description: "Track books, screenplays, and articles through their creative DNA. Trace how Hemingway influenced Carver, how Faulkner shaped McCarthy, and discover hidden connections.",
+  openGraph: {
+    title: "Lineage Lit - Discover the Lineage of Ideas",
+    description: "Trace creative influence chains between writers. See where writers learned their craft and what influenced their work.",
+    type: "website",
+  },
+};
 
 export default function Home() {
   return (

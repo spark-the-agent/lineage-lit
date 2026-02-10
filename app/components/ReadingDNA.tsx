@@ -1,5 +1,9 @@
-import { BookOpen, TrendingUp, Users, Award, Share2, Import } from 'lucide-react';
+'use client';
+
+import { BookOpen, TrendingUp, Users, Award, Share2, Import, Download } from 'lucide-react';
 import Link from 'next/link';
+import { downloadJSON } from '@/lib/export';
+import { creators } from '@/lib/data';
 
 interface ReadingStats {
   totalBooks: number;
@@ -162,7 +166,11 @@ export default function ReadingDNA() {
         >
           Discover Your Next Read
         </Link>
-        <button className="px-6 py-3 sm:py-4 border border-zinc-700 rounded-lg text-zinc-300 hover:border-zinc-500 transition min-h-[48px]">
+        <button
+          onClick={() => downloadJSON(creators)}
+          className="flex items-center justify-center gap-2 px-6 py-3 sm:py-4 border border-zinc-700 rounded-lg text-zinc-300 hover:border-zinc-500 transition min-h-[48px]"
+        >
+          <Download className="w-4 h-4" />
           Export Data
         </button>
       </div>

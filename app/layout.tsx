@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { PersistenceProvider } from "./components/PersistenceProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,6 +16,17 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Lineage Lit - Discover the Lineage of Ideas",
   description: "Track books, screenplays, and articles through their creative DNA. See where writers learned their craft.",
+  openGraph: {
+    title: "Lineage Lit - Discover the Lineage of Ideas",
+    description: "Track books, screenplays, and articles through their creative DNA. See where writers learned their craft.",
+    siteName: "Lineage Lit",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Lineage Lit - Discover the Lineage of Ideas",
+    description: "Track books, screenplays, and articles through their creative DNA.",
+  },
 };
 
 export const viewport: Viewport = {
@@ -33,7 +45,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-zinc-950`}
       >
-        {children}
+        <PersistenceProvider>
+          {children}
+        </PersistenceProvider>
       </body>
     </html>
   );

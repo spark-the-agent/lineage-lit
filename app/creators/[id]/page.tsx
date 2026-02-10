@@ -2,9 +2,11 @@ import { getCreatorById, getLineage, creators } from '@/lib/data';
 import { Network, BookOpen, Film, ArrowLeft, ArrowRight, User, Share2, Bookmark } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 import MobileNav, { MobileHeaderSpacer, MobileBottomSpacer } from '@/app/components/MobileNav';
 import { DesktopNav } from '@/app/components/MobileNav';
 import CreatorActions from '@/app/components/CreatorActions';
+import CreatorInsights from '@/app/components/CreatorInsights';
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -14,6 +16,30 @@ export async function generateStaticParams() {
   return creators.map((creator) => ({
     id: creator.id,
   }));
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
+  const creator = getCreatorById(id);
+  if (!creator) return {};
+
+  const workTitles = creator.works.map(w => w.title).join(', ');
+  const description = `${creator.name} (${creator.years}) — ${creator.bio} Notable works: ${workTitles}.`;
+
+  return {
+    title: `${creator.name} - Lineage Lit`,
+    description,
+    openGraph: {
+      title: `${creator.name} — Creative Lineage`,
+      description,
+      type: 'profile',
+    },
+    twitter: {
+      card: 'summary',
+      title: `${creator.name} — Creative Lineage`,
+      description: creator.bio,
+    },
+  };
 }
 
 export default async function CreatorPage({ params }: Props) {
@@ -81,6 +107,11 @@ export default async function CreatorPage({ params }: Props) {
             </div>
           </div>
           <p className="text-zinc-300 text-base sm:text-lg leading-relaxed">{creator.bio}</p>
+        </div>
+
+        {/* Network Insights */}
+        <div className="mb-6 sm:mb-8">
+          <CreatorInsights creator={creator} />
         </div>
 
         {/* Lineage Graph */}
