@@ -10,9 +10,11 @@ import {
 import { currentUser, getFollowing, getFollowers, saveCreator, unsaveCreator, isCreatorSaved } from '@/lib/social';
 import { creators, getCreatorById } from '@/lib/data';
 import LineageGraph from '../components/LineageGraph';
+import ShareableCard from '../components/ShareableCard';
+import AchievementGrid from '../components/AchievementGrid';
 
 export default function ProfilePage() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'saved' | 'dna'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'saved' | 'dna' | 'achievements'>('overview');
   const [showShareModal, setShowShareModal] = useState(false);
   
   const following = getFollowing(currentUser.id);
@@ -118,13 +120,13 @@ export default function ProfilePage() {
 
         {/* Tabs */}
         <div className="flex gap-2 mb-6 border-b border-zinc-800">
-          {(['overview', 'saved', 'dna'] as const).map((tab) => (
+          {(['overview', 'saved', 'dna', 'achievements'] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`px-6 py-3 text-sm font-medium capitalize transition border-b-2 -mb-[2px] ${
-                activeTab === tab 
-                  ? 'text-amber-400 border-amber-400' 
+                activeTab === tab
+                  ? 'text-amber-400 border-amber-400'
                   : 'text-zinc-500 border-transparent hover:text-zinc-300'
               }`}
             >
@@ -450,33 +452,33 @@ export default function ProfilePage() {
             </div>
           </div>
         )}
-      </main>
 
-      {/* Share Modal */}
-      {showShareModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-zinc-900 rounded-2xl p-6 max-w-md w-full border border-zinc-700">
-            <h3 className="text-xl font-semibold mb-4">Share Your Reading DNA</h3>
-            <p className="text-zinc-400 text-sm mb-6">
-              Share your literary journey with friends and discover new connections.
-            </p>
-            <div className="space-y-3">
-              <button className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-zinc-800 rounded-lg hover:bg-zinc-700 transition">
-                <Share2 className="w-4 h-4" />
-                Copy Link
-              </button>
-              <button className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-zinc-800 rounded-lg hover:bg-zinc-700 transition">
-                Share on Twitter
-              </button>
-              <button 
-                onClick={() => setShowShareModal(false)}
-                className="w-full px-4 py-3 text-zinc-400 hover:text-zinc-200 transition"
-              >
-                Cancel
-              </button>
+        {activeTab === 'achievements' && (
+          <div className="space-y-8">
+            <div className="bg-zinc-900/50 rounded-2xl p-6 sm:p-8 border border-zinc-800">
+              <h3 className="text-xl font-semibold mb-2 flex items-center gap-2">
+                <Award className="w-5 h-5 text-amber-400" />
+                Achievements
+              </h3>
+              <p className="text-zinc-400 text-sm mb-6">
+                Unlock achievements by exploring the literary network
+              </p>
+              <AchievementGrid />
             </div>
           </div>
-        </div>
+        )}
+      </main>
+
+      {/* Shareable DNA Card */}
+      {showShareModal && (
+        <ShareableCard
+          data={{
+            displayName: currentUser.displayName,
+            username: currentUser.username,
+            readingDNA: currentUser.readingDNA,
+          }}
+          onClose={() => setShowShareModal(false)}
+        />
       )}
 
       {/* Footer */}

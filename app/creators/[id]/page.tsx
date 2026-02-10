@@ -7,6 +7,8 @@ import MobileNav, { MobileHeaderSpacer, MobileBottomSpacer } from '@/app/compone
 import { DesktopNav } from '@/app/components/MobileNav';
 import CreatorActions from '@/app/components/CreatorActions';
 import CreatorInsights from '@/app/components/CreatorInsights';
+import CreatorViewTracker from '@/app/components/CreatorViewTracker';
+import LineageChainCard from '@/app/components/LineageChainCard';
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -54,11 +56,12 @@ export default async function CreatorPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-zinc-900 to-zinc-950 text-zinc-100">
-      <MobileNav 
+      <CreatorViewTracker creatorId={id} />
+      <MobileNav
         currentPage={creator.name}
-        showBackButton 
-        backHref="/explore" 
-        backLabel="Creators" 
+        showBackButton
+        backHref="/explore"
+        backLabel="Creators"
       />
       <MobileHeaderSpacer />
 
@@ -167,6 +170,11 @@ export default async function CreatorPage({ params }: Props) {
               </div>
             )}
           </div>
+        </div>
+
+        {/* Find Connection */}
+        <div className="mb-6 sm:mb-8">
+          <LineageChainCard fromCreatorId={id} />
         </div>
 
         {/* Works */}

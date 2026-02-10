@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { 
-  Network, Users, Heart, BookOpen, Bookmark, Share2, 
-  UserPlus, UserCheck, Search, Filter, TrendingUp,
-  MessageCircle, Sparkles
+import {
+  Network, Users, Share2,
+  UserPlus, UserCheck, Search, TrendingUp,
+  Sparkles
 } from 'lucide-react';
 import { 
   currentUser, 
@@ -20,10 +20,14 @@ import {
   Activity
 } from '@/lib/social';
 import { getCreatorById } from '@/lib/data';
+import Leaderboard from '@/app/components/Leaderboard';
+import DNAComparison from '@/app/components/DNAComparison';
+import WeeklyChallenge from '@/app/components/WeeklyChallenge';
 
 export default function CommunityPage() {
   const [activeTab, setActiveTab] = useState<'feed' | 'people'>('feed');
   const [searchQuery, setSearchQuery] = useState('');
+  const [comparingUser, setComparingUser] = useState<typeof mockUsers[0] | null>(null);
   const [followingState, setFollowingState] = useState<Record<string, boolean>>(() => {
     const state: Record<string, boolean> = {};
     mockUsers.forEach(user => {
@@ -78,7 +82,7 @@ export default function CommunityPage() {
             Community
           </h1>
           <p className="text-zinc-400 mt-2">
-            Connect with fellow readers and discover what they're exploring
+            Connect with fellow readers and discover what they&apos;re exploring
           </p>
         </div>
 
@@ -142,16 +146,17 @@ export default function CommunityPage() {
                 {/* People List */}
                 <div className="space-y-3">
                   {filteredUsers.map((user) => (
-                    <UserCard 
-                      key={user.id} 
-                      user={user} 
+                    <UserCard
+                      key={user.id}
+                      user={user}
                       isFollowing={followingState[user.id] || false}
                       onFollowToggle={() => handleFollowToggle(user.id)}
+                      onCompare={() => setComparingUser(user)}
                     />
                   ))}
                   {filteredUsers.length === 0 && (
                     <div className="text-center py-8 text-zinc-500">
-                      No users found matching "{searchQuery}"
+                      No users found matching &ldquo;{searchQuery}&rdquo;
                     </div>
                   )}
                 </div>
@@ -248,6 +253,12 @@ export default function CommunityPage() {
               </div>
             </div>
 
+            {/* Weekly Challenge */}
+            <WeeklyChallenge />
+
+            {/* Leaderboard */}
+            <Leaderboard />
+
             {/* Quick Share */}
             <div className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 rounded-2xl p-6 border border-amber-500/20">
               <h3 className="font-semibold mb-2 flex items-center gap-2 text-amber-400">
@@ -267,6 +278,15 @@ export default function CommunityPage() {
           </div>
         </div>
       </main>
+
+      {/* DNA Comparison Modal */}
+      {comparingUser && (
+        <DNAComparison
+          userA={{ name: currentUser.displayName, dna: currentUser.readingDNA }}
+          userB={{ name: comparingUser.displayName, dna: comparingUser.readingDNA }}
+          onClose={() => setComparingUser(null)}
+        />
+      )}
 
       {/* Footer */}
       <footer className="border-t border-zinc-800/50 mt-16 py-8">
@@ -323,14 +343,16 @@ function ActivityCard({ activity }: { activity: Activity }) {
   );
 }
 
-function UserCard({ 
-  user, 
-  isFollowing, 
-  onFollowToggle 
-}: { 
-  user: typeof mockUsers[0]; 
+function UserCard({
+  user,
+  isFollowing,
+  onFollowToggle,
+  onCompare,
+}: {
+  user: typeof mockUsers[0];
   isFollowing: boolean;
   onFollowToggle: () => void;
+  onCompare: () => void;
 }) {
   return (
     <div className="bg-zinc-900/50 rounded-xl p-4 border border-zinc-800 hover:border-zinc-700 transition">
@@ -370,12 +392,18 @@ function UserCard({
           <p className="text-sm text-zinc-400 mt-2 line-clamp-2">{user.bio}</p>
           
           {/* Stats */}
-          <div className="flex gap-4 mt-3 text-xs text-zinc-500">
+          <div className="flex items-center gap-4 mt-3 text-xs text-zinc-500">
             <span>{user.readingDNA.totalBooks} books</span>
             <span>{user.followers.length} followers</span>
             <span className="text-amber-500/70">
               {user.readingDNA.literaryDNA.slice(0, 2).join(', ')}
             </span>
+            <button
+              onClick={onCompare}
+              className="ml-auto text-xs text-amber-400/70 hover:text-amber-400 transition"
+            >
+              Compare DNA
+            </button>
           </div>
 
           {/* Recent Activity Preview */}

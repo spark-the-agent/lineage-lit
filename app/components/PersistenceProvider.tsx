@@ -31,9 +31,11 @@ export function PersistenceProvider({ children }: { children: ReactNode }) {
   const [state, setLocalState] = useState<PersistedState>(getState);
 
   useEffect(() => {
-    // Sync when localStorage loads on client
-    setLocalState(getState());
-    return subscribe(setLocalState);
+    // Subscribe to external store changes and sync on mount
+    const unsub = subscribe(setLocalState);
+    // Defer initial hydration to avoid synchronous setState in effect
+    const timer = setTimeout(() => setLocalState(getState()), 0);
+    return () => { unsub(); clearTimeout(timer); };
   }, []);
 
   const toggleSavedCreator = useCallback((id: string) => _toggleSaved(id), []);

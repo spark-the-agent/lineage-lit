@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Menu, X, Network, BookOpen, Users, ArrowLeft, Import, Sparkles, User } from 'lucide-react';
+import { Menu, X, Network, BookOpen, Users, ArrowLeft, Import, Sparkles, User, Zap, BarChart3 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -14,6 +14,8 @@ interface NavItem {
 const navItems: NavItem[] = [
   { href: '/', label: 'Home', icon: <Network className="w-5 h-5" /> },
   { href: '/explore', label: 'Explore', icon: <BookOpen className="w-5 h-5" /> },
+  { href: '/six-degrees', label: '6 Degrees', icon: <Zap className="w-5 h-5" /> },
+  { href: '/insights', label: 'Insights', icon: <BarChart3 className="w-5 h-5" /> },
   { href: '/community', label: 'Community', icon: <Users className="w-5 h-5" /> },
   { href: '/recommendations', label: 'For You', icon: <Sparkles className="w-5 h-5" /> },
   { href: '/profile', label: 'Profile', icon: <User className="w-5 h-5" /> },
@@ -141,7 +143,7 @@ export default function MobileNav({
       {/* Bottom Navigation Bar (Mobile) */}
       <nav className="fixed bottom-0 left-0 right-0 bg-zinc-900/95 backdrop-blur-md border-t border-zinc-800/50 z-40 lg:hidden pb-safe">
         <div className="flex items-center justify-around h-16">
-          {navItems.slice(0, 4).map((item) => {
+          {navItems.slice(0, 5).map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link

@@ -2,6 +2,9 @@ import { BookOpen, Network, Users, Sparkles, Import, ArrowRight } from "lucide-r
 import type { Metadata } from "next";
 import LineageGraph from "./components/LineageGraph";
 import ReadingDNA from "./components/ReadingDNA";
+import DailyLineage from "./components/DailyLineage";
+import StreakBanner from "./components/StreakBanner";
+import WeeklyChallenge from "./components/WeeklyChallenge";
 import MobileNav, { MobileHeaderSpacer, MobileBottomSpacer } from "./components/MobileNav";
 import { DesktopNav } from "./components/MobileNav";
 import { creators } from "@/lib/data";
@@ -62,6 +65,17 @@ export default function Home() {
               Import Goodreads
             </a>
           </div>
+        </div>
+
+        {/* Streak & Progress */}
+        <div className="mb-6">
+          <StreakBanner />
+        </div>
+
+        {/* Weekly Challenge + Daily Lineage */}
+        <div className="grid lg:grid-cols-2 gap-4 mb-12 sm:mb-16">
+          <DailyLineage />
+          <WeeklyChallenge />
         </div>
 
         {/* Featured DNA Card Section */}

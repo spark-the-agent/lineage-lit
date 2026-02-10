@@ -5,6 +5,7 @@ import type { Metadata } from 'next';
 import MobileNav, { MobileHeaderSpacer, MobileBottomSpacer } from '@/app/components/MobileNav';
 import { DesktopNav } from '@/app/components/MobileNav';
 import ExportNetworkButton from '@/app/components/ExportNetworkButton';
+import DegreeBadge from '@/app/components/DegreeBadge';
 
 export const metadata: Metadata = {
   title: 'Explore Creators - Lineage Lit',
@@ -64,9 +65,12 @@ function CreatorCard({ creator }: { creator: typeof creators[0] }) {
       <div className="bg-zinc-900/50 rounded-xl p-4 sm:p-6 border border-zinc-800 hover:border-amber-500/50 transition group h-full">
         <div className="flex items-start justify-between mb-3 sm:mb-4">
           <div className="min-w-0 flex-1">
-            <h3 className="text-lg sm:text-xl font-semibold text-amber-400 group-hover:text-amber-300 transition truncate">
-              {creator.name}
-            </h3>
+            <div className="flex items-center gap-2">
+              <h3 className="text-lg sm:text-xl font-semibold text-amber-400 group-hover:text-amber-300 transition truncate">
+                {creator.name}
+              </h3>
+              <DegreeBadge creatorId={creator.id} />
+            </div>
             <p className="text-xs sm:text-sm text-zinc-500">{creator.years}</p>
           </div>
           <div className="flex gap-1 sm:gap-2 flex-shrink-0 ml-2">
