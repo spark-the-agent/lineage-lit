@@ -243,11 +243,11 @@ Currently returns `null` when streak is 0. Change to:
 
 #### 1.4 Acceptance Criteria
 
-- [ ] First-time visitor sees interactive graph within 2 seconds of page load
-- [ ] Clicking any graph node navigates to creator detail page
-- [ ] Hovering a node highlights its influence connections
-- [ ] New users see welcome message instead of hidden streak banner
-- [ ] Mobile: graph is minimum 400px tall with 48px tap targets
+- [x] First-time visitor sees interactive graph within 2 seconds of page load
+- [x] Clicking any graph node navigates to creator detail page
+- [x] Hovering a node highlights its influence connections
+- [x] New users see welcome message instead of hidden streak banner
+- [x] Mobile: graph is minimum 400px tall with 48px tap targets
 - [ ] Lighthouse performance score remains above 90
 
 ---
@@ -349,15 +349,15 @@ Authenticated user:
 
 #### 2.4 Acceptance Criteria
 
-- [ ] App loads data from Convex in real-time (verify with Convex dashboard)
-- [ ] 50+ creators visible on `/explore` page
-- [ ] Creator detail pages work for all 50+ creators
-- [ ] Graph visualization handles 50+ nodes without performance degradation
-- [ ] Recommendations improve noticeably with larger dataset
-- [ ] Six Degrees finds paths of 3-6 hops (not just 1-2)
-- [ ] Insights page shows meaningful clusters and bridges
-- [ ] Unauthenticated users still work perfectly (localStorage fallback)
-- [ ] `npm run build` succeeds with Convex integration
+- [x] App loads data from Convex in real-time (verify with Convex dashboard)
+- [x] 50+ creators visible on `/explore` page
+- [x] Creator detail pages work for all 50+ creators
+- [x] Graph visualization handles 50+ nodes without performance degradation
+- [x] Recommendations improve noticeably with larger dataset
+- [x] Six Degrees finds paths of 3-6 hops (not just 1-2)
+- [x] Insights page shows meaningful clusters and bridges
+- [x] Unauthenticated users still work perfectly (localStorage fallback)
+- [x] `npm run build` succeeds with Convex integration
 
 ---
 
@@ -420,12 +420,12 @@ For every shareable URL, generate rich previews:
 
 #### 3.5 Acceptance Criteria
 
-- [ ] Reading DNA card generates from actual user data (saved creators, explored works)
-- [ ] DNA card shareable via Web Share API with fallback to copy-link
-- [ ] Six Degrees paths produce shareable image/link
-- [ ] Shared URLs render rich social previews (OG tags with images)
+- [x] Reading DNA card generates from actual user data (saved creators, explored works)
+- [x] DNA card shareable via Web Share API with fallback to copy-link
+- [x] Six Degrees paths produce shareable image/link
+- [x] Shared URLs render rich social previews (OG tags with images)
 - [ ] "My Literary Universe" graph renders on profile page
-- [ ] At least 3 surfaces prompt card generation (landing, profile, post-import)
+- [x] At least 3 surfaces prompt card generation (landing, profile, post-import)
 
 ---
 
@@ -484,11 +484,11 @@ For every shareable URL, generate rich previews:
 
 #### 4.5 Acceptance Criteria
 
-- [ ] Users can sign up / sign in via Clerk (modal flow)
-- [ ] Unauthenticated browsing works identically to current experience
-- [ ] Activity feed shows real actions from followed users
+- [x] Users can sign up / sign in via Clerk (modal flow)
+- [x] Unauthenticated browsing works identically to current experience
+- [x] Activity feed shows real actions from followed users
 - [ ] Following/unfollowing persists via Convex
-- [ ] DNA comparison works between real authenticated users
+- [x] DNA comparison works between real authenticated users
 - [ ] Auth state syncs localStorage data to Convex on first login
 
 ---
@@ -544,8 +544,8 @@ AI discoveries feed into community verification:
 
 #### 5.5 Acceptance Criteria
 
-- [ ] AI Lineage Discovery page accepts book title + author input
-- [ ] Results show identified influences with confidence scores
+- [x] AI Lineage Discovery page accepts book title + author input
+- [x] Results show identified influences with confidence scores
 - [ ] Free tier limited to 3 requests/month (enforced server-side)
 - [ ] Stripe Checkout flow works for Pro subscription
 - [ ] Pro users get unlimited AI discoveries
@@ -608,7 +608,7 @@ AI discoveries feed into community verification:
 ## Dependencies & Prerequisites
 
 ### Technical Prerequisites
-- [ ] Convex deployment active at `https://powerful-ostrich-963.convex.cloud` ✅ (confirmed)
+- [x] Convex deployment active at `https://powerful-ostrich-963.convex.cloud` ✅ (confirmed)
 - [ ] `NEXT_PUBLIC_CONVEX_URL` environment variable configured
 - [ ] `OPENAI_API_KEY` set in Convex dashboard (for Phase 5)
 - [ ] Clerk application created and configured (for Phase 4)
@@ -616,9 +616,9 @@ AI discoveries feed into community verification:
 - [ ] Vercel deployment updated for non-static mode (Phase 2)
 
 ### Content Prerequisites
-- [ ] 50+ creators researched with verified influence relationships
-- [ ] Each creator has: name, slug, bio, birth/death years, 2-3 works, influences
-- [ ] Influence data sourced from: author interviews, acknowledgment pages, literary criticism
+- [x] 50+ creators researched with verified influence relationships
+- [x] Each creator has: name, slug, bio, birth/death years, 2-3 works, influences
+- [x] Influence data sourced from: author interviews, acknowledgment pages, literary criticism
 - [ ] Data entered into `convex/seed.ts` or bulk import script
 
 ### Design Prerequisites
