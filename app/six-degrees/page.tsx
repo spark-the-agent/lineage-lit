@@ -1,24 +1,53 @@
 'use client';
 
-import { useState } from 'react';
-import { Network, Zap, Share2, RotateCcw } from 'lucide-react';
+import { Suspense, useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { Network, Zap, Share2, RotateCcw, Check } from 'lucide-react';
 import Link from 'next/link';
-import { creators } from '@/lib/data';
+import { creators, getCreatorById } from '@/lib/data';
 import { findPath } from '@/lib/path-finder';
 import PathAnimation from '@/app/components/PathAnimation';
 import MobileNav, { MobileHeaderSpacer, MobileBottomSpacer, DesktopNav } from '@/app/components/MobileNav';
 
 export default function SixDegreesPage() {
+  return (
+    <Suspense>
+      <SixDegreesContent />
+    </Suspense>
+  );
+}
+
+function SixDegreesContent() {
+  const searchParams = useSearchParams();
   const [fromId, setFromId] = useState('');
   const [toId, setToId] = useState('');
   const [result, setResult] = useState<ReturnType<typeof findPath>>(null);
   const [searched, setSearched] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  // Auto-search from URL params (shareable links)
+  useEffect(() => {
+    const from = searchParams.get('from');
+    const to = searchParams.get('to');
+    if (from && to && getCreatorById(from) && getCreatorById(to)) {
+      setFromId(from);
+      setToId(to);
+      const path = findPath(from, to);
+      setResult(path);
+      setSearched(true);
+    }
+  }, [searchParams]);
 
   const handleFind = () => {
     if (!fromId || !toId) return;
     const path = findPath(fromId, toId);
     setResult(path);
     setSearched(true);
+    // Update URL for shareability without full navigation
+    const url = new URL(window.location.href);
+    url.searchParams.set('from', fromId);
+    url.searchParams.set('to', toId);
+    window.history.replaceState({}, '', url.toString());
   };
 
   const handleReset = () => {
@@ -26,15 +55,26 @@ export default function SixDegreesPage() {
     setToId('');
     setResult(null);
     setSearched(false);
+    setCopied(false);
+    // Clean URL params
+    const url = new URL(window.location.href);
+    url.searchParams.delete('from');
+    url.searchParams.delete('to');
+    window.history.replaceState({}, '', url.toString());
   };
 
   const handleShare = async () => {
     if (!result) return;
-    const text = `${result.path[0].name} to ${result.path[result.path.length - 1].name} in ${result.length} steps on Lineage Lit!`;
+    const pathNames = result.path.map(c => c.name).join(' → ');
+    const text = `${pathNames} — ${result.length} degree${result.length !== 1 ? 's' : ''} of separation on Lineage Lit!`;
+    const shareUrl = `${window.location.origin}/six-degrees/?from=${fromId}&to=${toId}`;
+
     if (navigator.share) {
-      await navigator.share({ title: 'Six Degrees of Lineage', text });
+      await navigator.share({ title: 'Six Degrees of Lineage', text, url: shareUrl });
     } else {
-      await navigator.clipboard.writeText(text);
+      await navigator.clipboard.writeText(`${text}\n${shareUrl}`);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
     }
   };
 
@@ -129,13 +169,22 @@ export default function SixDegreesPage() {
               <div className="space-y-6">
                 <PathAnimation path={result.path} />
 
-                <div className="flex justify-center">
+                <div className="flex justify-center gap-3">
                   <button
                     onClick={handleShare}
-                    className="flex items-center gap-2 px-4 py-2 bg-zinc-800 text-zinc-300 rounded-lg hover:bg-zinc-700 transition text-sm"
+                    className="flex items-center gap-2 px-5 py-2.5 bg-amber-500 text-zinc-900 font-medium rounded-lg hover:bg-amber-400 transition text-sm"
                   >
-                    <Share2 className="w-4 h-4" />
-                    Share Result
+                    {copied ? (
+                      <>
+                        <Check className="w-4 h-4" />
+                        Link Copied!
+                      </>
+                    ) : (
+                      <>
+                        <Share2 className="w-4 h-4" />
+                        Share This Path
+                      </>
+                    )}
                   </button>
                 </div>
               </div>

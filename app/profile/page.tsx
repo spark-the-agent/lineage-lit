@@ -10,6 +10,7 @@ import {
 import MobileNav, { MobileHeaderSpacer, MobileBottomSpacer, DesktopNav } from '../components/MobileNav';
 import { currentUser, getFollowing, getFollowers } from '@/lib/social';
 import { creators, getCreatorById } from '@/lib/data';
+import { computeDNAFromState } from '@/lib/compute-dna';
 import LineageGraph from '../components/LineageGraph';
 import ShareableCard from '../components/ShareableCard';
 import AchievementGrid from '../components/AchievementGrid';
@@ -23,6 +24,7 @@ export default function ProfilePage() {
   const following = getFollowing(currentUser.id);
   const followers = getFollowers(currentUser.id);
   const savedCreatorsList = state.savedCreators.map(id => getCreatorById(id)).filter(Boolean);
+  const dynamicDNA = computeDNAFromState(state);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-zinc-900 to-zinc-950 text-zinc-100">
@@ -476,7 +478,7 @@ export default function ProfilePage() {
           data={{
             displayName: currentUser.displayName,
             username: currentUser.username,
-            readingDNA: currentUser.readingDNA,
+            readingDNA: dynamicDNA,
           }}
           onClose={() => setShowShareModal(false)}
         />

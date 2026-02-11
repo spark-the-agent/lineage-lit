@@ -1,14 +1,14 @@
-import { BookOpen, Users, Sparkles, Import, ArrowRight, Network } from "lucide-react";
+import { BookOpen, Users, Sparkles, Import, Network } from "lucide-react";
 import type { Metadata } from "next";
 import ReadingDNA from "./components/ReadingDNA";
 import DailyLineage from "./components/DailyLineage";
 import StreakBanner from "./components/StreakBanner";
 import WeeklyChallenge from "./components/WeeklyChallenge";
 import InteractiveGraphSection from "./components/InteractiveGraphSection";
+import DNAShareCTA from "./components/DNAShareCTA";
 import MobileNav, { MobileHeaderSpacer, MobileBottomSpacer } from "./components/MobileNav";
 import { DesktopNav } from "./components/MobileNav";
 import Link from "next/link";
-import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Lineage Lit - Discover the Lineage of Ideas",
@@ -66,49 +66,9 @@ export default function Home() {
           <WeeklyChallenge />
         </div>
 
-        {/* Featured DNA Card Section */}
-        <div className="mb-16">
-          <div className="text-center mb-8">
-            <span className="text-amber-400 text-sm font-medium uppercase tracking-wider">Featured Creator</span>
-            <h3 className="text-2xl sm:text-3xl font-bold mt-2">Creative DNA Cards</h3>
-            <p className="text-zinc-400 mt-2">Beautiful trading cards for literary creators</p>
-          </div>
-
-          <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-16">
-            <div className="relative group cursor-pointer">
-              <div className="absolute inset-0 bg-amber-500/20 blur-3xl rounded-full group-hover:bg-amber-500/30 transition" />
-              <Image
-                src="/hemingway-card-v2.png"
-                alt="Ernest Hemingway Creative DNA Card"
-                width={375}
-                height={525}
-                className="relative rounded-xl shadow-2xl border border-zinc-700/50 group-hover:scale-105 transition transform"
-              />
-            </div>
-
-            <div className="max-w-md text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm mb-4">
-                <Sparkles className="w-4 h-4" />
-                Nobel Prize 1954
-              </div>
-              <h4 className="text-3xl font-bold mb-2">Ernest Hemingway</h4>
-              <p className="text-zinc-400 mb-4">1899 — 1961</p>
-              <p className="text-zinc-300 mb-6">
-                Master of the &ldquo;iceberg theory&rdquo; - sparse prose that influenced generations
-                from Raymond Carver to Cormac McCarthy.
-              </p>
-              <div className="flex flex-wrap gap-2 justify-center lg:justify-start mb-6">
-                <span className="px-3 py-1 rounded-full bg-zinc-800 text-zinc-300 text-sm">The Sun Also Rises</span>
-                <span className="px-3 py-1 rounded-full bg-zinc-800 text-zinc-300 text-sm">The Old Man and the Sea</span>
-              </div>
-              <Link
-                href="/creators/hemingway"
-                className="inline-flex items-center gap-2 text-amber-400 hover:text-amber-300 transition"
-              >
-                Explore his lineage <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-          </div>
+        {/* Dynamic DNA Share CTA — appears when user has explored creators */}
+        <div className="mb-12 sm:mb-16">
+          <DNAShareCTA />
         </div>
 
         {/* Featured Lineage Chain */}
