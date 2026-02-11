@@ -26,20 +26,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!creator) return {};
 
   const workTitles = creator.works.map(w => w.title).join(', ');
-  const description = `${creator.name} (${creator.years}) — ${creator.bio} Notable works: ${workTitles}.`;
+  const influenceChain = creator.influencedBy.length > 0
+    ? `Influenced by: ${creator.influencedBy.map(id => getCreatorById(id)?.name).filter(Boolean).join(', ')}. `
+    : '';
+  const influencedChain = creator.influenced.length > 0
+    ? `Influenced: ${creator.influenced.map(id => getCreatorById(id)?.name).filter(Boolean).join(', ')}.`
+    : '';
+  const description = `${creator.name} (${creator.years}) — ${creator.bio} ${influenceChain}${influencedChain} Notable works: ${workTitles}.`;
 
   return {
-    title: `${creator.name} - Lineage Lit`,
+    title: `${creator.name} — Creative Lineage | Lineage Lit`,
     description,
     openGraph: {
-      title: `${creator.name} — Creative Lineage`,
-      description,
+      title: `${creator.name} — Trace the Creative Lineage`,
+      description: `${creator.bio} ${influenceChain}`,
       type: 'profile',
+      siteName: 'Lineage Lit',
     },
     twitter: {
-      card: 'summary',
+      card: 'summary_large_image',
       title: `${creator.name} — Creative Lineage`,
-      description: creator.bio,
+      description: `${creator.bio} ${influenceChain}`,
     },
   };
 }

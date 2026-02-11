@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { PersistenceProvider } from "./components/PersistenceProvider";
 import AchievementToast from "./components/AchievementToast";
+import ConvexClientProvider from "./components/ConvexClientProvider";
+import AuthProvider from "./components/AuthProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -46,10 +48,14 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-zinc-950`}
       >
-        <PersistenceProvider>
-          <AchievementToast />
-          {children}
-        </PersistenceProvider>
+        <AuthProvider>
+          <ConvexClientProvider>
+            <PersistenceProvider>
+              <AchievementToast />
+              {children}
+            </PersistenceProvider>
+          </ConvexClientProvider>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -18,6 +18,7 @@ import {
   Activity
 } from '@/lib/social';
 import { getCreatorById } from '@/lib/data';
+import { computeDNAFromState } from '@/lib/compute-dna';
 import Leaderboard from '@/app/components/Leaderboard';
 import DNAComparison from '@/app/components/DNAComparison';
 import WeeklyChallenge from '@/app/components/WeeklyChallenge';
@@ -27,9 +28,10 @@ export default function CommunityPage() {
   const [activeTab, setActiveTab] = useState<'feed' | 'people'>('feed');
   const [searchQuery, setSearchQuery] = useState('');
   const [comparingUser, setComparingUser] = useState<typeof mockUsers[0] | null>(null);
-  const { isUserFollowed, toggleFollowedUser } = usePersistence();
+  const { state, isUserFollowed, toggleFollowedUser } = usePersistence();
 
   const activityFeed = getActivityFeed(currentUser.id);
+  const myDNA = computeDNAFromState(state);
 
   const filteredUsers = mockUsers.filter(user =>
     user.displayName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -93,6 +95,32 @@ export default function CommunityPage() {
 
             {activeTab === 'feed' ? (
               <div className="space-y-4">
+                {/* Your Recent Explorations (from persistence data) */}
+                {state.viewedCreators.length > 0 && (
+                  <div className="bg-zinc-900/50 rounded-xl p-4 border border-zinc-800">
+                    <h4 className="text-sm font-medium text-zinc-500 uppercase tracking-wider mb-3">Your Recent Explorations</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {state.viewedCreators
+                        .sort((a, b) => b.timestamp - a.timestamp)
+                        .slice(0, 8)
+                        .map(v => {
+                          const creator = getCreatorById(v.id);
+                          if (!creator) return null;
+                          return (
+                            <Link
+                              key={v.id}
+                              href={`/creators/${v.id}`}
+                              className="flex items-center gap-2 px-3 py-1.5 bg-zinc-800/70 rounded-lg text-sm text-zinc-300 hover:text-amber-400 hover:bg-zinc-700 transition"
+                            >
+                              <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                              {creator.name}
+                            </Link>
+                          );
+                        })}
+                    </div>
+                  </div>
+                )}
+
                 {/* Activity Feed */}
                 {activityFeed.length > 0 ? (
                   activityFeed.map((activity) => (
@@ -105,7 +133,7 @@ export default function CommunityPage() {
                     <p className="text-zinc-500 text-sm mt-2">
                       Start following people to see their activity here
                     </p>
-                    <button 
+                    <button
                       onClick={() => setActiveTab('people')}
                       className="mt-4 px-4 py-2 bg-amber-500 text-zinc-900 rounded-lg font-medium hover:bg-amber-400 transition"
                     >
@@ -267,7 +295,7 @@ export default function CommunityPage() {
       {/* DNA Comparison Modal */}
       {comparingUser && (
         <DNAComparison
-          userA={{ name: currentUser.displayName, dna: currentUser.readingDNA }}
+          userA={{ name: currentUser.displayName, dna: myDNA }}
           userB={{ name: comparingUser.displayName, dna: comparingUser.readingDNA }}
           onClose={() => setComparingUser(null)}
         />
