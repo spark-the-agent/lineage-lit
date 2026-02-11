@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Menu, X, Network, BookOpen, Users, ArrowLeft, Sparkles, User, Zap, BarChart3, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import AuthButton from './AuthButton';
 
 interface NavItem {
   href: string;
@@ -193,6 +194,7 @@ export function DesktopNav() {
           </Link>
         );
       })}
+      <AuthButton />
     </nav>
   );
 }
