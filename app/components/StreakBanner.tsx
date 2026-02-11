@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Flame, Target } from 'lucide-react';
+import { Flame, Target, Compass } from 'lucide-react';
 import { recordDailyVisit, getStreakInfo, getDiscoveryProgress } from '@/lib/streaks';
 import { usePersistence } from './PersistenceProvider';
 
@@ -19,7 +19,17 @@ export default function StreakBanner() {
     return () => clearTimeout(timer);
   }, [state.viewedCreators]);
 
-  if (streak.currentStreak === 0 && progress.viewed === 0) return null;
+  // New users: show invitation instead of hiding
+  if (streak.currentStreak === 0 && progress.viewed === 0) {
+    return (
+      <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 border border-amber-500/20 rounded-full w-fit">
+        <Compass className="w-4 h-4 text-amber-400" />
+        <span className="text-sm font-medium text-amber-400">
+          Start your discovery journey — explore your first creator
+        </span>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-wrap items-center gap-3 sm:gap-4">
