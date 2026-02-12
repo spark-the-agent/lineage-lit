@@ -62,7 +62,7 @@ function CreatorCard({ creator }: { creator: typeof creators[0] }) {
 
   return (
     <Link href={`/creators/${creator.id}`} className="block">
-      <div className="bg-zinc-900/50 rounded-xl p-4 sm:p-6 border border-zinc-800 hover:border-amber-500/50 transition group h-full">
+      <div className="bg-zinc-900/50 rounded-xl p-4 sm:p-6 border border-zinc-800 hover:border-amber-500/50 transition group h-full hover-lift">
         <div className="flex items-start justify-between mb-3 sm:mb-4">
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">

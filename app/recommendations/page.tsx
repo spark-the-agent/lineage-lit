@@ -300,7 +300,7 @@ function TopRecommendationCard({
   const allReasons = getAllReasons(recommendation);
 
   return (
-    <div className="bg-zinc-900/50 rounded-2xl p-6 border border-zinc-800 hover:border-amber-500/30 transition group">
+    <div className="bg-zinc-900/50 rounded-2xl p-6 border border-zinc-800 hover:border-amber-500/30 transition group hover-lift">
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-2">

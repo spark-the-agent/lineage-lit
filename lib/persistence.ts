@@ -1,5 +1,19 @@
 'use client';
 
+export interface UserProfileData {
+  displayName: string;
+  username: string;
+  bio: string;
+  avatarSeed: string;
+}
+
+export const defaultUserProfile: UserProfileData = {
+  displayName: 'Literary Explorer',
+  username: 'explorer',
+  bio: 'Discovering the lineage of ideas.',
+  avatarSeed: 'explorer',
+};
+
 export interface PersistedState {
   savedCreators: string[];
   likedWorks: string[];
@@ -12,6 +26,7 @@ export interface PersistedState {
     streakStartDate: string;
   };
   achievements: { id: string; unlockedAt: number }[];
+  userProfile?: UserProfileData;
 }
 
 const STORAGE_KEY = 'lineage-lit-state';
@@ -128,4 +143,12 @@ export function unlockAchievement(id: string): boolean {
     achievements: [...state.achievements, { id, unlockedAt: Date.now() }],
   });
   return true;
+}
+
+export function updateUserProfile(profile: Partial<UserProfileData>): void {
+  const state = getState();
+  const current = state.userProfile ?? defaultUserProfile;
+  setState({
+    userProfile: { ...current, ...profile },
+  });
 }

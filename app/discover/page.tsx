@@ -119,7 +119,7 @@ export default function DiscoverPage() {
         </div>
 
         {/* Input Form */}
-        <div className="bg-zinc-900/50 rounded-2xl p-6 sm:p-8 border border-zinc-800 mb-8">
+        <div className="bg-zinc-900/50 rounded-2xl p-4 sm:p-6 lg:p-8 border border-zinc-800 mb-8">
           <div className="space-y-4">
             <div>
               <label className="block text-xs font-medium text-zinc-500 uppercase tracking-wider mb-2">

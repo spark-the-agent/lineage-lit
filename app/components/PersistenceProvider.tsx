@@ -3,6 +3,8 @@
 import { createContext, useContext, useEffect, useState, useCallback, ReactNode } from 'react';
 import {
   PersistedState,
+  UserProfileData,
+  defaultUserProfile,
   getState,
   setState as setGlobalState,
   subscribe,
@@ -11,10 +13,13 @@ import {
   toggleFollowedUser as _toggleFollowed,
   recordCreatorView as _recordView,
   unlockAchievement as _unlockAchievement,
+  updateUserProfile as _updateUserProfile,
 } from '@/lib/persistence';
 
 interface PersistenceContextValue {
   state: PersistedState;
+  userProfile: UserProfileData;
+  updateUserProfile: (profile: Partial<UserProfileData>) => void;
   toggleSavedCreator: (id: string) => boolean;
   toggleLikedWork: (id: string) => boolean;
   toggleFollowedUser: (id: string) => boolean;
@@ -38,6 +43,9 @@ export function PersistenceProvider({ children }: { children: ReactNode }) {
     return () => { unsub(); clearTimeout(timer); };
   }, []);
 
+  const userProfile = state.userProfile ?? defaultUserProfile;
+  const updateUserProfile = useCallback((profile: Partial<UserProfileData>) => _updateUserProfile(profile), []);
+
   const toggleSavedCreator = useCallback((id: string) => _toggleSaved(id), []);
   const toggleLikedWork = useCallback((id: string) => _toggleLiked(id), []);
   const toggleFollowedUser = useCallback((id: string) => _toggleFollowed(id), []);
@@ -52,6 +60,8 @@ export function PersistenceProvider({ children }: { children: ReactNode }) {
     <PersistenceContext.Provider
       value={{
         state,
+        userProfile,
+        updateUserProfile,
         toggleSavedCreator,
         toggleLikedWork,
         toggleFollowedUser,

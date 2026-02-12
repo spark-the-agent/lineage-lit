@@ -142,11 +142,6 @@ export default function Home() {
             <p className="text-zinc-500 text-sm">
               Built with ⚡ by Spark
             </p>
-            <div className="flex gap-6">
-              <a href="/explore" className="text-zinc-500 hover:text-zinc-300 text-sm transition">Explore</a>
-              <a href="/community" className="text-zinc-500 hover:text-zinc-300 text-sm transition">Community</a>
-              <a href="https://github.com/spark-the-agent/lineage-lit" className="text-zinc-500 hover:text-zinc-300 text-sm transition">GitHub</a>
-            </div>
           </div>
         </div>
       </footer>

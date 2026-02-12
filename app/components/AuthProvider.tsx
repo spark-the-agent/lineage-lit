@@ -1,12 +1,28 @@
 'use client';
 
 import { ClerkProvider, SignInButton, SignUpButton, UserButton, useUser } from '@clerk/nextjs';
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
+import { updateUserProfile } from '@/lib/persistence';
 
 // Only initializes Clerk if NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY is set.
 // Otherwise renders children directly (anonymous mode).
 
 const clerkKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
+
+function ClerkProfileSync({ children }: { children: ReactNode }) {
+  const { user, isLoaded } = useUser();
+
+  useEffect(() => {
+    if (isLoaded && user) {
+      updateUserProfile({
+        displayName: user.fullName || user.firstName || 'Reader',
+        avatarSeed: user.id,
+      });
+    }
+  }, [isLoaded, user]);
+
+  return <>{children}</>;
+}
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
   if (!clerkKey) return <>{children}</>;
@@ -30,7 +46,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         },
       }}
     >
-      {children}
+      <ClerkProfileSync>{children}</ClerkProfileSync>
     </ClerkProvider>
   );
 }

@@ -7,7 +7,7 @@ import { computeDNAFromState } from '@/lib/compute-dna';
 import ShareableCard from './ShareableCard';
 
 export default function DNAShareCTA() {
-  const { state } = usePersistence();
+  const { state, userProfile } = usePersistence();
   const [showCard, setShowCard] = useState(false);
 
   const hasActivity = state.savedCreators.length > 0 || state.viewedCreators.length > 0;
@@ -60,8 +60,8 @@ export default function DNAShareCTA() {
       {showCard && (
         <ShareableCard
           data={{
-            displayName: 'Literary Explorer',
-            username: 'explorer',
+            displayName: userProfile.displayName,
+            username: userProfile.username,
             readingDNA: dna,
           }}
           onClose={() => setShowCard(false)}

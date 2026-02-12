@@ -1,6 +1,32 @@
 # Architecture
 
-## System Overview
+## Current Backend: Convex
+
+The app uses **Convex** as its backend: real-time, serverless, with schema, CRUD, AI integration, and seed data. The frontend uses `lib/convex-adapter.ts` and `lib/use-convex-data.ts` to talk to Convex when `NEXT_PUBLIC_CONVEX_URL` is set, and falls back to static mock data otherwise.
+
+```
+┌─────────────────┐     ┌─────────────────┐
+│   Frontend      │────▶│   Convex        │
+│   (Next.js)     │     │   (real-time DB │
+│   + localStorage│     │   + functions   │
+└─────────────────┘     │   + AI actions) │
+        │               └─────────────────┘
+        ▼
+┌─────────────────┐
+│   Visualization │
+│   (custom SVG)  │
+└─────────────────┘
+```
+
+See `convex/schema.ts`, `convex/README.md`, and the phase-two plan in `docs/plans/` for Convex-specific design.
+
+---
+
+## Deferred Stack (FastAPI + PostgreSQL + Neo4j)
+
+The original plan below is **not implemented**. It remains as a possible future path when you need fine-grained graph queries or dedicated graph DB traversal. Neo4j could be added alongside Convex later if graph performance demands it.
+
+### System Overview (deferred)
 
 ```
 ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
@@ -166,9 +192,7 @@ RETURN path
 - Graph visualization
 - Influence tracking UI
 
-**Week 4:**
-- Recommendation engine v1
-- Polish and demo
+*Current product uses Convex + static export; see phase-two plan for rollout.*
 
 ---
 

@@ -28,7 +28,7 @@ export default function CommunityPage() {
   const [activeTab, setActiveTab] = useState<'feed' | 'people'>('feed');
   const [searchQuery, setSearchQuery] = useState('');
   const [comparingUser, setComparingUser] = useState<typeof mockUsers[0] | null>(null);
-  const { state, isUserFollowed, toggleFollowedUser } = usePersistence();
+  const { state, userProfile, isUserFollowed, toggleFollowedUser } = usePersistence();
 
   const activityFeed = getActivityFeed(currentUser.id);
   const myDNA = computeDNAFromState(state);
@@ -99,7 +99,7 @@ export default function CommunityPage() {
                 {state.viewedCreators.length > 0 && (
                   <div className="bg-zinc-900/50 rounded-xl p-4 border border-zinc-800">
                     <h4 className="text-sm font-medium text-zinc-500 uppercase tracking-wider mb-3">Your Recent Explorations</h4>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-1.5 sm:gap-2">
                       {state.viewedCreators
                         .sort((a, b) => b.timestamp - a.timestamp)
                         .slice(0, 8)
@@ -188,16 +188,16 @@ export default function CommunityPage() {
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <span className="text-zinc-400">Following</span>
-                  <span className="font-medium text-amber-400">{currentUser.following.length}</span>
+                  <span className="font-medium text-amber-400">{state.followedUsers.length}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-zinc-400">Followers</span>
-                  <span className="font-medium text-amber-400">{currentUser.followers.length}</span>
+                  <span className="text-zinc-400">Saved Creators</span>
+                  <span className="font-medium text-amber-400">{state.savedCreators.length}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-zinc-400">Network Reach</span>
+                  <span className="text-zinc-400">Explored</span>
                   <span className="font-medium text-amber-400">
-                    {currentUser.following.length + currentUser.followers.length}
+                    {state.viewedCreators.length}
                   </span>
                 </div>
               </div>
@@ -232,7 +232,7 @@ export default function CommunityPage() {
                       </div>
                       <button
                         onClick={() => handleFollowToggle(user.id)}
-                        className="p-2 text-zinc-400 hover:text-amber-400 hover:bg-amber-500/10 rounded-lg transition"
+                        className="p-2 text-zinc-400 hover:text-amber-400 hover:bg-amber-500/10 rounded-lg transition min-h-[44px] min-w-[44px] flex items-center justify-center"
                       >
                         <UserPlus className="w-4 h-4" />
                       </button>
@@ -295,7 +295,7 @@ export default function CommunityPage() {
       {/* DNA Comparison Modal */}
       {comparingUser && (
         <DNAComparison
-          userA={{ name: currentUser.displayName, dna: myDNA }}
+          userA={{ name: userProfile.displayName, dna: myDNA }}
           userB={{ name: comparingUser.displayName, dna: comparingUser.readingDNA }}
           onClose={() => setComparingUser(null)}
         />
