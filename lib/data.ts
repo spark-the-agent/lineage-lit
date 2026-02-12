@@ -12,7 +12,7 @@ export interface Work {
   id: string;
   title: string;
   year: number;
-  type: 'book' | 'screenplay' | 'article';
+  type: "book" | "screenplay" | "article";
   description: string;
 }
 
@@ -26,9 +26,21 @@ export const creators: Creator[] = [
     influencedBy: [],
     influenced: ["hemingway", "faulkner", "vonnegut"],
     works: [
-      { id: "huck-finn", title: "Adventures of Huckleberry Finn", year: 1884, type: "book", description: "The great American novel" },
-      { id: "tom-sawyer", title: "The Adventures of Tom Sawyer", year: 1876, type: "book", description: "Boyhood along the Mississippi" }
-    ]
+      {
+        id: "huck-finn",
+        title: "Adventures of Huckleberry Finn",
+        year: 1884,
+        type: "book",
+        description: "The great American novel",
+      },
+      {
+        id: "tom-sawyer",
+        title: "The Adventures of Tom Sawyer",
+        year: 1876,
+        type: "book",
+        description: "Boyhood along the Mississippi",
+      },
+    ],
   },
   {
     id: "chekhov",
@@ -38,9 +50,21 @@ export const creators: Creator[] = [
     influencedBy: [],
     influenced: ["hemingway", "carver", "ishiguro"],
     works: [
-      { id: "cherry-orchard", title: "The Cherry Orchard", year: 1904, type: "book", description: "Tragicomedy of Russian gentry" },
-      { id: "lady-with-dog", title: "The Lady with the Dog", year: 1899, type: "book", description: "Masterpiece of the short story form" }
-    ]
+      {
+        id: "cherry-orchard",
+        title: "The Cherry Orchard",
+        year: 1904,
+        type: "book",
+        description: "Tragicomedy of Russian gentry",
+      },
+      {
+        id: "lady-with-dog",
+        title: "The Lady with the Dog",
+        year: 1899,
+        type: "book",
+        description: "Masterpiece of the short story form",
+      },
+    ],
   },
   {
     id: "wells",
@@ -48,11 +72,30 @@ export const creators: Creator[] = [
     years: "1866-1946",
     bio: "Father of science fiction who imagined time travel, alien invasion, and invisible men before anyone else.",
     influencedBy: [],
-    influenced: ["huxley", "bradbury", "asimov", "clarke", "heinlein", "l-engle"],
+    influenced: [
+      "huxley",
+      "bradbury",
+      "asimov",
+      "clarke",
+      "heinlein",
+      "l-engle",
+    ],
     works: [
-      { id: "time-machine", title: "The Time Machine", year: 1895, type: "book", description: "First great time travel story" },
-      { id: "war-of-worlds", title: "The War of the Worlds", year: 1898, type: "book", description: "Alien invasion of Earth" }
-    ]
+      {
+        id: "time-machine",
+        title: "The Time Machine",
+        year: 1895,
+        type: "book",
+        description: "First great time travel story",
+      },
+      {
+        id: "war-of-worlds",
+        title: "The War of the Worlds",
+        year: 1898,
+        type: "book",
+        description: "Alien invasion of Earth",
+      },
+    ],
   },
   {
     id: "stein",
@@ -62,9 +105,21 @@ export const creators: Creator[] = [
     influencedBy: [],
     influenced: ["hemingway", "fitzgerald"],
     works: [
-      { id: "three-lives", title: "Three Lives", year: 1909, type: "book", description: "Experimental portraits of women" },
-      { id: "tender-buttons", title: "Tender Buttons", year: 1914, type: "book", description: "Radical prose poetry" }
-    ]
+      {
+        id: "three-lives",
+        title: "Three Lives",
+        year: 1909,
+        type: "book",
+        description: "Experimental portraits of women",
+      },
+      {
+        id: "tender-buttons",
+        title: "Tender Buttons",
+        year: 1914,
+        type: "book",
+        description: "Radical prose poetry",
+      },
+    ],
   },
   {
     id: "joyce",
@@ -74,9 +129,21 @@ export const creators: Creator[] = [
     influencedBy: [],
     influenced: ["faulkner", "woolf", "delillo", "baldwin"],
     works: [
-      { id: "ulysses", title: "Ulysses", year: 1922, type: "book", description: "One day in Dublin, all of literature" },
-      { id: "dubliners", title: "Dubliners", year: 1914, type: "book", description: "Epiphanies of Irish life" }
-    ]
+      {
+        id: "ulysses",
+        title: "Ulysses",
+        year: 1922,
+        type: "book",
+        description: "One day in Dublin, all of literature",
+      },
+      {
+        id: "dubliners",
+        title: "Dubliners",
+        year: 1914,
+        type: "book",
+        description: "Epiphanies of Irish life",
+      },
+    ],
   },
   {
     id: "woolf",
@@ -86,9 +153,21 @@ export const creators: Creator[] = [
     influencedBy: ["joyce"],
     influenced: ["morrison", "plath", "robinson"],
     works: [
-      { id: "mrs-dalloway", title: "Mrs Dalloway", year: 1925, type: "book", description: "One day in post-war London" },
-      { id: "to-lighthouse", title: "To the Lighthouse", year: 1927, type: "book", description: "Memory, loss, and art" }
-    ]
+      {
+        id: "mrs-dalloway",
+        title: "Mrs Dalloway",
+        year: 1925,
+        type: "book",
+        description: "One day in post-war London",
+      },
+      {
+        id: "to-lighthouse",
+        title: "To the Lighthouse",
+        year: 1927,
+        type: "book",
+        description: "Memory, loss, and art",
+      },
+    ],
   },
   {
     id: "kafka",
@@ -98,9 +177,21 @@ export const creators: Creator[] = [
     influencedBy: [],
     influenced: ["borges", "murakami", "roth", "kaufman"],
     works: [
-      { id: "the-trial", title: "The Trial", year: 1925, type: "book", description: "Arrested for an unnamed crime" },
-      { id: "metamorphosis", title: "The Metamorphosis", year: 1915, type: "book", description: "Waking up as an insect" }
-    ]
+      {
+        id: "the-trial",
+        title: "The Trial",
+        year: 1925,
+        type: "book",
+        description: "Arrested for an unnamed crime",
+      },
+      {
+        id: "metamorphosis",
+        title: "The Metamorphosis",
+        year: 1915,
+        type: "book",
+        description: "Waking up as an insect",
+      },
+    ],
   },
   {
     id: "fitzgerald",
@@ -110,9 +201,21 @@ export const creators: Creator[] = [
     influencedBy: ["stein"],
     influenced: [],
     works: [
-      { id: "great-gatsby", title: "The Great Gatsby", year: 1925, type: "book", description: "The American Dream, shattered" },
-      { id: "tender-is-night", title: "Tender Is the Night", year: 1934, type: "book", description: "Expatriate decline on the Riviera" }
-    ]
+      {
+        id: "great-gatsby",
+        title: "The Great Gatsby",
+        year: 1925,
+        type: "book",
+        description: "The American Dream, shattered",
+      },
+      {
+        id: "tender-is-night",
+        title: "Tender Is the Night",
+        year: 1934,
+        type: "book",
+        description: "Expatriate decline on the Riviera",
+      },
+    ],
   },
   {
     id: "tolkien",
@@ -122,9 +225,21 @@ export const creators: Creator[] = [
     influencedBy: [],
     influenced: ["le-guin", "l-engle"],
     works: [
-      { id: "lord-of-rings", title: "The Lord of the Rings", year: 1954, type: "book", description: "The quest to destroy the One Ring" },
-      { id: "the-hobbit", title: "The Hobbit", year: 1937, type: "book", description: "There and back again" }
-    ]
+      {
+        id: "lord-of-rings",
+        title: "The Lord of the Rings",
+        year: 1954,
+        type: "book",
+        description: "The quest to destroy the One Ring",
+      },
+      {
+        id: "the-hobbit",
+        title: "The Hobbit",
+        year: 1937,
+        type: "book",
+        description: "There and back again",
+      },
+    ],
   },
 
   // ==================== AMERICAN MASTERS ====================
@@ -136,9 +251,21 @@ export const creators: Creator[] = [
     influencedBy: ["chekhov", "stein", "twain"],
     influenced: ["carver", "mccarthy", "didion", "baldwin"],
     works: [
-      { id: "sun-also-rises", title: "The Sun Also Rises", year: 1926, type: "book", description: "Lost Generation classic" },
-      { id: "old-man-sea", title: "The Old Man and the Sea", year: 1952, type: "book", description: "Pulitzer Prize winner" }
-    ]
+      {
+        id: "sun-also-rises",
+        title: "The Sun Also Rises",
+        year: 1926,
+        type: "book",
+        description: "Lost Generation classic",
+      },
+      {
+        id: "old-man-sea",
+        title: "The Old Man and the Sea",
+        year: 1952,
+        type: "book",
+        description: "Pulitzer Prize winner",
+      },
+    ],
   },
   {
     id: "faulkner",
@@ -146,11 +273,33 @@ export const creators: Creator[] = [
     years: "1897-1962",
     bio: "American writer and Nobel laureate, known for experimental narrative and Southern Gothic themes.",
     influencedBy: ["joyce", "twain"],
-    influenced: ["mccarthy", "marquez", "morrison", "oconnor", "ward", "harper-lee", "roth", "erdrich", "johnson"],
+    influenced: [
+      "mccarthy",
+      "marquez",
+      "morrison",
+      "oconnor",
+      "ward",
+      "harper-lee",
+      "roth",
+      "erdrich",
+      "johnson",
+    ],
     works: [
-      { id: "sound-fury", title: "The Sound and the Fury", year: 1929, type: "book", description: "Stream of consciousness classic" },
-      { id: "absalom-absalom", title: "Absalom, Absalom!", year: 1936, type: "book", description: "Southern tragedy" }
-    ]
+      {
+        id: "sound-fury",
+        title: "The Sound and the Fury",
+        year: 1929,
+        type: "book",
+        description: "Stream of consciousness classic",
+      },
+      {
+        id: "absalom-absalom",
+        title: "Absalom, Absalom!",
+        year: 1936,
+        type: "book",
+        description: "Southern tragedy",
+      },
+    ],
   },
   {
     id: "oconnor",
@@ -160,9 +309,21 @@ export const creators: Creator[] = [
     influencedBy: ["faulkner"],
     influenced: [],
     works: [
-      { id: "wise-blood", title: "Wise Blood", year: 1952, type: "book", description: "A man founds a church without Christ" },
-      { id: "good-man-hard-find", title: "A Good Man Is Hard to Find", year: 1955, type: "book", description: "Unforgettable Southern Gothic stories" }
-    ]
+      {
+        id: "wise-blood",
+        title: "Wise Blood",
+        year: 1952,
+        type: "book",
+        description: "A man founds a church without Christ",
+      },
+      {
+        id: "good-man-hard-find",
+        title: "A Good Man Is Hard to Find",
+        year: 1955,
+        type: "book",
+        description: "Unforgettable Southern Gothic stories",
+      },
+    ],
   },
   {
     id: "plath",
@@ -172,9 +333,21 @@ export const creators: Creator[] = [
     influencedBy: ["woolf"],
     influenced: [],
     works: [
-      { id: "the-bell-jar", title: "The Bell Jar", year: 1963, type: "book", description: "Autobiographical descent into breakdown" },
-      { id: "ariel", title: "Ariel", year: 1965, type: "book", description: "Posthumous poems of fierce brilliance" }
-    ]
+      {
+        id: "the-bell-jar",
+        title: "The Bell Jar",
+        year: 1963,
+        type: "book",
+        description: "Autobiographical descent into breakdown",
+      },
+      {
+        id: "ariel",
+        title: "Ariel",
+        year: 1965,
+        type: "book",
+        description: "Posthumous poems of fierce brilliance",
+      },
+    ],
   },
   {
     id: "morrison",
@@ -184,9 +357,21 @@ export const creators: Creator[] = [
     influencedBy: ["faulkner", "woolf"],
     influenced: ["whitehead", "ward", "adichie", "walker", "erdrich"],
     works: [
-      { id: "beloved", title: "Beloved", year: 1987, type: "book", description: "A ghost story about slavery's aftermath" },
-      { id: "song-of-solomon", title: "Song of Solomon", year: 1977, type: "book", description: "Flight, identity, and myth" }
-    ]
+      {
+        id: "beloved",
+        title: "Beloved",
+        year: 1987,
+        type: "book",
+        description: "A ghost story about slavery's aftermath",
+      },
+      {
+        id: "song-of-solomon",
+        title: "Song of Solomon",
+        year: 1977,
+        type: "book",
+        description: "Flight, identity, and myth",
+      },
+    ],
   },
   {
     id: "angelou",
@@ -196,9 +381,21 @@ export const creators: Creator[] = [
     influencedBy: [],
     influenced: ["walker"],
     works: [
-      { id: "caged-bird", title: "I Know Why the Caged Bird Sings", year: 1969, type: "book", description: "Coming of age in the segregated South" },
-      { id: "still-i-rise", title: "And Still I Rise", year: 1978, type: "book", description: "Defiant, joyful poetry" }
-    ]
+      {
+        id: "caged-bird",
+        title: "I Know Why the Caged Bird Sings",
+        year: 1969,
+        type: "book",
+        description: "Coming of age in the segregated South",
+      },
+      {
+        id: "still-i-rise",
+        title: "And Still I Rise",
+        year: 1978,
+        type: "book",
+        description: "Defiant, joyful poetry",
+      },
+    ],
   },
   {
     id: "didion",
@@ -208,9 +405,21 @@ export const creators: Creator[] = [
     influencedBy: ["hemingway"],
     influenced: ["simon"],
     works: [
-      { id: "slouching-bethlehem", title: "Slouching Towards Bethlehem", year: 1968, type: "article", description: "Essays on the 1960s counterculture" },
-      { id: "year-magical-thinking", title: "The Year of Magical Thinking", year: 2005, type: "book", description: "Memoir of sudden loss" }
-    ]
+      {
+        id: "slouching-bethlehem",
+        title: "Slouching Towards Bethlehem",
+        year: 1968,
+        type: "article",
+        description: "Essays on the 1960s counterculture",
+      },
+      {
+        id: "year-magical-thinking",
+        title: "The Year of Magical Thinking",
+        year: 2005,
+        type: "book",
+        description: "Memoir of sudden loss",
+      },
+    ],
   },
   {
     id: "kerouac",
@@ -220,9 +429,21 @@ export const creators: Creator[] = [
     influencedBy: [],
     influenced: [],
     works: [
-      { id: "on-the-road", title: "On the Road", year: 1957, type: "book", description: "Jazz-fueled cross-country odyssey" },
-      { id: "dharma-bums", title: "The Dharma Bums", year: 1958, type: "book", description: "Beat Buddhism in the mountains" }
-    ]
+      {
+        id: "on-the-road",
+        title: "On the Road",
+        year: 1957,
+        type: "book",
+        description: "Jazz-fueled cross-country odyssey",
+      },
+      {
+        id: "dharma-bums",
+        title: "The Dharma Bums",
+        year: 1958,
+        type: "book",
+        description: "Beat Buddhism in the mountains",
+      },
+    ],
   },
   {
     id: "vonnegut",
@@ -232,9 +453,21 @@ export const creators: Creator[] = [
     influencedBy: ["twain"],
     influenced: [],
     works: [
-      { id: "slaughterhouse-five", title: "Slaughterhouse-Five", year: 1969, type: "book", description: "Unstuck in time after Dresden" },
-      { id: "cats-cradle", title: "Cat's Cradle", year: 1963, type: "book", description: "Ice-nine and the end of the world" }
-    ]
+      {
+        id: "slaughterhouse-five",
+        title: "Slaughterhouse-Five",
+        year: 1969,
+        type: "book",
+        description: "Unstuck in time after Dresden",
+      },
+      {
+        id: "cats-cradle",
+        title: "Cat's Cradle",
+        year: 1963,
+        type: "book",
+        description: "Ice-nine and the end of the world",
+      },
+    ],
   },
 
   // ==================== MINIMALISM ====================
@@ -246,9 +479,21 @@ export const creators: Creator[] = [
     influencedBy: ["hemingway", "chekhov"],
     influenced: ["wolff", "hempel", "murakami", "ford", "johnson"],
     works: [
-      { id: "what-we-talk-about", title: "What We Talk About When We Talk About Love", year: 1981, type: "book", description: "Minimalist masterpiece" },
-      { id: "cathedral", title: "Cathedral", year: 1983, type: "book", description: "Later, more expansive work" }
-    ]
+      {
+        id: "what-we-talk-about",
+        title: "What We Talk About When We Talk About Love",
+        year: 1981,
+        type: "book",
+        description: "Minimalist masterpiece",
+      },
+      {
+        id: "cathedral",
+        title: "Cathedral",
+        year: 1983,
+        type: "book",
+        description: "Later, more expansive work",
+      },
+    ],
   },
   {
     id: "wolff",
@@ -258,9 +503,21 @@ export const creators: Creator[] = [
     influencedBy: ["carver"],
     influenced: [],
     works: [
-      { id: "this-boys-life", title: "This Boy's Life", year: 1989, type: "book", description: "Memoir of a difficult boyhood" },
-      { id: "in-garden-north", title: "In the Garden of the North American Martyrs", year: 1981, type: "book", description: "Precise, devastating stories" }
-    ]
+      {
+        id: "this-boys-life",
+        title: "This Boy's Life",
+        year: 1989,
+        type: "book",
+        description: "Memoir of a difficult boyhood",
+      },
+      {
+        id: "in-garden-north",
+        title: "In the Garden of the North American Martyrs",
+        year: 1981,
+        type: "book",
+        description: "Precise, devastating stories",
+      },
+    ],
   },
   {
     id: "hempel",
@@ -270,9 +527,21 @@ export const creators: Creator[] = [
     influencedBy: ["carver"],
     influenced: [],
     works: [
-      { id: "reasons-to-live", title: "Reasons to Live", year: 1985, type: "book", description: "Tiny, perfect stories" },
-      { id: "collected-stories", title: "The Collected Stories", year: 2006, type: "book", description: "A lifetime of brevity" }
-    ]
+      {
+        id: "reasons-to-live",
+        title: "Reasons to Live",
+        year: 1985,
+        type: "book",
+        description: "Tiny, perfect stories",
+      },
+      {
+        id: "collected-stories",
+        title: "The Collected Stories",
+        year: 2006,
+        type: "book",
+        description: "A lifetime of brevity",
+      },
+    ],
   },
   {
     id: "ford",
@@ -282,9 +551,21 @@ export const creators: Creator[] = [
     influencedBy: ["carver"],
     influenced: [],
     works: [
-      { id: "the-sportswriter", title: "The Sportswriter", year: 1986, type: "book", description: "Quiet crisis in the suburbs" },
-      { id: "independence-day", title: "Independence Day", year: 1995, type: "book", description: "Pulitzer-winning sequel" }
-    ]
+      {
+        id: "the-sportswriter",
+        title: "The Sportswriter",
+        year: 1986,
+        type: "book",
+        description: "Quiet crisis in the suburbs",
+      },
+      {
+        id: "independence-day",
+        title: "Independence Day",
+        year: 1995,
+        type: "book",
+        description: "Pulitzer-winning sequel",
+      },
+    ],
   },
 
   // ==================== SOUTHERN / AMERICAN EPIC ====================
@@ -296,9 +577,21 @@ export const creators: Creator[] = [
     influencedBy: ["hemingway", "faulkner"],
     influenced: ["coen-brothers", "gilligan"],
     works: [
-      { id: "blood-meridian", title: "Blood Meridian", year: 1985, type: "book", description: "Violent Western epic" },
-      { id: "the-road", title: "The Road", year: 2006, type: "book", description: "Post-apocalyptic father-son journey" }
-    ]
+      {
+        id: "blood-meridian",
+        title: "Blood Meridian",
+        year: 1985,
+        type: "book",
+        description: "Violent Western epic",
+      },
+      {
+        id: "the-road",
+        title: "The Road",
+        year: 2006,
+        type: "book",
+        description: "Post-apocalyptic father-son journey",
+      },
+    ],
   },
   {
     id: "whitehead",
@@ -308,9 +601,21 @@ export const creators: Creator[] = [
     influencedBy: ["morrison"],
     influenced: [],
     works: [
-      { id: "underground-railroad", title: "The Underground Railroad", year: 2016, type: "book", description: "Literal railroad beneath the South" },
-      { id: "nickel-boys", title: "The Nickel Boys", year: 2019, type: "book", description: "Reform school horrors in Jim Crow Florida" }
-    ]
+      {
+        id: "underground-railroad",
+        title: "The Underground Railroad",
+        year: 2016,
+        type: "book",
+        description: "Literal railroad beneath the South",
+      },
+      {
+        id: "nickel-boys",
+        title: "The Nickel Boys",
+        year: 2019,
+        type: "book",
+        description: "Reform school horrors in Jim Crow Florida",
+      },
+    ],
   },
   {
     id: "ward",
@@ -320,9 +625,21 @@ export const creators: Creator[] = [
     influencedBy: ["morrison", "faulkner"],
     influenced: [],
     works: [
-      { id: "sing-unburied", title: "Sing, Unburied, Sing", year: 2017, type: "book", description: "Ghosts and family in Mississippi" },
-      { id: "salvage-bones", title: "Salvage the Bones", year: 2011, type: "book", description: "Hurricane Katrina from inside" }
-    ]
+      {
+        id: "sing-unburied",
+        title: "Sing, Unburied, Sing",
+        year: 2017,
+        type: "book",
+        description: "Ghosts and family in Mississippi",
+      },
+      {
+        id: "salvage-bones",
+        title: "Salvage the Bones",
+        year: 2011,
+        type: "book",
+        description: "Hurricane Katrina from inside",
+      },
+    ],
   },
   {
     id: "vuong",
@@ -332,9 +649,21 @@ export const creators: Creator[] = [
     influencedBy: [],
     influenced: [],
     works: [
-      { id: "on-earth-briefly", title: "On Earth We're Briefly Gorgeous", year: 2019, type: "book", description: "Letter from a son to his mother" },
-      { id: "night-sky-exit-wounds", title: "Night Sky with Exit Wounds", year: 2016, type: "book", description: "War and desire in verse" }
-    ]
+      {
+        id: "on-earth-briefly",
+        title: "On Earth We're Briefly Gorgeous",
+        year: 2019,
+        type: "book",
+        description: "Letter from a son to his mother",
+      },
+      {
+        id: "night-sky-exit-wounds",
+        title: "Night Sky with Exit Wounds",
+        year: 2016,
+        type: "book",
+        description: "War and desire in verse",
+      },
+    ],
   },
 
   // ==================== POSTMODERNISM ====================
@@ -346,9 +675,21 @@ export const creators: Creator[] = [
     influencedBy: [],
     influenced: ["wallace", "delillo", "chabon", "egan"],
     works: [
-      { id: "gravitys-rainbow", title: "Gravity's Rainbow", year: 1973, type: "book", description: "WWII rockets and paranoia" },
-      { id: "crying-of-lot-49", title: "The Crying of Lot 49", year: 1966, type: "book", description: "Conspiracies in California" }
-    ]
+      {
+        id: "gravitys-rainbow",
+        title: "Gravity's Rainbow",
+        year: 1973,
+        type: "book",
+        description: "WWII rockets and paranoia",
+      },
+      {
+        id: "crying-of-lot-49",
+        title: "The Crying of Lot 49",
+        year: 1966,
+        type: "book",
+        description: "Conspiracies in California",
+      },
+    ],
   },
   {
     id: "delillo",
@@ -358,9 +699,21 @@ export const creators: Creator[] = [
     influencedBy: ["pynchon", "joyce"],
     influenced: ["egan"],
     works: [
-      { id: "white-noise", title: "White Noise", year: 1985, type: "book", description: "Fear of death in a toxic cloud" },
-      { id: "underworld", title: "Underworld", year: 1997, type: "book", description: "Cold War America in a baseball" }
-    ]
+      {
+        id: "white-noise",
+        title: "White Noise",
+        year: 1985,
+        type: "book",
+        description: "Fear of death in a toxic cloud",
+      },
+      {
+        id: "underworld",
+        title: "Underworld",
+        year: 1997,
+        type: "book",
+        description: "Cold War America in a baseball",
+      },
+    ],
   },
   {
     id: "wallace",
@@ -370,9 +723,21 @@ export const creators: Creator[] = [
     influencedBy: ["pynchon", "delillo"],
     influenced: [],
     works: [
-      { id: "infinite-jest", title: "Infinite Jest", year: 1996, type: "book", description: "Entertainment, addiction, and tennis" },
-      { id: "supposedly-fun-thing", title: "A Supposedly Fun Thing I'll Never Do Again", year: 1997, type: "article", description: "Essays of hyper-aware observation" }
-    ]
+      {
+        id: "infinite-jest",
+        title: "Infinite Jest",
+        year: 1996,
+        type: "book",
+        description: "Entertainment, addiction, and tennis",
+      },
+      {
+        id: "supposedly-fun-thing",
+        title: "A Supposedly Fun Thing I'll Never Do Again",
+        year: 1997,
+        type: "article",
+        description: "Essays of hyper-aware observation",
+      },
+    ],
   },
 
   // ==================== SPECULATIVE FICTION ====================
@@ -384,9 +749,21 @@ export const creators: Creator[] = [
     influencedBy: ["wells"],
     influenced: ["orwell", "lowry"],
     works: [
-      { id: "brave-new-world", title: "Brave New World", year: 1932, type: "book", description: "Dystopia through pleasure, not pain" },
-      { id: "doors-of-perception", title: "The Doors of Perception", year: 1954, type: "book", description: "Mescaline and consciousness" }
-    ]
+      {
+        id: "brave-new-world",
+        title: "Brave New World",
+        year: 1932,
+        type: "book",
+        description: "Dystopia through pleasure, not pain",
+      },
+      {
+        id: "doors-of-perception",
+        title: "The Doors of Perception",
+        year: 1954,
+        type: "book",
+        description: "Mescaline and consciousness",
+      },
+    ],
   },
   {
     id: "orwell",
@@ -396,9 +773,21 @@ export const creators: Creator[] = [
     influencedBy: ["huxley"],
     influenced: ["atwood"],
     works: [
-      { id: "nineteen-eighty-four", title: "Nineteen Eighty-Four", year: 1949, type: "book", description: "Totalitarianism and thought control" },
-      { id: "animal-farm", title: "Animal Farm", year: 1945, type: "book", description: "Revolution betrayed, in a barnyard" }
-    ]
+      {
+        id: "nineteen-eighty-four",
+        title: "Nineteen Eighty-Four",
+        year: 1949,
+        type: "book",
+        description: "Totalitarianism and thought control",
+      },
+      {
+        id: "animal-farm",
+        title: "Animal Farm",
+        year: 1945,
+        type: "book",
+        description: "Revolution betrayed, in a barnyard",
+      },
+    ],
   },
   {
     id: "bradbury",
@@ -408,9 +797,21 @@ export const creators: Creator[] = [
     influencedBy: ["wells"],
     influenced: [],
     works: [
-      { id: "fahrenheit-451", title: "Fahrenheit 451", year: 1953, type: "book", description: "Firemen who burn books" },
-      { id: "martian-chronicles", title: "The Martian Chronicles", year: 1950, type: "book", description: "Colonizing Mars, losing Earth" }
-    ]
+      {
+        id: "fahrenheit-451",
+        title: "Fahrenheit 451",
+        year: 1953,
+        type: "book",
+        description: "Firemen who burn books",
+      },
+      {
+        id: "martian-chronicles",
+        title: "The Martian Chronicles",
+        year: 1950,
+        type: "book",
+        description: "Colonizing Mars, losing Earth",
+      },
+    ],
   },
   {
     id: "asimov",
@@ -420,9 +821,21 @@ export const creators: Creator[] = [
     influencedBy: ["wells"],
     influenced: ["dick"],
     works: [
-      { id: "foundation", title: "Foundation", year: 1951, type: "book", description: "Psychohistory and galactic empire" },
-      { id: "i-robot", title: "I, Robot", year: 1950, type: "book", description: "Three laws of robotics" }
-    ]
+      {
+        id: "foundation",
+        title: "Foundation",
+        year: 1951,
+        type: "book",
+        description: "Psychohistory and galactic empire",
+      },
+      {
+        id: "i-robot",
+        title: "I, Robot",
+        year: 1950,
+        type: "book",
+        description: "Three laws of robotics",
+      },
+    ],
   },
   {
     id: "dick",
@@ -432,9 +845,21 @@ export const creators: Creator[] = [
     influencedBy: ["asimov"],
     influenced: [],
     works: [
-      { id: "do-androids-dream", title: "Do Androids Dream of Electric Sheep?", year: 1968, type: "book", description: "What makes us human (became Blade Runner)" },
-      { id: "man-high-castle", title: "The Man in the High Castle", year: 1962, type: "book", description: "Axis powers won WWII" }
-    ]
+      {
+        id: "do-androids-dream",
+        title: "Do Androids Dream of Electric Sheep?",
+        year: 1968,
+        type: "book",
+        description: "What makes us human (became Blade Runner)",
+      },
+      {
+        id: "man-high-castle",
+        title: "The Man in the High Castle",
+        year: 1962,
+        type: "book",
+        description: "Axis powers won WWII",
+      },
+    ],
   },
   {
     id: "le-guin",
@@ -444,9 +869,21 @@ export const creators: Creator[] = [
     influencedBy: ["borges", "tolkien"],
     influenced: ["chiang", "butler", "jemisin"],
     works: [
-      { id: "left-hand", title: "The Left Hand of Darkness", year: 1969, type: "book", description: "Gender-fluid sci-fi classic" },
-      { id: "dispossessed", title: "The Dispossessed", year: 1974, type: "book", description: "Anarchist utopia/dystopia" }
-    ]
+      {
+        id: "left-hand",
+        title: "The Left Hand of Darkness",
+        year: 1969,
+        type: "book",
+        description: "Gender-fluid sci-fi classic",
+      },
+      {
+        id: "dispossessed",
+        title: "The Dispossessed",
+        year: 1974,
+        type: "book",
+        description: "Anarchist utopia/dystopia",
+      },
+    ],
   },
   {
     id: "butler",
@@ -456,9 +893,21 @@ export const creators: Creator[] = [
     influencedBy: ["le-guin"],
     influenced: ["jemisin", "peele"],
     works: [
-      { id: "kindred", title: "Kindred", year: 1979, type: "book", description: "Time travel to antebellum slavery" },
-      { id: "parable-sower", title: "Parable of the Sower", year: 1993, type: "book", description: "Survival in a collapsing America" }
-    ]
+      {
+        id: "kindred",
+        title: "Kindred",
+        year: 1979,
+        type: "book",
+        description: "Time travel to antebellum slavery",
+      },
+      {
+        id: "parable-sower",
+        title: "Parable of the Sower",
+        year: 1993,
+        type: "book",
+        description: "Survival in a collapsing America",
+      },
+    ],
   },
   {
     id: "atwood",
@@ -468,9 +917,21 @@ export const creators: Creator[] = [
     influencedBy: ["orwell"],
     influenced: [],
     works: [
-      { id: "handmaids-tale", title: "The Handmaid's Tale", year: 1985, type: "book", description: "Theocratic dystopia and female subjugation" },
-      { id: "oryx-and-crake", title: "Oryx and Crake", year: 2003, type: "book", description: "Biotech apocalypse" }
-    ]
+      {
+        id: "handmaids-tale",
+        title: "The Handmaid's Tale",
+        year: 1985,
+        type: "book",
+        description: "Theocratic dystopia and female subjugation",
+      },
+      {
+        id: "oryx-and-crake",
+        title: "Oryx and Crake",
+        year: 2003,
+        type: "book",
+        description: "Biotech apocalypse",
+      },
+    ],
   },
   {
     id: "chiang",
@@ -480,9 +941,21 @@ export const creators: Creator[] = [
     influencedBy: ["le-guin", "borges"],
     influenced: [],
     works: [
-      { id: "stories-of-your-life", title: "Stories of Your Life and Others", year: 2002, type: "book", description: "Mind-bending short stories" },
-      { id: "exhalation", title: "Exhalation", year: 2019, type: "book", description: "More philosophical SF" }
-    ]
+      {
+        id: "stories-of-your-life",
+        title: "Stories of Your Life and Others",
+        year: 2002,
+        type: "book",
+        description: "Mind-bending short stories",
+      },
+      {
+        id: "exhalation",
+        title: "Exhalation",
+        year: 2019,
+        type: "book",
+        description: "More philosophical SF",
+      },
+    ],
   },
   {
     id: "jemisin",
@@ -492,9 +965,21 @@ export const creators: Creator[] = [
     influencedBy: ["le-guin", "butler"],
     influenced: [],
     works: [
-      { id: "fifth-season", title: "The Fifth Season", year: 2015, type: "book", description: "Second-person apocalyptic fantasy" },
-      { id: "hundred-thousand-kingdoms", title: "The Hundred Thousand Kingdoms", year: 2010, type: "book", description: "Gods in chains" }
-    ]
+      {
+        id: "fifth-season",
+        title: "The Fifth Season",
+        year: 2015,
+        type: "book",
+        description: "Second-person apocalyptic fantasy",
+      },
+      {
+        id: "hundred-thousand-kingdoms",
+        title: "The Hundred Thousand Kingdoms",
+        year: 2010,
+        type: "book",
+        description: "Gods in chains",
+      },
+    ],
   },
 
   // ==================== MAGIC REALISM / INTERNATIONAL ====================
@@ -504,11 +989,30 @@ export const creators: Creator[] = [
     years: "1899-1986",
     bio: "Argentine fabulist whose labyrinths, mirrors, and infinite libraries made fiction a branch of philosophy.",
     influencedBy: ["kafka"],
-    influenced: ["le-guin", "marquez", "chiang", "rushdie", "chabon", "kaufman"],
+    influenced: [
+      "le-guin",
+      "marquez",
+      "chiang",
+      "rushdie",
+      "chabon",
+      "kaufman",
+    ],
     works: [
-      { id: "ficciones", title: "Ficciones", year: 1944, type: "book", description: "Stories as metaphysical puzzles" },
-      { id: "aleph", title: "The Aleph", year: 1949, type: "book", description: "A point containing all points" }
-    ]
+      {
+        id: "ficciones",
+        title: "Ficciones",
+        year: 1944,
+        type: "book",
+        description: "Stories as metaphysical puzzles",
+      },
+      {
+        id: "aleph",
+        title: "The Aleph",
+        year: 1949,
+        type: "book",
+        description: "A point containing all points",
+      },
+    ],
   },
   {
     id: "marquez",
@@ -518,9 +1022,21 @@ export const creators: Creator[] = [
     influencedBy: ["faulkner", "borges"],
     influenced: ["rushdie"],
     works: [
-      { id: "hundred-years", title: "One Hundred Years of Solitude", year: 1967, type: "book", description: "Seven generations of the Buendia family" },
-      { id: "love-time-cholera", title: "Love in the Time of Cholera", year: 1985, type: "book", description: "Love that waits fifty years" }
-    ]
+      {
+        id: "hundred-years",
+        title: "One Hundred Years of Solitude",
+        year: 1967,
+        type: "book",
+        description: "Seven generations of the Buendia family",
+      },
+      {
+        id: "love-time-cholera",
+        title: "Love in the Time of Cholera",
+        year: 1985,
+        type: "book",
+        description: "Love that waits fifty years",
+      },
+    ],
   },
   {
     id: "murakami",
@@ -530,9 +1046,21 @@ export const creators: Creator[] = [
     influencedBy: ["carver", "kafka"],
     influenced: [],
     works: [
-      { id: "norwegian-wood", title: "Norwegian Wood", year: 1987, type: "book", description: "Memory and loss in 1960s Tokyo" },
-      { id: "wind-up-bird", title: "The Wind-Up Bird Chronicle", year: 1994, type: "book", description: "Surreal quest beneath Tokyo" }
-    ]
+      {
+        id: "norwegian-wood",
+        title: "Norwegian Wood",
+        year: 1987,
+        type: "book",
+        description: "Memory and loss in 1960s Tokyo",
+      },
+      {
+        id: "wind-up-bird",
+        title: "The Wind-Up Bird Chronicle",
+        year: 1994,
+        type: "book",
+        description: "Surreal quest beneath Tokyo",
+      },
+    ],
   },
   {
     id: "achebe",
@@ -542,9 +1070,21 @@ export const creators: Creator[] = [
     influencedBy: [],
     influenced: ["adichie"],
     works: [
-      { id: "things-fall-apart", title: "Things Fall Apart", year: 1958, type: "book", description: "Igbo life before and after colonialism" },
-      { id: "no-longer-at-ease", title: "No Longer at Ease", year: 1960, type: "book", description: "Corruption and idealism in Nigeria" }
-    ]
+      {
+        id: "things-fall-apart",
+        title: "Things Fall Apart",
+        year: 1958,
+        type: "book",
+        description: "Igbo life before and after colonialism",
+      },
+      {
+        id: "no-longer-at-ease",
+        title: "No Longer at Ease",
+        year: 1960,
+        type: "book",
+        description: "Corruption and idealism in Nigeria",
+      },
+    ],
   },
   {
     id: "adichie",
@@ -554,9 +1094,21 @@ export const creators: Creator[] = [
     influencedBy: ["achebe", "morrison"],
     influenced: [],
     works: [
-      { id: "americanah", title: "Americanah", year: 2013, type: "book", description: "Immigration, race, and return" },
-      { id: "half-yellow-sun", title: "Half of a Yellow Sun", year: 2006, type: "book", description: "Love and war in Biafra" }
-    ]
+      {
+        id: "americanah",
+        title: "Americanah",
+        year: 2013,
+        type: "book",
+        description: "Immigration, race, and return",
+      },
+      {
+        id: "half-yellow-sun",
+        title: "Half of a Yellow Sun",
+        year: 2006,
+        type: "book",
+        description: "Love and war in Biafra",
+      },
+    ],
   },
   {
     id: "rushdie",
@@ -566,9 +1118,21 @@ export const creators: Creator[] = [
     influencedBy: ["borges", "marquez"],
     influenced: [],
     works: [
-      { id: "midnights-children", title: "Midnight's Children", year: 1981, type: "book", description: "India's independence through magic" },
-      { id: "satanic-verses", title: "The Satanic Verses", year: 1988, type: "book", description: "Migration, faith, and transformation" }
-    ]
+      {
+        id: "midnights-children",
+        title: "Midnight's Children",
+        year: 1981,
+        type: "book",
+        description: "India's independence through magic",
+      },
+      {
+        id: "satanic-verses",
+        title: "The Satanic Verses",
+        year: 1988,
+        type: "book",
+        description: "Migration, faith, and transformation",
+      },
+    ],
   },
   {
     id: "ishiguro",
@@ -578,9 +1142,21 @@ export const creators: Creator[] = [
     influencedBy: ["chekhov"],
     influenced: [],
     works: [
-      { id: "remains-of-day", title: "The Remains of the Day", year: 1989, type: "book", description: "A butler's unreliable memories" },
-      { id: "never-let-me-go", title: "Never Let Me Go", year: 2005, type: "book", description: "Quiet dystopia about clones" }
-    ]
+      {
+        id: "remains-of-day",
+        title: "The Remains of the Day",
+        year: 1989,
+        type: "book",
+        description: "A butler's unreliable memories",
+      },
+      {
+        id: "never-let-me-go",
+        title: "Never Let Me Go",
+        year: 2005,
+        type: "book",
+        description: "Quiet dystopia about clones",
+      },
+    ],
   },
 
   // ==================== SCREENWRITING ====================
@@ -592,9 +1168,21 @@ export const creators: Creator[] = [
     influencedBy: [],
     influenced: ["ephron", "tarantino"],
     works: [
-      { id: "some-like-it-hot", title: "Some Like It Hot", year: 1959, type: "screenplay", description: "The greatest comedy ever made" },
-      { id: "sunset-boulevard", title: "Sunset Boulevard", year: 1950, type: "screenplay", description: "Hollywood eats its own" }
-    ]
+      {
+        id: "some-like-it-hot",
+        title: "Some Like It Hot",
+        year: 1959,
+        type: "screenplay",
+        description: "The greatest comedy ever made",
+      },
+      {
+        id: "sunset-boulevard",
+        title: "Sunset Boulevard",
+        year: 1950,
+        type: "screenplay",
+        description: "Hollywood eats its own",
+      },
+    ],
   },
   {
     id: "chayefsky",
@@ -604,9 +1192,21 @@ export const creators: Creator[] = [
     influencedBy: [],
     influenced: ["sorkin", "coen-brothers", "chase"],
     works: [
-      { id: "network", title: "Network", year: 1976, type: "screenplay", description: "Media satire, 'mad as hell'" },
-      { id: "marty", title: "Marty", year: 1955, type: "screenplay", description: "TV drama turned Oscar winner" }
-    ]
+      {
+        id: "network",
+        title: "Network",
+        year: 1976,
+        type: "screenplay",
+        description: "Media satire, 'mad as hell'",
+      },
+      {
+        id: "marty",
+        title: "Marty",
+        year: 1955,
+        type: "screenplay",
+        description: "TV drama turned Oscar winner",
+      },
+    ],
   },
   {
     id: "ephron",
@@ -616,9 +1216,21 @@ export const creators: Creator[] = [
     influencedBy: ["wilder"],
     influenced: ["waller-bridge", "cody"],
     works: [
-      { id: "when-harry-met-sally", title: "When Harry Met Sally...", year: 1989, type: "screenplay", description: "Can men and women be friends?" },
-      { id: "sleepless-in-seattle", title: "Sleepless in Seattle", year: 1993, type: "screenplay", description: "Fate and long-distance love" }
-    ]
+      {
+        id: "when-harry-met-sally",
+        title: "When Harry Met Sally...",
+        year: 1989,
+        type: "screenplay",
+        description: "Can men and women be friends?",
+      },
+      {
+        id: "sleepless-in-seattle",
+        title: "Sleepless in Seattle",
+        year: 1993,
+        type: "screenplay",
+        description: "Fate and long-distance love",
+      },
+    ],
   },
   {
     id: "sorkin",
@@ -628,9 +1240,21 @@ export const creators: Creator[] = [
     influencedBy: ["chayefsky"],
     influenced: ["waller-bridge"],
     works: [
-      { id: "west-wing", title: "The West Wing", year: 1999, type: "screenplay", description: "Political drama series" },
-      { id: "social-network", title: "The Social Network", year: 2010, type: "screenplay", description: "Facebook origin story" }
-    ]
+      {
+        id: "west-wing",
+        title: "The West Wing",
+        year: 1999,
+        type: "screenplay",
+        description: "Political drama series",
+      },
+      {
+        id: "social-network",
+        title: "The Social Network",
+        year: 2010,
+        type: "screenplay",
+        description: "Facebook origin story",
+      },
+    ],
   },
   {
     id: "waller-bridge",
@@ -640,9 +1264,21 @@ export const creators: Creator[] = [
     influencedBy: ["ephron", "sorkin"],
     influenced: ["coel"],
     works: [
-      { id: "fleabag", title: "Fleabag", year: 2016, type: "screenplay", description: "Grief, sex, and a hot priest" },
-      { id: "killing-eve", title: "Killing Eve", year: 2018, type: "screenplay", description: "Cat-and-mouse obsession" }
-    ]
+      {
+        id: "fleabag",
+        title: "Fleabag",
+        year: 2016,
+        type: "screenplay",
+        description: "Grief, sex, and a hot priest",
+      },
+      {
+        id: "killing-eve",
+        title: "Killing Eve",
+        year: 2018,
+        type: "screenplay",
+        description: "Cat-and-mouse obsession",
+      },
+    ],
   },
 
   // ==================== PULITZER WINNERS ====================
@@ -654,9 +1290,21 @@ export const creators: Creator[] = [
     influencedBy: ["faulkner"],
     influenced: [],
     works: [
-      { id: "to-kill-mockingbird", title: "To Kill a Mockingbird", year: 1960, type: "book", description: "Justice and childhood innocence in the Deep South" },
-      { id: "go-set-watchman", title: "Go Set a Watchman", year: 2015, type: "book", description: "Scout revisits Maycomb as an adult" }
-    ]
+      {
+        id: "to-kill-mockingbird",
+        title: "To Kill a Mockingbird",
+        year: 1960,
+        type: "book",
+        description: "Justice and childhood innocence in the Deep South",
+      },
+      {
+        id: "go-set-watchman",
+        title: "Go Set a Watchman",
+        year: 2015,
+        type: "book",
+        description: "Scout revisits Maycomb as an adult",
+      },
+    ],
   },
   {
     id: "walker",
@@ -666,9 +1314,21 @@ export const creators: Creator[] = [
     influencedBy: ["angelou", "morrison"],
     influenced: [],
     works: [
-      { id: "color-purple", title: "The Color Purple", year: 1982, type: "book", description: "Letters from a life of struggle and liberation" },
-      { id: "third-life-grange", title: "The Third Life of Grange Copeland", year: 1970, type: "book", description: "Three generations of a sharecropping family" }
-    ]
+      {
+        id: "color-purple",
+        title: "The Color Purple",
+        year: 1982,
+        type: "book",
+        description: "Letters from a life of struggle and liberation",
+      },
+      {
+        id: "third-life-grange",
+        title: "The Third Life of Grange Copeland",
+        year: 1970,
+        type: "book",
+        description: "Three generations of a sharecropping family",
+      },
+    ],
   },
   {
     id: "roth",
@@ -678,9 +1338,21 @@ export const creators: Creator[] = [
     influencedBy: ["kafka", "faulkner"],
     influenced: [],
     works: [
-      { id: "american-pastoral", title: "American Pastoral", year: 1997, type: "book", description: "The American dream collapses in the 1960s" },
-      { id: "portnoys-complaint", title: "Portnoy's Complaint", year: 1969, type: "book", description: "Confessional comedy of desire and guilt" }
-    ]
+      {
+        id: "american-pastoral",
+        title: "American Pastoral",
+        year: 1997,
+        type: "book",
+        description: "The American dream collapses in the 1960s",
+      },
+      {
+        id: "portnoys-complaint",
+        title: "Portnoy's Complaint",
+        year: 1969,
+        type: "book",
+        description: "Confessional comedy of desire and guilt",
+      },
+    ],
   },
   {
     id: "robinson",
@@ -690,9 +1362,21 @@ export const creators: Creator[] = [
     influencedBy: ["woolf"],
     influenced: [],
     works: [
-      { id: "gilead", title: "Gilead", year: 2004, type: "book", description: "A dying preacher's letter to his son" },
-      { id: "housekeeping", title: "Housekeeping", year: 1980, type: "book", description: "Two sisters, a transient aunt, a lake" }
-    ]
+      {
+        id: "gilead",
+        title: "Gilead",
+        year: 2004,
+        type: "book",
+        description: "A dying preacher's letter to his son",
+      },
+      {
+        id: "housekeeping",
+        title: "Housekeeping",
+        year: 1980,
+        type: "book",
+        description: "Two sisters, a transient aunt, a lake",
+      },
+    ],
   },
   {
     id: "chabon",
@@ -702,9 +1386,21 @@ export const creators: Creator[] = [
     influencedBy: ["borges", "pynchon"],
     influenced: [],
     works: [
-      { id: "kavalier-clay", title: "The Amazing Adventures of Kavalier & Clay", year: 2000, type: "book", description: "Golden-age comics and wartime escape" },
-      { id: "wonder-boys", title: "Wonder Boys", year: 1995, type: "book", description: "A novelist's spectacular midlife crisis" }
-    ]
+      {
+        id: "kavalier-clay",
+        title: "The Amazing Adventures of Kavalier & Clay",
+        year: 2000,
+        type: "book",
+        description: "Golden-age comics and wartime escape",
+      },
+      {
+        id: "wonder-boys",
+        title: "Wonder Boys",
+        year: 1995,
+        type: "book",
+        description: "A novelist's spectacular midlife crisis",
+      },
+    ],
   },
   {
     id: "egan",
@@ -714,9 +1410,21 @@ export const creators: Creator[] = [
     influencedBy: ["pynchon", "delillo"],
     influenced: [],
     works: [
-      { id: "goon-squad", title: "A Visit from the Goon Squad", year: 2010, type: "book", description: "Time and music, told in linked stories" },
-      { id: "candy-house", title: "The Candy House", year: 2022, type: "book", description: "Memory, identity, and collective consciousness" }
-    ]
+      {
+        id: "goon-squad",
+        title: "A Visit from the Goon Squad",
+        year: 2010,
+        type: "book",
+        description: "Time and music, told in linked stories",
+      },
+      {
+        id: "candy-house",
+        title: "The Candy House",
+        year: 2022,
+        type: "book",
+        description: "Memory, identity, and collective consciousness",
+      },
+    ],
   },
 
   // ==================== NATIONAL BOOK AWARD / MAJOR LITERARY ====================
@@ -728,9 +1436,21 @@ export const creators: Creator[] = [
     influencedBy: ["joyce", "hemingway"],
     influenced: ["simon", "coel"],
     works: [
-      { id: "go-tell-mountain", title: "Go Tell It on the Mountain", year: 1953, type: "book", description: "Coming of age in Harlem's church" },
-      { id: "fire-next-time", title: "The Fire Next Time", year: 1963, type: "book", description: "Two essays on race in America" }
-    ]
+      {
+        id: "go-tell-mountain",
+        title: "Go Tell It on the Mountain",
+        year: 1953,
+        type: "book",
+        description: "Coming of age in Harlem's church",
+      },
+      {
+        id: "fire-next-time",
+        title: "The Fire Next Time",
+        year: 1963,
+        type: "book",
+        description: "Two essays on race in America",
+      },
+    ],
   },
   {
     id: "erdrich",
@@ -740,9 +1460,21 @@ export const creators: Creator[] = [
     influencedBy: ["faulkner", "morrison"],
     influenced: [],
     works: [
-      { id: "round-house", title: "The Round House", year: 2012, type: "book", description: "A boy seeks justice on a reservation" },
-      { id: "love-medicine", title: "Love Medicine", year: 1984, type: "book", description: "Linked stories of two Ojibwe families" }
-    ]
+      {
+        id: "round-house",
+        title: "The Round House",
+        year: 2012,
+        type: "book",
+        description: "A boy seeks justice on a reservation",
+      },
+      {
+        id: "love-medicine",
+        title: "Love Medicine",
+        year: 1984,
+        type: "book",
+        description: "Linked stories of two Ojibwe families",
+      },
+    ],
   },
   {
     id: "johnson",
@@ -752,9 +1484,21 @@ export const creators: Creator[] = [
     influencedBy: ["carver", "faulkner"],
     influenced: [],
     works: [
-      { id: "jesus-son", title: "Jesus' Son", year: 1992, type: "book", description: "Linked stories of addiction and grace" },
-      { id: "tree-of-smoke", title: "Tree of Smoke", year: 2007, type: "book", description: "Vietnam War epic of faith and deception" }
-    ]
+      {
+        id: "jesus-son",
+        title: "Jesus' Son",
+        year: 1992,
+        type: "book",
+        description: "Linked stories of addiction and grace",
+      },
+      {
+        id: "tree-of-smoke",
+        title: "Tree of Smoke",
+        year: 2007,
+        type: "book",
+        description: "Vietnam War epic of faith and deception",
+      },
+    ],
   },
 
   // ==================== HUGO / SPECULATIVE ====================
@@ -766,9 +1510,21 @@ export const creators: Creator[] = [
     influencedBy: ["wells"],
     influenced: [],
     works: [
-      { id: "2001-space-odyssey", title: "2001: A Space Odyssey", year: 1968, type: "book", description: "Humanity encounters alien intelligence" },
-      { id: "childhoods-end", title: "Childhood's End", year: 1953, type: "book", description: "Alien overlords guide human evolution" }
-    ]
+      {
+        id: "2001-space-odyssey",
+        title: "2001: A Space Odyssey",
+        year: 1968,
+        type: "book",
+        description: "Humanity encounters alien intelligence",
+      },
+      {
+        id: "childhoods-end",
+        title: "Childhood's End",
+        year: 1953,
+        type: "book",
+        description: "Alien overlords guide human evolution",
+      },
+    ],
   },
   {
     id: "heinlein",
@@ -778,9 +1534,21 @@ export const creators: Creator[] = [
     influencedBy: ["wells"],
     influenced: [],
     works: [
-      { id: "stranger-strange-land", title: "Stranger in a Strange Land", year: 1961, type: "book", description: "A human raised on Mars returns to Earth" },
-      { id: "starship-troopers", title: "Starship Troopers", year: 1959, type: "book", description: "Military service and citizenship in space" }
-    ]
+      {
+        id: "stranger-strange-land",
+        title: "Stranger in a Strange Land",
+        year: 1961,
+        type: "book",
+        description: "A human raised on Mars returns to Earth",
+      },
+      {
+        id: "starship-troopers",
+        title: "Starship Troopers",
+        year: 1959,
+        type: "book",
+        description: "Military service and citizenship in space",
+      },
+    ],
   },
 
   // ==================== NEWBERY / YA ====================
@@ -792,9 +1560,21 @@ export const creators: Creator[] = [
     influencedBy: ["tolkien", "wells"],
     influenced: ["lowry"],
     works: [
-      { id: "wrinkle-in-time", title: "A Wrinkle in Time", year: 1962, type: "book", description: "Tesseract travel to rescue a father" },
-      { id: "wind-in-door", title: "A Wind in the Door", year: 1973, type: "book", description: "Journeying inside a mitochondrion" }
-    ]
+      {
+        id: "wrinkle-in-time",
+        title: "A Wrinkle in Time",
+        year: 1962,
+        type: "book",
+        description: "Tesseract travel to rescue a father",
+      },
+      {
+        id: "wind-in-door",
+        title: "A Wind in the Door",
+        year: 1973,
+        type: "book",
+        description: "Journeying inside a mitochondrion",
+      },
+    ],
   },
   {
     id: "lowry",
@@ -804,9 +1584,21 @@ export const creators: Creator[] = [
     influencedBy: ["l-engle", "huxley"],
     influenced: [],
     works: [
-      { id: "the-giver", title: "The Giver", year: 1993, type: "book", description: "A boy discovers his community's terrible secret" },
-      { id: "number-the-stars", title: "Number the Stars", year: 1989, type: "book", description: "Danish resistance through a child's eyes" }
-    ]
+      {
+        id: "the-giver",
+        title: "The Giver",
+        year: 1993,
+        type: "book",
+        description: "A boy discovers his community's terrible secret",
+      },
+      {
+        id: "number-the-stars",
+        title: "Number the Stars",
+        year: 1989,
+        type: "book",
+        description: "Danish resistance through a child's eyes",
+      },
+    ],
   },
 
   // ==================== SCREENPLAY OSCAR WINNERS ====================
@@ -818,9 +1610,21 @@ export const creators: Creator[] = [
     influencedBy: ["kafka", "borges"],
     influenced: [],
     works: [
-      { id: "eternal-sunshine", title: "Eternal Sunshine of the Spotless Mind", year: 2004, type: "screenplay", description: "Erasing memories of a failed romance" },
-      { id: "being-john-malkovich", title: "Being John Malkovich", year: 1999, type: "screenplay", description: "A portal into an actor's brain" }
-    ]
+      {
+        id: "eternal-sunshine",
+        title: "Eternal Sunshine of the Spotless Mind",
+        year: 2004,
+        type: "screenplay",
+        description: "Erasing memories of a failed romance",
+      },
+      {
+        id: "being-john-malkovich",
+        title: "Being John Malkovich",
+        year: 1999,
+        type: "screenplay",
+        description: "A portal into an actor's brain",
+      },
+    ],
   },
   {
     id: "tarantino",
@@ -830,9 +1634,21 @@ export const creators: Creator[] = [
     influencedBy: ["wilder"],
     influenced: [],
     works: [
-      { id: "pulp-fiction", title: "Pulp Fiction", year: 1994, type: "screenplay", description: "Interlocking crime stories in Los Angeles" },
-      { id: "inglourious-basterds", title: "Inglourious Basterds", year: 2009, type: "screenplay", description: "Alternate-history WWII revenge fantasy" }
-    ]
+      {
+        id: "pulp-fiction",
+        title: "Pulp Fiction",
+        year: 1994,
+        type: "screenplay",
+        description: "Interlocking crime stories in Los Angeles",
+      },
+      {
+        id: "inglourious-basterds",
+        title: "Inglourious Basterds",
+        year: 2009,
+        type: "screenplay",
+        description: "Alternate-history WWII revenge fantasy",
+      },
+    ],
   },
   {
     id: "coen-brothers",
@@ -842,9 +1658,21 @@ export const creators: Creator[] = [
     influencedBy: ["mccarthy", "chayefsky"],
     influenced: [],
     works: [
-      { id: "fargo-screenplay", title: "Fargo", year: 1996, type: "screenplay", description: "Kidnapping gone wrong in snowy Minnesota" },
-      { id: "no-country-screenplay", title: "No Country for Old Men", year: 2007, type: "screenplay", description: "A hunter, a killer, and a satchel of cash" }
-    ]
+      {
+        id: "fargo-screenplay",
+        title: "Fargo",
+        year: 1996,
+        type: "screenplay",
+        description: "Kidnapping gone wrong in snowy Minnesota",
+      },
+      {
+        id: "no-country-screenplay",
+        title: "No Country for Old Men",
+        year: 2007,
+        type: "screenplay",
+        description: "A hunter, a killer, and a satchel of cash",
+      },
+    ],
   },
   {
     id: "cody",
@@ -854,9 +1682,21 @@ export const creators: Creator[] = [
     influencedBy: ["ephron"],
     influenced: [],
     works: [
-      { id: "juno", title: "Juno", year: 2007, type: "screenplay", description: "A teenager navigates an unplanned pregnancy" },
-      { id: "young-adult", title: "Young Adult", year: 2011, type: "screenplay", description: "A YA writer returns to her hometown" }
-    ]
+      {
+        id: "juno",
+        title: "Juno",
+        year: 2007,
+        type: "screenplay",
+        description: "A teenager navigates an unplanned pregnancy",
+      },
+      {
+        id: "young-adult",
+        title: "Young Adult",
+        year: 2011,
+        type: "screenplay",
+        description: "A YA writer returns to her hometown",
+      },
+    ],
   },
   {
     id: "peele",
@@ -866,9 +1706,21 @@ export const creators: Creator[] = [
     influencedBy: ["butler"],
     influenced: [],
     works: [
-      { id: "get-out", title: "Get Out", year: 2017, type: "screenplay", description: "A Black man visits his white girlfriend's family" },
-      { id: "us-screenplay", title: "Us", year: 2019, type: "screenplay", description: "A family confronts their doppelgangers" }
-    ]
+      {
+        id: "get-out",
+        title: "Get Out",
+        year: 2017,
+        type: "screenplay",
+        description: "A Black man visits his white girlfriend's family",
+      },
+      {
+        id: "us-screenplay",
+        title: "Us",
+        year: 2019,
+        type: "screenplay",
+        description: "A family confronts their doppelgangers",
+      },
+    ],
   },
 
   // ==================== TELEPLAY EMMY WINNERS ====================
@@ -880,9 +1732,21 @@ export const creators: Creator[] = [
     influencedBy: ["chayefsky"],
     influenced: ["gilligan"],
     works: [
-      { id: "sopranos-pilot", title: "The Sopranos: Pilot", year: 1999, type: "screenplay", description: "A mob boss starts seeing a therapist" },
-      { id: "sopranos-finale", title: "The Sopranos: Made in America", year: 2007, type: "screenplay", description: "The most debated finale in TV history" }
-    ]
+      {
+        id: "sopranos-pilot",
+        title: "The Sopranos: Pilot",
+        year: 1999,
+        type: "screenplay",
+        description: "A mob boss starts seeing a therapist",
+      },
+      {
+        id: "sopranos-finale",
+        title: "The Sopranos: Made in America",
+        year: 2007,
+        type: "screenplay",
+        description: "The most debated finale in TV history",
+      },
+    ],
   },
   {
     id: "gilligan",
@@ -892,9 +1756,21 @@ export const creators: Creator[] = [
     influencedBy: ["mccarthy", "chase"],
     influenced: [],
     works: [
-      { id: "breaking-bad-pilot", title: "Breaking Bad: Pilot", year: 2008, type: "screenplay", description: "A chemistry teacher turns to cooking meth" },
-      { id: "ozymandias", title: "Breaking Bad: Ozymandias", year: 2013, type: "screenplay", description: "The empire crumbles — highest-rated TV episode ever" }
-    ]
+      {
+        id: "breaking-bad-pilot",
+        title: "Breaking Bad: Pilot",
+        year: 2008,
+        type: "screenplay",
+        description: "A chemistry teacher turns to cooking meth",
+      },
+      {
+        id: "ozymandias",
+        title: "Breaking Bad: Ozymandias",
+        year: 2013,
+        type: "screenplay",
+        description: "The empire crumbles — highest-rated TV episode ever",
+      },
+    ],
   },
   {
     id: "simon",
@@ -904,9 +1780,21 @@ export const creators: Creator[] = [
     influencedBy: ["didion", "baldwin"],
     influenced: [],
     works: [
-      { id: "wire-pilot", title: "The Wire: The Target", year: 2002, type: "screenplay", description: "The drug war from every angle" },
-      { id: "show-me-hero", title: "Show Me a Hero", year: 2015, type: "screenplay", description: "Public housing and political ambition in Yonkers" }
-    ]
+      {
+        id: "wire-pilot",
+        title: "The Wire: The Target",
+        year: 2002,
+        type: "screenplay",
+        description: "The drug war from every angle",
+      },
+      {
+        id: "show-me-hero",
+        title: "Show Me a Hero",
+        year: 2015,
+        type: "screenplay",
+        description: "Public housing and political ambition in Yonkers",
+      },
+    ],
   },
   {
     id: "coel",
@@ -916,30 +1804,45 @@ export const creators: Creator[] = [
     influencedBy: ["waller-bridge", "baldwin"],
     influenced: [],
     works: [
-      { id: "i-may-destroy-you", title: "I May Destroy You", year: 2020, type: "screenplay", description: "Reconstructing identity after sexual assault" },
-      { id: "chewing-gum", title: "Chewing Gum", year: 2015, type: "screenplay", description: "A sheltered young woman discovers the world" }
-    ]
+      {
+        id: "i-may-destroy-you",
+        title: "I May Destroy You",
+        year: 2020,
+        type: "screenplay",
+        description: "Reconstructing identity after sexual assault",
+      },
+      {
+        id: "chewing-gum",
+        title: "Chewing Gum",
+        year: 2015,
+        type: "screenplay",
+        description: "A sheltered young woman discovers the world",
+      },
+    ],
   },
 ];
 
 export function getCreatorById(id: string): Creator | undefined {
-  return creators.find(c => c.id === id);
+  return creators.find((c) => c.id === id);
 }
 
 export function getAllCreators(): Creator[] {
   return creators;
 }
 
-export function getLineage(creatorId: string): { ancestors: Creator[], descendants: Creator[] } {
+export function getLineage(creatorId: string): {
+  ancestors: Creator[];
+  descendants: Creator[];
+} {
   const creator = getCreatorById(creatorId);
   if (!creator) return { ancestors: [], descendants: [] };
 
   const ancestors = creator.influencedBy
-    .map(id => getCreatorById(id))
+    .map((id) => getCreatorById(id))
     .filter((c): c is Creator => c !== undefined);
 
   const descendants = creator.influenced
-    .map(id => getCreatorById(id))
+    .map((id) => getCreatorById(id))
     .filter((c): c is Creator => c !== undefined);
 
   return { ancestors, descendants };

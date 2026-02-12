@@ -16,16 +16,16 @@ COMFYUI_URL = "http://127.0.0.1:8188"
 
 def generate_hemingway_card():
     """Generate a visual Hemingway DNA card"""
-    
+
     # The prompt for the card design
-    prompt = """A beautiful literary trading card design for Ernest Hemingway, vintage 1920s Paris aesthetic, 
-art deco borders in gold and navy blue, aged paper texture background, elegant typography, 
-fishing rod and marlin silhouette, typewriter keys subtly integrated into the design, 
-"The Sun Also Rises" and "Old Man and the Sea" as book spines on the side, 
+    prompt = """A beautiful literary trading card design for Ernest Hemingway, vintage 1920s Paris aesthetic,
+art deco borders in gold and navy blue, aged paper texture background, elegant typography,
+fishing rod and marlin silhouette, typewriter keys subtly integrated into the design,
+"The Sun Also Rises" and "Old Man and the Sea" as book spines on the side,
 Nobel Prize medal icon, connections lines showing literary influence network,
 dark blue and gold color palette, sophisticated literary collectible card design,
 high detail, professional graphic design"""
-    
+
     # Create workflow for FLUX (fast, high quality)
     workflow = {
         "1": {
@@ -76,10 +76,10 @@ high detail, professional graphic design"""
             "class_type": "SaveImage"
         }
     }
-    
+
     print("🎨 Generating Hemingway Creative DNA Card...")
     print(f"   Prompt: {prompt[:100]}...")
-    
+
     try:
         # Queue the prompt
         data = json.dumps({"prompt": workflow}).encode('utf-8')
@@ -88,51 +88,51 @@ high detail, professional graphic design"""
             data=data,
             headers={'Content-Type': 'application/json'}
         )
-        
+
         response = urllib.request.urlopen(req)
         result = json.loads(response.read())
-        
+
         print(f"✅ Generation queued!")
         print(f"   Prompt ID: {result.get('prompt_id', 'N/A')}")
         print(f"   Check ComfyUI output folder for hemingway_card_*.png")
-        
+
         return result
-        
+
     except Exception as e:
         print(f"❌ Error: {e}")
         print("\n⚠️  Make sure ComfyUI is running:")
-        print("   cd /home/spark/.openclaw/workspace/ai-generation/ComfyUI")
+        print("   cd /tmp/ai-generation/ComfyUI")
         print("   python main.py")
         return None
 
 
 def generate_simple_card():
     """Generate a simpler card using available tools"""
-    
+
     # Try using FAL or other available APIs
     print("🎨 Attempting to generate Hemingway card...")
-    
+
     # Check if we can use existing image generation
-    output_dir = Path("/home/spark/.openclaw/workspace/ai-generation/output")
+    output_dir = Path("/tmp/ai-generation/output")
     output_dir.mkdir(exist_ok=True)
-    
+
     # For now, create a simple HTML-to-image approach or use available tools
     print("💡 To generate the visual card:")
     print("   Option 1: Start ComfyUI and run this script")
     print("   Option 2: Use the HTML card I already created")
     print("   Option 3: Use an online image generation API")
-    
+
     return None
 
 
 if __name__ == "__main__":
     import sys
-    
+
     if len(sys.argv) > 1 and sys.argv[1] == "--simple":
         generate_simple_card()
     else:
         result = generate_hemingway_card()
-        
+
         if result:
             print("\n📝 Next steps:")
             print("   1. Wait for generation to complete (~30 seconds)")

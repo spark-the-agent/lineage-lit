@@ -1,7 +1,7 @@
-import { Creator, Work } from './data';
+import { Creator, Work } from "./data";
 
 export interface ExportOptions {
-  format: 'csv' | 'json';
+  format: "csv" | "json";
   includeWorks?: boolean;
   includeInfluences?: boolean;
   includeMetadata?: boolean;
@@ -32,35 +32,58 @@ interface FlattenedWork {
 interface NetworkEdge {
   source: string;
   target: string;
-  relationship: 'influenced_by' | 'influenced';
+  relationship: "influenced_by" | "influenced";
   weight: number;
 }
 
-export function exportToCSV(creators: Creator[], options: ExportOptions = { format: 'csv' }): string {
+export function exportToCSV(
+  creators: Creator[],
+  options: ExportOptions = { format: "csv" },
+): string {
   const { includeWorks = true } = options;
-  
+
   // Main creators CSV
-  const creatorHeaders = ['id', 'name', 'years', 'bio', 'influenced_by', 'influenced', 'work_count', 'influence_count'];
-  const creatorRows = creators.map(c => [
+  const creatorHeaders = [
+    "id",
+    "name",
+    "years",
+    "bio",
+    "influenced_by",
+    "influenced",
+    "work_count",
+    "influence_count",
+  ];
+  const creatorRows = creators.map((c) => [
     c.id,
     `"${c.name.replace(/"/g, '""')}"`,
     c.years,
     `"${c.bio.replace(/"/g, '""')}"`,
-    c.influencedBy.join('; '),
-    c.influenced.join('; '),
+    c.influencedBy.join("; "),
+    c.influenced.join("; "),
     c.works.length,
-    c.influenced.length + c.influencedBy.length
+    c.influenced.length + c.influencedBy.length,
   ]);
-  
-  let csv = creatorHeaders.join(',') + '\n' + creatorRows.map(r => r.join(',')).join('\n');
-  
+
+  let csv =
+    creatorHeaders.join(",") +
+    "\n" +
+    creatorRows.map((r) => r.join(",")).join("\n");
+
   if (includeWorks) {
-    csv += '\n\n--- WORKS ---\n\n';
-    const workHeaders = ['id', 'title', 'year', 'type', 'description', 'creator_id', 'creator_name'];
+    csv += "\n\n--- WORKS ---\n\n";
+    const workHeaders = [
+      "id",
+      "title",
+      "year",
+      "type",
+      "description",
+      "creator_id",
+      "creator_name",
+    ];
     const workRows: (string | number)[][] = [];
-    
-    creators.forEach(c => {
-      c.works.forEach(w => {
+
+    creators.forEach((c) => {
+      c.works.forEach((w) => {
         workRows.push([
           w.id,
           `"${w.title.replace(/"/g, '""')}"`,
@@ -68,154 +91,184 @@ export function exportToCSV(creators: Creator[], options: ExportOptions = { form
           w.type,
           `"${w.description.replace(/"/g, '""')}"`,
           c.id,
-          c.name
+          c.name,
         ]);
       });
     });
-    
-    csv += workHeaders.join(',') + '\n' + workRows.map(r => r.join(',')).join('\n');
+
+    csv +=
+      workHeaders.join(",") +
+      "\n" +
+      workRows.map((r) => r.join(",")).join("\n");
   }
-  
+
   // Add influence relationships
-  csv += '\n\n--- INFLUENCES ---\n\n';
-  const influenceHeaders = ['source_id', 'source_name', 'target_id', 'target_name', 'direction'];
+  csv += "\n\n--- INFLUENCES ---\n\n";
+  const influenceHeaders = [
+    "source_id",
+    "source_name",
+    "target_id",
+    "target_name",
+    "direction",
+  ];
   const influenceRows: string[][] = [];
-  
-  creators.forEach(c => {
-    c.influencedBy.forEach(influencerId => {
-      const influencer = creators.find(x => x.id === influencerId);
+
+  creators.forEach((c) => {
+    c.influencedBy.forEach((influencerId) => {
+      const influencer = creators.find((x) => x.id === influencerId);
       if (influencer) {
         influenceRows.push([
           influencer.id,
           influencer.name,
           c.id,
           c.name,
-          'influenced_by'
+          "influenced_by",
         ]);
       }
     });
-    
-    c.influenced.forEach(influencedId => {
-      const influenced = creators.find(x => x.id === influencedId);
+
+    c.influenced.forEach((influencedId) => {
+      const influenced = creators.find((x) => x.id === influencedId);
       if (influenced) {
         influenceRows.push([
           c.id,
           c.name,
           influenced.id,
           influenced.name,
-          'influenced'
+          "influenced",
         ]);
       }
     });
   });
-  
-  csv += influenceHeaders.join(',') + '\n' + influenceRows.map(r => r.join(',')).join('\n');
-  
+
+  csv +=
+    influenceHeaders.join(",") +
+    "\n" +
+    influenceRows.map((r) => r.join(",")).join("\n");
+
   return csv;
 }
 
-export function exportToJSON(creators: Creator[], options: ExportOptions = { format: 'json' }): string {
-  const { includeWorks = true, includeInfluences = true, includeMetadata = true } = options;
-  
+export function exportToJSON(
+  creators: Creator[],
+  options: ExportOptions = { format: "json" },
+): string {
+  const {
+    includeWorks = true,
+    includeInfluences = true,
+    includeMetadata = true,
+  } = options;
+
   const data: any = {
-    version: '1.0',
+    version: "1.0",
     exportDate: new Date().toISOString(),
-    source: 'Lineage Lit Research Export'
+    source: "Lineage Lit Research Export",
   };
-  
+
   // Creators with expanded relationships
-  data.creators = creators.map(c => ({
+  data.creators = creators.map((c) => ({
     id: c.id,
     name: c.name,
     years: c.years,
     bio: c.bio,
     ...(includeWorks && { works: c.works }),
     ...(includeInfluences && {
-      influencedBy: c.influencedBy.map(id => {
-        const inf = creators.find(x => x.id === id);
+      influencedBy: c.influencedBy.map((id) => {
+        const inf = creators.find((x) => x.id === id);
         return { id, name: inf?.name || id };
       }),
-      influenced: c.influenced.map(id => {
-        const inf = creators.find(x => x.id === id);
+      influenced: c.influenced.map((id) => {
+        const inf = creators.find((x) => x.id === id);
         return { id, name: inf?.name || id };
-      })
+      }),
     }),
     metrics: {
       workCount: c.works.length,
       influenceCount: c.influenced.length,
       influencedByCount: c.influencedBy.length,
-      totalConnections: c.influenced.length + c.influencedBy.length
-    }
+      totalConnections: c.influenced.length + c.influencedBy.length,
+    },
   }));
-  
+
   // Network edges for graph analysis
   if (includeInfluences) {
     data.networkEdges = [] as NetworkEdge[];
-    creators.forEach(c => {
-      c.influencedBy.forEach(id => {
+    creators.forEach((c) => {
+      c.influencedBy.forEach((id) => {
         data.networkEdges.push({
           source: id,
           target: c.id,
-          relationship: 'influenced_by',
-          weight: 1
+          relationship: "influenced_by",
+          weight: 1,
         });
       });
     });
   }
-  
+
   // Summary statistics
   if (includeMetadata) {
     data.metadata = {
       totalCreators: creators.length,
       totalWorks: creators.reduce((acc, c) => acc + c.works.length, 0),
-      totalInfluences: creators.reduce((acc, c) => acc + c.influenced.length, 0),
+      totalInfluences: creators.reduce(
+        (acc, c) => acc + c.influenced.length,
+        0,
+      ),
       dateRange: {
-        earliest: Math.min(...creators.flatMap(c => c.works.map(w => w.year))),
-        latest: Math.max(...creators.flatMap(c => c.works.map(w => w.year)))
-      }
+        earliest: Math.min(
+          ...creators.flatMap((c) => c.works.map((w) => w.year)),
+        ),
+        latest: Math.max(
+          ...creators.flatMap((c) => c.works.map((w) => w.year)),
+        ),
+      },
     };
   }
-  
+
   return JSON.stringify(data, null, 2);
 }
 
 export function generateNetworkJSON(creators: Creator[]): string {
-  const nodes = creators.map(c => ({
+  const nodes = creators.map((c) => ({
     id: c.id,
     label: c.name,
     group: determineEra(c.years),
     works: c.works.length,
     influenceScore: c.influenced.length,
-    influencedBy: c.influencedBy.length
+    influencedBy: c.influencedBy.length,
   }));
-  
+
   const edges: { from: string; to: string; label: string }[] = [];
-  creators.forEach(c => {
-    c.influencedBy.forEach(id => {
+  creators.forEach((c) => {
+    c.influencedBy.forEach((id) => {
       edges.push({
         from: id,
         to: c.id,
-        label: 'influenced'
+        label: "influenced",
       });
     });
   });
-  
+
   return JSON.stringify({ nodes, edges }, null, 2);
 }
 
 function determineEra(years: string): string {
-  const startYear = parseInt(years.split('-')[0]);
-  if (startYear < 1900) return '19th Century';
-  if (startYear < 1950) return 'Early 20th Century';
-  if (startYear < 1970) return 'Mid 20th Century';
-  if (startYear < 1990) return 'Late 20th Century';
-  return '21st Century';
+  const startYear = parseInt(years.split("-")[0]);
+  if (startYear < 1900) return "19th Century";
+  if (startYear < 1950) return "Early 20th Century";
+  if (startYear < 1970) return "Mid 20th Century";
+  if (startYear < 1990) return "Late 20th Century";
+  return "21st Century";
 }
 
-export function downloadBlob(content: string, filename: string, contentType: string): void {
+export function downloadBlob(
+  content: string,
+  filename: string,
+  contentType: string,
+): void {
   const blob = new Blob([content], { type: contentType });
   const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
+  const link = document.createElement("a");
   link.href = url;
   link.download = filename;
   document.body.appendChild(link);
@@ -224,17 +277,26 @@ export function downloadBlob(content: string, filename: string, contentType: str
   URL.revokeObjectURL(url);
 }
 
-export function downloadCSV(creators: Creator[], filename = 'lineage-lit-data.csv'): void {
+export function downloadCSV(
+  creators: Creator[],
+  filename = "lineage-lit-data.csv",
+): void {
   const csv = exportToCSV(creators);
-  downloadBlob(csv, filename, 'text/csv;charset=utf-8;');
+  downloadBlob(csv, filename, "text/csv;charset=utf-8;");
 }
 
-export function downloadJSON(creators: Creator[], filename = 'lineage-lit-data.json'): void {
+export function downloadJSON(
+  creators: Creator[],
+  filename = "lineage-lit-data.json",
+): void {
   const json = exportToJSON(creators);
-  downloadBlob(json, filename, 'application/json;charset=utf-8;');
+  downloadBlob(json, filename, "application/json;charset=utf-8;");
 }
 
-export function downloadNetworkJSON(creators: Creator[], filename = 'lineage-lit-network.json'): void {
+export function downloadNetworkJSON(
+  creators: Creator[],
+  filename = "lineage-lit-network.json",
+): void {
   const json = generateNetworkJSON(creators);
-  downloadBlob(json, filename, 'application/json;charset=utf-8;');
+  downloadBlob(json, filename, "application/json;charset=utf-8;");
 }

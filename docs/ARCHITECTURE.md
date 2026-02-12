@@ -104,28 +104,33 @@ UserWork (Reading tracking)
 ## API Endpoints (Draft)
 
 ### Works
+
 - `GET /works` - List works (filter by type, genre, date)
 - `GET /works/{id}` - Get work details with lineage
 - `GET /works/{id}/lineage` - Get influence tree
 - `POST /works` - Create work (admin/curator)
 
 ### Creators
+
 - `GET /creators` - List creators
 - `GET /creators/{id}` - Get creator with works and influences
 - `GET /creators/{id}/network` - Get influence network graph
 - `POST /creators` - Create creator
 
 ### Influences
+
 - `GET /influences` - List influence relationships
 - `POST /influences` - Add influence (with evidence)
 - `GET /influences/verify` - Queue for verification
 
 ### Recommendations
+
 - `GET /recommendations/for-you` - Based on reading history
 - `GET /recommendations/similar-to/{work_id}` - Similar by lineage
 - `GET /recommendations/by-influence/{creator_id}` - Same influences
 
 ### Users
+
 - `POST /auth/register`
 - `POST /auth/login`
 - `GET /users/me`
@@ -159,18 +164,21 @@ RETURN path
 ## Tech Decisions
 
 ### Why Neo4j for Graph?
+
 - Native graph operations
 - Efficient shortest-path queries
 - Natural fit for lineage/hierarchy
 - Can visualize directly
 
 ### Why PostgreSQL?
+
 - User data, reading lists (relational)
 - Search/indexing
 - ACID compliance for critical data
 - Familiar, well-supported
 
 ### Hybrid Approach
+
 - Postgres stores core entities and user data
 - Neo4j stores relationships (influences, lineage)
 - Sync via backend events
@@ -178,22 +186,25 @@ RETURN path
 ## MVP Scope
 
 **Week 1:**
+
 - Setup repo structure
 - Design mockups (Figma or similar)
 - Define 50 initial works with lineage
 
 **Week 2:**
+
 - Basic FastAPI backend
 - PostgreSQL schema
 - Simple React frontend
 
 **Week 3:**
+
 - Neo4j integration
 - Graph visualization
 - Influence tracking UI
 
-*Current product uses Convex + static export; see phase-two plan for rollout.*
+_Current product uses Convex + static export; see phase-two plan for rollout._
 
 ---
 
-*Architecture by Spark ⚡*
+_Architecture by Spark ⚡_

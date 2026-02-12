@@ -1,10 +1,23 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Network, Sparkles, Search, Loader2, ArrowRight, Zap, Crown, BookOpen } from 'lucide-react';
-import Link from 'next/link';
-import MobileNav, { MobileHeaderSpacer, MobileBottomSpacer, DesktopNav } from '@/app/components/MobileNav';
-import { getCreatorById, creators } from '@/lib/data';
+import { useState } from "react";
+import {
+  Network,
+  Sparkles,
+  Search,
+  Loader2,
+  ArrowRight,
+  Zap,
+  Crown,
+  BookOpen,
+} from "lucide-react";
+import Link from "next/link";
+import MobileNav, {
+  MobileHeaderSpacer,
+  MobileBottomSpacer,
+  DesktopNav,
+} from "@/app/components/MobileNav";
+import { getCreatorById, creators } from "@/lib/data";
 
 interface InfluenceResult {
   name: string;
@@ -20,43 +33,78 @@ interface DiscoveryResult {
 
 // Local mock analysis for when Convex is not connected
 function mockAnalyze(title: string, author: string): Promise<DiscoveryResult> {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       // Try to match against existing creators
-      const matchedCreator = creators.find(c =>
-        c.name.toLowerCase().includes(author.toLowerCase()) ||
-        c.works.some(w => w.title.toLowerCase().includes(title.toLowerCase()))
+      const matchedCreator = creators.find(
+        (c) =>
+          c.name.toLowerCase().includes(author.toLowerCase()) ||
+          c.works.some((w) =>
+            w.title.toLowerCase().includes(title.toLowerCase()),
+          ),
       );
 
       if (matchedCreator) {
         const influences = matchedCreator.influencedBy
-          .map(id => getCreatorById(id))
+          .map((id) => getCreatorById(id))
           .filter(Boolean)
-          .map(c => ({
+          .map((c) => ({
             name: c!.name,
             confidence: 0.7 + Math.random() * 0.25,
-            evidence: `${c!.name}'s work in ${c!.works[0]?.title || 'literary fiction'} shows direct stylistic influence on this work.`,
+            evidence: `${c!.name}'s work in ${c!.works[0]?.title || "literary fiction"} shows direct stylistic influence on this work.`,
           }));
 
         resolve({
-          identifiedInfluences: influences.length > 0 ? influences : [
-            { name: 'Ernest Hemingway', confidence: 0.72, evidence: 'Sparse, declarative prose style echoing the iceberg theory.' },
-            { name: 'Raymond Carver', confidence: 0.65, evidence: 'Minimalist approach to domestic themes.' },
-          ],
-          relatedWorks: matchedCreator.works.map(w => `${w.title} by ${matchedCreator.name}`),
-          lineageSummary: `This work sits within the ${matchedCreator.bio.includes('minimalis') ? 'minimalist' : 'modernist'} literary tradition, showing connections to ${matchedCreator.influencedBy.map(id => getCreatorById(id)?.name).filter(Boolean).join(', ')}.`,
+          identifiedInfluences:
+            influences.length > 0
+              ? influences
+              : [
+                  {
+                    name: "Ernest Hemingway",
+                    confidence: 0.72,
+                    evidence:
+                      "Sparse, declarative prose style echoing the iceberg theory.",
+                  },
+                  {
+                    name: "Raymond Carver",
+                    confidence: 0.65,
+                    evidence: "Minimalist approach to domestic themes.",
+                  },
+                ],
+          relatedWorks: matchedCreator.works.map(
+            (w) => `${w.title} by ${matchedCreator.name}`,
+          ),
+          lineageSummary: `This work sits within the ${matchedCreator.bio.includes("minimalis") ? "minimalist" : "modernist"} literary tradition, showing connections to ${matchedCreator.influencedBy
+            .map((id) => getCreatorById(id)?.name)
+            .filter(Boolean)
+            .join(", ")}.`,
         });
       } else {
         resolve({
           identifiedInfluences: [
-            { name: 'Ernest Hemingway', confidence: 0.82, evidence: 'The spare prose style and understated emotional depth strongly echo Hemingway\'s "iceberg theory."' },
-            { name: 'Anton Chekhov', confidence: 0.74, evidence: 'Character-driven narrative with subtle dramatic tension mirrors Chekhov\'s approach.' },
-            { name: 'Raymond Carver', confidence: 0.68, evidence: 'Minimalist approach to depicting everyday life and its quiet revelations.' },
+            {
+              name: "Ernest Hemingway",
+              confidence: 0.82,
+              evidence:
+                'The spare prose style and understated emotional depth strongly echo Hemingway\'s "iceberg theory."',
+            },
+            {
+              name: "Anton Chekhov",
+              confidence: 0.74,
+              evidence:
+                "Character-driven narrative with subtle dramatic tension mirrors Chekhov's approach.",
+            },
+            {
+              name: "Raymond Carver",
+              confidence: 0.68,
+              evidence:
+                "Minimalist approach to depicting everyday life and its quiet revelations.",
+            },
           ],
           relatedWorks: [
-            'The Sun Also Rises by Ernest Hemingway',
-            'What We Talk About When We Talk About Love by Raymond Carver',
-            'The Lady with the Dog by Anton Chekhov',
+            "The Sun Also Rises by Ernest Hemingway",
+            "What We Talk About When We Talk About Love by Raymond Carver",
+            "The Lady with the Dog by Anton Chekhov",
           ],
           lineageSummary: `This work shows strong minimalist influences, drawing from the Hemingway-Carver lineage of sparse, emotionally resonant prose. The attention to subtext and unsaid meaning reflects a deep connection to Chekhov's dramatic tradition.`,
         });
@@ -66,9 +114,9 @@ function mockAnalyze(title: string, author: string): Promise<DiscoveryResult> {
 }
 
 export default function DiscoverPage() {
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [sourceText, setSourceText] = useState('');
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [sourceText, setSourceText] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<DiscoveryResult | null>(null);
 
@@ -86,7 +134,7 @@ export default function DiscoverPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-zinc-900 to-zinc-950 text-zinc-100">
+    <div className="min-h-screen bg-linear-to-b from-zinc-900 to-zinc-950 text-zinc-100">
       <MobileNav currentPage="Discover" />
       <MobileHeaderSpacer />
 
@@ -94,7 +142,7 @@ export default function DiscoverPage() {
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 min-h-[44px]">
             <Network className="w-8 h-8 text-amber-400" />
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
+            <h1 className="text-2xl font-bold bg-linear-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
               Lineage Lit
             </h1>
           </Link>
@@ -110,11 +158,12 @@ export default function DiscoverPage() {
             AI-Powered
           </div>
           <h2 className="text-3xl sm:text-4xl font-bold mb-3">
-            Discover Any Book&apos;s <span className="text-amber-400">Lineage</span>
+            Discover Any Book&apos;s{" "}
+            <span className="text-amber-400">Lineage</span>
           </h2>
           <p className="text-zinc-400 max-w-lg mx-auto">
-            Enter any book, screenplay, or article and our AI will trace its creative DNA
-            back through literary history.
+            Enter any book, screenplay, or article and our AI will trace its
+            creative DNA back through literary history.
           </p>
         </div>
 
@@ -128,7 +177,7 @@ export default function DiscoverPage() {
               <input
                 type="text"
                 value={title}
-                onChange={e => setTitle(e.target.value)}
+                onChange={(e) => setTitle(e.target.value)}
                 placeholder='e.g. "No Country for Old Men"'
                 className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-amber-500/50"
               />
@@ -141,7 +190,7 @@ export default function DiscoverPage() {
               <input
                 type="text"
                 value={author}
-                onChange={e => setAuthor(e.target.value)}
+                onChange={(e) => setAuthor(e.target.value)}
                 placeholder='e.g. "Cormac McCarthy"'
                 className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-amber-500/50"
               />
@@ -153,7 +202,7 @@ export default function DiscoverPage() {
               </label>
               <textarea
                 value={sourceText}
-                onChange={e => setSourceText(e.target.value)}
+                onChange={(e) => setSourceText(e.target.value)}
                 placeholder="Paste the acknowledgments page or author's note for more accurate analysis..."
                 rows={3}
                 className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-amber-500/50 resize-none"
@@ -191,8 +240,12 @@ export default function DiscoverPage() {
                 <div className="absolute inset-0 rounded-full border-2 border-amber-500/50 animate-ping" />
               </div>
               <div className="text-center">
-                <p className="text-zinc-200 font-medium">Tracing creative lineage...</p>
-                <p className="text-zinc-500 text-sm mt-1">Analyzing influences, styles, and connections</p>
+                <p className="text-zinc-200 font-medium">
+                  Tracing creative lineage...
+                </p>
+                <p className="text-zinc-500 text-sm mt-1">
+                  Analyzing influences, styles, and connections
+                </p>
               </div>
             </div>
           </div>
@@ -207,7 +260,9 @@ export default function DiscoverPage() {
                 <BookOpen className="w-5 h-5 text-amber-400" />
                 Lineage Analysis
               </h3>
-              <p className="text-zinc-300 leading-relaxed">{result.lineageSummary}</p>
+              <p className="text-zinc-300 leading-relaxed">
+                {result.lineageSummary}
+              </p>
             </div>
 
             {/* Identified Influences */}
@@ -220,14 +275,17 @@ export default function DiscoverPage() {
                 {result.identifiedInfluences
                   .sort((a, b) => b.confidence - a.confidence)
                   .map((influence, i) => {
-                    const existing = creators.find(c =>
-                      c.name.toLowerCase() === influence.name.toLowerCase()
+                    const existing = creators.find(
+                      (c) =>
+                        c.name.toLowerCase() === influence.name.toLowerCase(),
                     );
                     return (
                       <div
                         key={i}
                         className="flex items-start gap-4 p-4 bg-zinc-800/50 rounded-xl border border-zinc-700/50"
-                        style={{ animation: `fadeInUp 0.5s ease-out ${i * 0.15}s both` }}
+                        style={{
+                          animation: `fadeInUp 0.5s ease-out ${i * 0.15}s both`,
+                        }}
                       >
                         <div className="flex-shrink-0">
                           <div className="w-12 h-12 rounded-lg bg-amber-500/10 flex items-center justify-center border border-amber-500/20">
@@ -238,7 +296,9 @@ export default function DiscoverPage() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
-                            <h4 className="font-semibold text-zinc-200">{influence.name}</h4>
+                            <h4 className="font-semibold text-zinc-200">
+                              {influence.name}
+                            </h4>
                             {existing && (
                               <Link
                                 href={`/creators/${existing.id}`}
@@ -248,7 +308,9 @@ export default function DiscoverPage() {
                               </Link>
                             )}
                           </div>
-                          <p className="text-sm text-zinc-400 mt-1">{influence.evidence}</p>
+                          <p className="text-sm text-zinc-400 mt-1">
+                            {influence.evidence}
+                          </p>
                         </div>
                       </div>
                     );
@@ -277,7 +339,12 @@ export default function DiscoverPage() {
             {/* Explore More CTA */}
             <div className="flex flex-col sm:flex-row gap-3">
               <button
-                onClick={() => { setResult(null); setTitle(''); setAuthor(''); setSourceText(''); }}
+                onClick={() => {
+                  setResult(null);
+                  setTitle("");
+                  setAuthor("");
+                  setSourceText("");
+                }}
                 className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-zinc-800 text-zinc-300 rounded-lg hover:bg-zinc-700 transition"
               >
                 Analyze Another Work
@@ -300,16 +367,26 @@ export default function DiscoverPage() {
                 <Crown className="w-6 h-6 text-amber-400" />
               </div>
               <div>
-                <h3 className="font-semibold text-zinc-100 mb-1">Lineage Lit Pro</h3>
+                <h3 className="font-semibold text-zinc-100 mb-1">
+                  Lineage Lit Pro
+                </h3>
                 <p className="text-zinc-400 text-sm mb-3">
-                  Unlimited AI lineage analysis, bulk import analysis, and priority processing.
-                  Currently in demo mode with mock results.
+                  Unlimited AI lineage analysis, bulk import analysis, and
+                  priority processing. Currently in demo mode with mock results.
                 </p>
                 <div className="flex flex-wrap gap-2 text-xs text-zinc-500">
-                  <span className="px-2 py-1 bg-zinc-800 rounded">Unlimited analyses</span>
-                  <span className="px-2 py-1 bg-zinc-800 rounded">Acknowledgments parsing</span>
-                  <span className="px-2 py-1 bg-zinc-800 rounded">Export lineage trees</span>
-                  <span className="px-2 py-1 bg-zinc-800 rounded">API access</span>
+                  <span className="px-2 py-1 bg-zinc-800 rounded">
+                    Unlimited analyses
+                  </span>
+                  <span className="px-2 py-1 bg-zinc-800 rounded">
+                    Acknowledgments parsing
+                  </span>
+                  <span className="px-2 py-1 bg-zinc-800 rounded">
+                    Export lineage trees
+                  </span>
+                  <span className="px-2 py-1 bg-zinc-800 rounded">
+                    API access
+                  </span>
                 </div>
               </div>
             </div>
@@ -319,8 +396,14 @@ export default function DiscoverPage() {
 
       <style jsx>{`
         @keyframes fadeInUp {
-          from { opacity: 0; transform: translateY(12px); }
-          to { opacity: 1; transform: translateY(0); }
+          from {
+            opacity: 0;
+            transform: translateY(12px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
       `}</style>
 

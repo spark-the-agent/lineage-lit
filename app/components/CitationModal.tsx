@@ -1,9 +1,13 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { X, Copy, Check, FileText } from 'lucide-react';
-import { Creator, Work } from '@/lib/data';
-import { generateCitation, CitationFormat, formatLabels } from '@/lib/citations';
+import { useState } from "react";
+import { X, Copy, Check, FileText } from "lucide-react";
+import { Creator, Work } from "@/lib/data";
+import {
+  generateCitation,
+  CitationFormat,
+  formatLabels,
+} from "@/lib/citations";
 
 interface CitationModalProps {
   creator: Creator;
@@ -11,17 +15,18 @@ interface CitationModalProps {
   onClose: () => void;
 }
 
-export default function CitationModal({ creator, work, onClose }: CitationModalProps) {
-  const [format, setFormat] = useState<CitationFormat>('apa');
+export default function CitationModal({
+  creator,
+  work,
+  onClose,
+}: CitationModalProps) {
+  const [format, setFormat] = useState<CitationFormat>("apa");
   const [copied, setCopied] = useState(false);
 
-  const citation = generateCitation(
-    { creator, work },
-    { format }
-  );
+  const citation = generateCitation({ creator, work }, { format });
 
   // Strip HTML tags for plain text copy
-  const plainCitation = citation.replace(/<\/?i>/g, '');
+  const plainCitation = citation.replace(/<\/?i>/g, "");
 
   const handleCopy = async () => {
     try {
@@ -30,11 +35,11 @@ export default function CitationModal({ creator, work, onClose }: CitationModalP
       setTimeout(() => setCopied(false), 2000);
     } catch {
       // fallback
-      const textarea = document.createElement('textarea');
+      const textarea = document.createElement("textarea");
       textarea.value = plainCitation;
       document.body.appendChild(textarea);
       textarea.select();
-      document.execCommand('copy');
+      document.execCommand("copy");
       document.body.removeChild(textarea);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -42,10 +47,13 @@ export default function CitationModal({ creator, work, onClose }: CitationModalP
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={onClose}>
+    <div
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+      onClick={onClose}
+    >
       <div
         className="bg-zinc-900 rounded-2xl p-6 max-w-lg w-full border border-zinc-700"
-        onClick={e => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-xl font-semibold flex items-center gap-2">
@@ -62,14 +70,14 @@ export default function CitationModal({ creator, work, onClose }: CitationModalP
 
         {/* Format picker */}
         <div className="flex gap-2 mb-4">
-          {(Object.keys(formatLabels) as CitationFormat[]).map(f => (
+          {(Object.keys(formatLabels) as CitationFormat[]).map((f) => (
             <button
               key={f}
               onClick={() => setFormat(f)}
               className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition ${
                 format === f
-                  ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                  : 'bg-zinc-800 text-zinc-400 border border-zinc-700 hover:border-zinc-600'
+                  ? "bg-amber-500/20 text-amber-400 border border-amber-500/30"
+                  : "bg-zinc-800 text-zinc-400 border border-zinc-700 hover:border-zinc-600"
               }`}
             >
               {formatLabels[f].name}
@@ -77,7 +85,9 @@ export default function CitationModal({ creator, work, onClose }: CitationModalP
           ))}
         </div>
 
-        <p className="text-xs text-zinc-500 mb-3">{formatLabels[format].description}</p>
+        <p className="text-xs text-zinc-500 mb-3">
+          {formatLabels[format].description}
+        </p>
 
         {/* Citation output */}
         <div className="bg-zinc-800/50 rounded-lg p-4 border border-zinc-700 mb-4">

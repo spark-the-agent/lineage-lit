@@ -1,14 +1,16 @@
-import { getState, setState } from './persistence';
-import { creators } from './data';
+import { getState, setState } from "./persistence";
+import { creators } from "./data";
 
 function todayStr(): string {
-  return new Date().toISOString().split('T')[0];
+  return new Date().toISOString().split("T")[0];
 }
 
 function daysBetween(a: string, b: string): number {
-  const dateA = new Date(a + 'T00:00:00');
-  const dateB = new Date(b + 'T00:00:00');
-  return Math.round((dateB.getTime() - dateA.getTime()) / (1000 * 60 * 60 * 24));
+  const dateA = new Date(a + "T00:00:00");
+  const dateB = new Date(b + "T00:00:00");
+  return Math.round(
+    (dateB.getTime() - dateA.getTime()) / (1000 * 60 * 60 * 24),
+  );
 }
 
 export function recordDailyVisit(): void {
@@ -32,7 +34,8 @@ export function recordDailyVisit(): void {
       currentStreak: newStreak,
       longestStreak: Math.max(longestStreak, newStreak),
       lastVisitDate: today,
-      streakStartDate: newStreak === 1 ? today : state.streakData.streakStartDate,
+      streakStartDate:
+        newStreak === 1 ? today : state.streakData.streakStartDate,
     },
   });
 }

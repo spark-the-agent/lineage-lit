@@ -1,12 +1,18 @@
-'use client';
+"use client";
 
-import { createContext, useContext, useEffect, useState, useCallback, ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+  ReactNode,
+} from "react";
 import {
   PersistedState,
   UserProfileData,
   defaultUserProfile,
   getState,
-  setState as setGlobalState,
   subscribe,
   toggleSavedCreator as _toggleSaved,
   toggleLikedWork as _toggleLiked,
@@ -14,7 +20,7 @@ import {
   recordCreatorView as _recordView,
   unlockAchievement as _unlockAchievement,
   updateUserProfile as _updateUserProfile,
-} from '@/lib/persistence';
+} from "@/lib/persistence";
 
 interface PersistenceContextValue {
   state: PersistedState;
@@ -40,21 +46,42 @@ export function PersistenceProvider({ children }: { children: ReactNode }) {
     const unsub = subscribe(setLocalState);
     // Defer initial hydration to avoid synchronous setState in effect
     const timer = setTimeout(() => setLocalState(getState()), 0);
-    return () => { unsub(); clearTimeout(timer); };
+    return () => {
+      unsub();
+      clearTimeout(timer);
+    };
   }, []);
 
   const userProfile = state.userProfile ?? defaultUserProfile;
-  const updateUserProfile = useCallback((profile: Partial<UserProfileData>) => _updateUserProfile(profile), []);
+  const updateUserProfile = useCallback(
+    (profile: Partial<UserProfileData>) => _updateUserProfile(profile),
+    [],
+  );
 
   const toggleSavedCreator = useCallback((id: string) => _toggleSaved(id), []);
   const toggleLikedWork = useCallback((id: string) => _toggleLiked(id), []);
-  const toggleFollowedUser = useCallback((id: string) => _toggleFollowed(id), []);
+  const toggleFollowedUser = useCallback(
+    (id: string) => _toggleFollowed(id),
+    [],
+  );
   const recordCreatorView = useCallback((id: string) => _recordView(id), []);
-  const unlockAchievement = useCallback((id: string) => _unlockAchievement(id), []);
+  const unlockAchievement = useCallback(
+    (id: string) => _unlockAchievement(id),
+    [],
+  );
 
-  const isCreatorSaved = useCallback((id: string) => state.savedCreators.includes(id), [state.savedCreators]);
-  const isWorkLiked = useCallback((id: string) => state.likedWorks.includes(id), [state.likedWorks]);
-  const isUserFollowed = useCallback((id: string) => state.followedUsers.includes(id), [state.followedUsers]);
+  const isCreatorSaved = useCallback(
+    (id: string) => state.savedCreators.includes(id),
+    [state.savedCreators],
+  );
+  const isWorkLiked = useCallback(
+    (id: string) => state.likedWorks.includes(id),
+    [state.likedWorks],
+  );
+  const isUserFollowed = useCallback(
+    (id: string) => state.followedUsers.includes(id),
+    [state.followedUsers],
+  );
 
   return (
     <PersistenceContext.Provider
@@ -79,6 +106,7 @@ export function PersistenceProvider({ children }: { children: ReactNode }) {
 
 export function usePersistence(): PersistenceContextValue {
   const ctx = useContext(PersistenceContext);
-  if (!ctx) throw new Error('usePersistence must be used inside PersistenceProvider');
+  if (!ctx)
+    throw new Error("usePersistence must be used inside PersistenceProvider");
   return ctx;
 }

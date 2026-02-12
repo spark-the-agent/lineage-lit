@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useMemo } from 'react';
-import { usePersistence } from './PersistenceProvider';
-import { findPath } from '@/lib/path-finder';
+import { useMemo } from "react";
+import { usePersistence } from "./PersistenceProvider";
+import { findPath } from "@/lib/path-finder";
 
 interface DegreeBadgeProps {
   creatorId: string;

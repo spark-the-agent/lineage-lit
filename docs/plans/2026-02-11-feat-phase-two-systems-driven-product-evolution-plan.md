@@ -62,21 +62,21 @@ Every decision is grounded in **systems thinking** — identifying reinforcing l
 
 ### Reinforcing Loops (Growth Engines)
 
-| Loop | Name | Mechanism | Current Status |
-|------|------|-----------|----------------|
-| **R1** | Content Engine | More creators → more connections → richer graph → more discovery | **BROKEN** — stuck at 8 creators |
-| **R2** | Discovery Loop | User explores → saves creators → better recommendations → explores more | **WEAK** — exhausts in 5 minutes |
-| **R3** | Aha Moment | Unexpected connection found → dopamine → deeper exploration | **BURIED** — graph is 80% down landing page |
-| **R4** | Viral Sharing | User creates DNA card / finds path → shares → friend visits → new user | **DORMANT** — ShareableCard exists but isn't prominent |
-| **R5** | Social Proof | User sees others' activity → engages → creates activity → others see | **FAKE** — 100% mock data |
-| **R6** | Acquisition | Shared artifact appears on social → curiosity → visit → new user | **ZERO** — no public sharing flow |
+| Loop   | Name           | Mechanism                                                               | Current Status                                         |
+| ------ | -------------- | ----------------------------------------------------------------------- | ------------------------------------------------------ |
+| **R1** | Content Engine | More creators → more connections → richer graph → more discovery        | **BROKEN** — stuck at 8 creators                       |
+| **R2** | Discovery Loop | User explores → saves creators → better recommendations → explores more | **WEAK** — exhausts in 5 minutes                       |
+| **R3** | Aha Moment     | Unexpected connection found → dopamine → deeper exploration             | **BURIED** — graph is 80% down landing page            |
+| **R4** | Viral Sharing  | User creates DNA card / finds path → shares → friend visits → new user  | **DORMANT** — ShareableCard exists but isn't prominent |
+| **R5** | Social Proof   | User sees others' activity → engages → creates activity → others see    | **FAKE** — 100% mock data                              |
+| **R6** | Acquisition    | Shared artifact appears on social → curiosity → visit → new user        | **ZERO** — no public sharing flow                      |
 
 ### Balancing Loops (Quality Governors)
 
-| Loop | Name | Mechanism |
-|------|------|-----------|
-| **B1** | Quality Gate | Every creator must have verified influences — curated beats crowdsourced |
-| **B2** | Complexity Ceiling | Each feature must serve the core loop — resist feature bloat |
+| Loop   | Name               | Mechanism                                                                |
+| ------ | ------------------ | ------------------------------------------------------------------------ |
+| **B1** | Quality Gate       | Every creator must have verified influences — curated beats crowdsourced |
+| **B2** | Complexity Ceiling | Each feature must serve the core loop — resist feature bloat             |
 
 ### Key Leverage Points (Ordered by Impact)
 
@@ -92,9 +92,9 @@ Every decision is grounded in **systems thinking** — identifying reinforcing l
 
 ### The Instagram Lens
 
-Instagram succeeded because of one insight: **the filter preview was the product**. You saw the beautiful result *before* you committed. The aha moment was instant, zero-friction, and inherently shareable.
+Instagram succeeded because of one insight: **the filter preview was the product**. You saw the beautiful result _before_ you committed. The aha moment was instant, zero-friction, and inherently shareable.
 
-Lineage Lit's equivalent should be the influence graph — the moment you see that Hemingway shaped Carver who shaped Wolff, and you can *click* to explore each connection. But today:
+Lineage Lit's equivalent should be the influence graph — the moment you see that Hemingway shaped Carver who shaped Wolff, and you can _click_ to explore each connection. But today:
 
 - The interactive graph is buried 80% down the landing page
 - A first-time visitor sees marketing copy before they see magic
@@ -159,6 +159,7 @@ CURRENT                          PHASE 2 TARGET
 ### Critical Architecture Decision: Hybrid Mode
 
 **Remove `output: 'export'` from `next.config.ts`.** This unlocks:
+
 - Client-side Convex queries (real-time data)
 - Server components that pre-render with static data
 - API routes if needed later
@@ -195,6 +196,7 @@ This avoids rewriting every component while migrating incrementally.
 Hero → Streak → Daily Lineage → Challenge → DNA Card → Features → Featured Lineage → Stats → Graph → DNA Teaser → Community CTA
 
 **New order** (graph is THE hero):
+
 ```
 ┌─────────────────────────────────┐
 │  HERO: "See How Ideas Connect"  │
@@ -216,6 +218,7 @@ Hero → Streak → Daily Lineage → Challenge → DNA Card → Features → Fe
 ```
 
 **Key changes to `app/page.tsx`:**
+
 - Move `LineageGraph` to immediately after hero (position 2, not position 8)
 - Increase graph height: 300px → 600px (mobile: 400px)
 - Add first-visit tooltip: pulsing amber dot on Hemingway node with "Click to explore"
@@ -237,6 +240,7 @@ Hero → Streak → Daily Lineage → Challenge → DNA Card → Features → Fe
 **File:** `app/components/StreakBanner.tsx`
 
 Currently returns `null` when streak is 0. Change to:
+
 - New users see: "Start your discovery journey — explore your first creator"
 - After 1 creator viewed: "1 creator discovered! Keep going..."
 - After 1 day streak: current behavior kicks in
@@ -303,6 +307,7 @@ Currently returns `null` when streak is 0. Change to:
 
 **Wave 1 (20 creators) — Core literary canon:**
 Expand existing lineages deeper. Add the "missing links":
+
 - Wolff, Marquez (already referenced in influences but not in data)
 - Fitzgerald, Stein, Pound (Hemingway's influences)
 - Chekhov (Carver's primary influence)
@@ -312,16 +317,19 @@ Expand existing lineages deeper. Add the "missing links":
 - David Foster Wallace, Don DeLillo (Postmodern branch)
 
 **Wave 2 (20 more) — Cross-genre bridges:**
+
 - Creators that connect literary movements
 - International voices (Borges, Murakami, Achebe, Rushdie)
 - Contemporary voices (Ocean Vuong, Carmen Maria Machado)
 
 **Wave 3 (10+) — User-surprising connections:**
+
 - Cross-medium influences (novelist → screenwriter → songwriter)
 - Historical chains (ancient → modern)
 - These create the "aha moments" that drive sharing
 
 **Implementation:**
+
 - Extend `convex/seed.ts` with curated data
 - Each creator needs: name, slug, bio, birth/death years, 2-3 works, verified influences
 - Influence relationships must be bidirectional (if A influences B, B's `influencedBy` includes A)
@@ -343,6 +351,7 @@ Authenticated user:
 ```
 
 **Files affected:**
+
 - `app/components/PersistenceProvider.tsx` — add Convex sync layer
 - `lib/persistence.ts` — add `syncToConvex()` and `hydrateFromConvex()` functions
 - Convex: add `readingList` mutations (schema already has the table)
@@ -383,6 +392,7 @@ Authenticated user:
 - After exploring 5+ creators: prompt "See your emerging Reading DNA?"
 
 **Card enhancements:**
+
 - Dynamic card based on actual user behavior (saved creators, liked works)
 - Animated card preview (subtle glow, particles)
 - One-tap share to Twitter/Instagram Stories (via Web Share API, already in `ShareButton`)
@@ -413,6 +423,7 @@ Authenticated user:
 #### 3.4 Open Graph / Social Previews
 
 For every shareable URL, generate rich previews:
+
 - `/creators/[id]` — creator card with name, years, key influences
 - `/dna/[userId]` — Reading DNA card image
 - `/path/[from]/[to]` — lineage path visualization
@@ -440,6 +451,7 @@ For every shareable URL, generate rich previews:
 **Current state:** Clerk configured in `convex.json` but not integrated into frontend.
 
 **Implementation:**
+
 - Install `@clerk/nextjs`
 - Add `ClerkProvider` to `app/layout.tsx`
 - Sign in / Sign up flows (modal, not full page — keep exploration frictionless)
@@ -447,6 +459,7 @@ For every shareable URL, generate rich previews:
 - Gate social features behind auth, keep browsing/exploration open
 
 **Critical UX decision:** Never gate exploration behind auth. Users should be able to:
+
 - Browse all creators ✓ (no auth)
 - Interact with graph ✓ (no auth)
 - Save creators locally ✓ (no auth, localStorage)
@@ -477,6 +490,7 @@ For every shareable URL, generate rich previews:
 **Current state:** `DNAComparison` component exists but compares against mock users.
 
 **Target:** Compare your Reading DNA with any real user.
+
 - "Compare with [username]" on any profile
 - Side-by-side DNA cards
 - "You share 73% literary DNA" — quantified compatibility
@@ -508,6 +522,7 @@ For every shareable URL, generate rich previews:
 **New page:** `/discover` (or integrate into existing `/recommendations`)
 
 **Flow:**
+
 1. User enters a book title + author (or pastes from acknowledgments page)
 2. System shows "Analyzing literary DNA..." with elegant loading animation
 3. Results appear: identified influences with confidence scores, related works, lineage tree
@@ -530,6 +545,7 @@ For every shareable URL, generate rich previews:
 **Current:** `lib/recommendations.ts` uses algorithmic scoring (shared influences, genre overlap).
 
 **Enhancement:** Supplement with AI reasoning for Pro users.
+
 - "Based on your Reading DNA, you might love Ted Chiang because..."
 - AI generates natural language explanation, not just score
 - Feels like a knowledgeable friend, not an algorithm
@@ -537,6 +553,7 @@ For every shareable URL, generate rich previews:
 #### 5.4 Community Verification Loop
 
 AI discoveries feed into community verification:
+
 1. AI suggests: "Hemingway influenced Carver" (confidence: 0.92)
 2. Community votes: 👍 Agree / 👎 Disagree / 📚 Add citation
 3. High-confidence, community-verified connections become permanent graph edges
@@ -577,22 +594,23 @@ AI discoveries feed into community verification:
 ## Success Metrics
 
 ### North Star Metric
+
 **Weekly Active Explorers** — users who view 3+ creator profiles per week.
 
 ### Phase Metrics
 
-| Phase | Metric | Target |
-|-------|--------|--------|
-| Phase 1 | Time-to-first-interaction on landing page | < 5 seconds |
-| Phase 1 | Creator profile views per session | 3+ (up from ~1) |
-| Phase 2 | Average session duration | 4+ minutes |
-| Phase 2 | Recommendation click-through rate | > 25% |
-| Phase 3 | DNA cards generated per week | 50+ |
-| Phase 3 | Shared artifacts per week | 20+ |
-| Phase 4 | Users with 1+ follow | > 40% of authenticated |
-| Phase 4 | Return visits within 7 days | > 30% |
-| Phase 5 | AI discovery requests per week | 100+ |
-| Phase 5 | Pro conversion rate | > 3% of active users |
+| Phase   | Metric                                    | Target                 |
+| ------- | ----------------------------------------- | ---------------------- |
+| Phase 1 | Time-to-first-interaction on landing page | < 5 seconds            |
+| Phase 1 | Creator profile views per session         | 3+ (up from ~1)        |
+| Phase 2 | Average session duration                  | 4+ minutes             |
+| Phase 2 | Recommendation click-through rate         | > 25%                  |
+| Phase 3 | DNA cards generated per week              | 50+                    |
+| Phase 3 | Shared artifacts per week                 | 20+                    |
+| Phase 4 | Users with 1+ follow                      | > 40% of authenticated |
+| Phase 4 | Return visits within 7 days               | > 30%                  |
+| Phase 5 | AI discovery requests per week            | 100+                   |
+| Phase 5 | Pro conversion rate                       | > 3% of active users   |
 
 ### System Health Indicators
 
@@ -608,6 +626,7 @@ AI discoveries feed into community verification:
 ## Dependencies & Prerequisites
 
 ### Technical Prerequisites
+
 - [x] Convex deployment active at `https://powerful-ostrich-963.convex.cloud` ✅ (confirmed)
 - [ ] `NEXT_PUBLIC_CONVEX_URL` environment variable configured
 - [ ] `OPENAI_API_KEY` set in Convex dashboard (for Phase 5)
@@ -616,12 +635,14 @@ AI discoveries feed into community verification:
 - [ ] Vercel deployment updated for non-static mode (Phase 2)
 
 ### Content Prerequisites
+
 - [x] 50+ creators researched with verified influence relationships
 - [x] Each creator has: name, slug, bio, birth/death years, 2-3 works, influences
 - [x] Influence data sourced from: author interviews, acknowledgment pages, literary criticism
 - [ ] Data entered into `convex/seed.ts` or bulk import script
 
 ### Design Prerequisites
+
 - [ ] OG image templates for shareable artifacts (DNA cards, paths, creator cards)
 - [ ] Loading/transition animations for Convex data fetching
 - [ ] Auth modal designs (sign in, sign up, upgrade to Pro)
@@ -633,26 +654,26 @@ AI discoveries feed into community verification:
 
 ### High Risk
 
-| Risk | Impact | Mitigation |
-|------|--------|------------|
-| Removing `output: 'export'` breaks deployment | All pages down | Test in preview deployment first. Keep static generation for all current pages. Only add client-side Convex queries. |
-| Graph performance with 50+ nodes | Slow/janky graph | Profile LineageGraph with 50 nodes. Add level-of-detail: show only 2-hop neighborhood by default, full graph on zoom out. |
-| Convex cold starts slow first load | Poor first impression | Pre-seed common queries. Use localStorage as instant cache while Convex hydrates. Show skeleton UI during load. |
+| Risk                                          | Impact                | Mitigation                                                                                                                |
+| --------------------------------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Removing `output: 'export'` breaks deployment | All pages down        | Test in preview deployment first. Keep static generation for all current pages. Only add client-side Convex queries.      |
+| Graph performance with 50+ nodes              | Slow/janky graph      | Profile LineageGraph with 50 nodes. Add level-of-detail: show only 2-hop neighborhood by default, full graph on zoom out. |
+| Convex cold starts slow first load            | Poor first impression | Pre-seed common queries. Use localStorage as instant cache while Convex hydrates. Show skeleton UI during load.           |
 
 ### Medium Risk
 
-| Risk | Impact | Mitigation |
-|------|--------|------------|
-| Clerk + Convex auth integration complexity | Delayed Phase 4 | Follow Convex's official Clerk integration guide. Test auth flow in isolation before integrating. |
-| Content quality at 50+ creators | Bad data undermines trust | Manual curation for Wave 1 (20 core). Community verification for later waves. "Verified" badge for curated creators. |
-| AI hallucination in lineage discovery | Wrong influence claims | Always show confidence scores. Community verification required. Label AI-discovered connections distinctly. |
+| Risk                                       | Impact                    | Mitigation                                                                                                           |
+| ------------------------------------------ | ------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Clerk + Convex auth integration complexity | Delayed Phase 4           | Follow Convex's official Clerk integration guide. Test auth flow in isolation before integrating.                    |
+| Content quality at 50+ creators            | Bad data undermines trust | Manual curation for Wave 1 (20 core). Community verification for later waves. "Verified" badge for curated creators. |
+| AI hallucination in lineage discovery      | Wrong influence claims    | Always show confidence scores. Community verification required. Label AI-discovered connections distinctly.          |
 
 ### Low Risk
 
-| Risk | Impact | Mitigation |
-|------|--------|------------|
-| Stripe integration complexity | Delayed monetization | Stripe + Convex is well-documented. Can soft-launch Pro as "coming soon" while building. |
-| Feature complexity overwhelms users | Confusion, churn | Progressive disclosure: new features appear as users engage more. Don't show AI discovery until 5+ creators explored. |
+| Risk                                | Impact               | Mitigation                                                                                                            |
+| ----------------------------------- | -------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Stripe integration complexity       | Delayed monetization | Stripe + Convex is well-documented. Can soft-launch Pro as "coming soon" while building.                              |
+| Feature complexity overwhelms users | Confusion, churn     | Progressive disclosure: new features appear as users engage more. Don't show AI discovery until 5+ creators explored. |
 
 ---
 
@@ -670,6 +691,7 @@ AI discoveries feed into community verification:
 ### Systems Evolution
 
 As the system matures, new reinforcing loops emerge:
+
 - **R7: Creator Network Effects** — more creators in graph → more paths between any two → more "aha moments" → more sharing → more users → more AI discoveries → more creators
 - **R8: Data Moat** — verified influence relationships become proprietary dataset no competitor can replicate
 - **R9: Taste Graph** — aggregated user preferences reveal which literary connections resonate most → improve recommendations → increase engagement
@@ -679,6 +701,7 @@ As the system matures, new reinforcing loops emerge:
 ## References & Research
 
 ### Internal References
+
 - Convex schema: `convex/schema.ts` (8 tables, fully indexed)
 - Convex AI integration: `convex/ai.ts` (GPT-4o-mini, mock fallback)
 - Convex seed data: `convex/seed.ts` (6 creators ready)
@@ -691,12 +714,14 @@ As the system matures, new reinforcing loops emerge:
 - Exploration ideas: `EXPLORATION.md` (Gutenberg, sitcom lineage, constellation maps)
 
 ### External References
+
 - Convex + Clerk integration: https://docs.convex.dev/auth/clerk
 - Convex + Next.js setup: https://docs.convex.dev/quickstart/nextjs
 - Stripe + Convex webhooks: https://docs.convex.dev/production/integrations/stripe
 - Web Share API: https://developer.mozilla.org/en-US/docs/Web/API/Navigator/share
 
 ### Architectural Inspiration
+
 - Instagram's "filter-first" design philosophy (instant delight before commitment)
 - Spotify Wrapped (shareable personal data artifacts driving viral acquisition)
 - Obsidian's graph view (personal knowledge graph as primary navigation)
@@ -704,4 +729,4 @@ As the system matures, new reinforcing loops emerge:
 
 ---
 
-*Plan authored 2026-02-11. Systems-driven approach inspired by Donella Meadows' "Thinking in Systems" and Mike Krieger's product philosophy at Instagram.*
+_Plan authored 2026-02-11. Systems-driven approach inspired by Donella Meadows' "Thinking in Systems" and Mike Krieger's product philosophy at Instagram._

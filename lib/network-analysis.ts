@@ -1,4 +1,4 @@
-import { Creator } from './data';
+import { Creator } from "./data";
 
 export interface NetworkMetrics {
   totalNodes: number;
@@ -37,7 +37,7 @@ export interface Bridge {
 
 export function analyzeNetwork(creators: Creator[]): NetworkMetrics {
   const graph = buildGraph(creators);
-  
+
   return {
     totalNodes: creators.length,
     totalEdges: countEdges(creators),
@@ -47,8 +47,8 @@ export function analyzeNetwork(creators: Creator[]): NetworkMetrics {
     mostCentral: calculateCentralityScores(creators, graph),
     clusteringCoefficients: calculateClusteringCoefficients(creators, graph),
     connectedComponents: findConnectedComponents(creators, graph),
-    pathLengths: calculatePathLengths(creators, graph),
-    bridges: findBridges(creators, graph)
+    pathLengths: calculatePathLengths(creators),
+    bridges: findBridges(creators, graph),
   };
 }
 
@@ -58,13 +58,13 @@ interface Graph {
 
 function buildGraph(creators: Creator[]): Graph {
   const graph: Graph = {};
-  
-  creators.forEach(c => {
+
+  creators.forEach((c) => {
     graph[c.id] = new Set();
-    c.influencedBy.forEach(id => graph[c.id].add(id));
-    c.influenced.forEach(id => graph[c.id].add(id));
+    c.influencedBy.forEach((id) => graph[c.id].add(id));
+    c.influenced.forEach((id) => graph[c.id].add(id));
   });
-  
+
   return graph;
 }
 
@@ -82,62 +82,71 @@ function calculateDensity(creators: Creator[]): number {
 
 function calculateAverageDegree(creators: Creator[]): number {
   const totalDegree = creators.reduce(
-    (acc, c) => acc + c.influencedBy.length + c.influenced.length, 
-    0
+    (acc, c) => acc + c.influencedBy.length + c.influenced.length,
+    0,
   );
   return totalDegree / creators.length;
 }
 
 function calculateInfluenceScores(creators: Creator[]): CreatorScore[] {
   // Combine direct influence and influence chain
-  const scores = creators.map(creator => {
+  const scores = creators.map((creator) => {
     const directInfluence = creator.influenced.length;
     const indirectInfluence = countIndirectInfluence(creator, creators);
     const score = directInfluence + indirectInfluence * 0.5;
-    
+
     return { creator, score };
   });
-  
+
   return scores.sort((a, b) => b.score - a.score);
 }
 
-function countIndirectInfluence(creator: Creator, allCreators: Creator[]): number {
+function countIndirectInfluence(
+  creator: Creator,
+  allCreators: Creator[],
+): number {
   let count = 0;
   const visited = new Set<string>();
   const queue = [...creator.influenced];
-  
+
   while (queue.length > 0) {
     const id = queue.shift()!;
     if (visited.has(id)) continue;
     visited.add(id);
     count++;
-    
-    const person = allCreators.find(c => c.id === id);
+
+    const person = allCreators.find((c) => c.id === id);
     if (person) {
       queue.push(...person.influenced);
     }
   }
-  
+
   return count;
 }
 
-function calculateCentralityScores(creators: Creator[], graph: Graph): CreatorScore[] {
+function calculateCentralityScores(
+  creators: Creator[],
+  graph: Graph,
+): CreatorScore[] {
   // Degree centrality (normalized)
-  const scores = creators.map(creator => {
-    const connections = (graph[creator.id]?.size || 0);
+  const scores = creators.map((creator) => {
+    const connections = graph[creator.id]?.size || 0;
     const maxPossible = creators.length - 1;
     const score = connections / maxPossible;
     return { creator, score };
   });
-  
+
   return scores.sort((a, b) => b.score - a.score);
 }
 
-function calculateClusteringCoefficients(creators: Creator[], graph: Graph): ClusterScore[] {
-  const scores = creators.map(creator => {
+function calculateClusteringCoefficients(
+  creators: Creator[],
+  graph: Graph,
+): ClusterScore[] {
+  const scores = creators.map((creator) => {
     const neighbors = Array.from(graph[creator.id] || []);
     if (neighbors.length < 2) return { creator, coefficient: 0 };
-    
+
     let connections = 0;
     for (let i = 0; i < neighbors.length; i++) {
       for (let j = i + 1; j < neighbors.length; j++) {
@@ -146,236 +155,286 @@ function calculateClusteringCoefficients(creators: Creator[], graph: Graph): Clu
         }
       }
     }
-    
+
     const possible = (neighbors.length * (neighbors.length - 1)) / 2;
     const coefficient = possible > 0 ? connections / possible : 0;
-    
+
     return { creator, coefficient };
   });
-  
+
   return scores.sort((a, b) => b.coefficient - a.coefficient);
 }
 
-function findConnectedComponents(creators: Creator[], graph: Graph): Creator[][] {
+function findConnectedComponents(
+  creators: Creator[],
+  graph: Graph,
+): Creator[][] {
   const visited = new Set<string>();
   const components: Creator[][] = [];
-  
-  creators.forEach(creator => {
+
+  creators.forEach((creator) => {
     if (visited.has(creator.id)) return;
-    
+
     const component: Creator[] = [];
     const queue = [creator.id];
-    
+
     while (queue.length > 0) {
       const id = queue.shift()!;
       if (visited.has(id)) continue;
       visited.add(id);
-      
-      const person = creators.find(c => c.id === id);
+
+      const person = creators.find((c) => c.id === id);
       if (person) component.push(person);
-      
-      graph[id]?.forEach(neighbor => {
+
+      graph[id]?.forEach((neighbor) => {
         if (!visited.has(neighbor)) queue.push(neighbor);
       });
     }
-    
+
     components.push(component);
   });
-  
+
   return components.sort((a, b) => b.length - a.length);
 }
 
-function calculatePathLengths(creators: Creator[], graph: Graph): PathLength[] {
+function calculatePathLengths(creators: Creator[]): PathLength[] {
   const paths: PathLength[] = [];
-  
+
   // Find influence chains (longest paths)
-  creators.forEach(from => {
-    const chain = findLongestChain(from, creators, graph);
+  creators.forEach((from) => {
+    const chain = findLongestChain(from, creators);
     if (chain.length > 2) {
       paths.push({
         from,
         to: chain[chain.length - 1],
         path: chain,
-        length: chain.length - 1
+        length: chain.length - 1,
       });
     }
   });
-  
+
   return paths
-    .filter((p, i, arr) => 
-      // Keep only unique, non-subset paths
-      !arr.some((other, j) => 
-        j !== i && 
-        other.path.every(node => p.path.includes(node)) &&
-        other.path.length > p.path.length
-      )
+    .filter(
+      (p, i, arr) =>
+        // Keep only unique, non-subset paths
+        !arr.some(
+          (other, j) =>
+            j !== i &&
+            other.path.every((node) => p.path.includes(node)) &&
+            other.path.length > p.path.length,
+        ),
     )
     .sort((a, b) => b.length - a.length);
 }
 
-function findLongestChain(start: Creator, allCreators: Creator[], graph: Graph): Creator[] {
+function findLongestChain(start: Creator, allCreators: Creator[]): Creator[] {
   let longest: Creator[] = [start];
-  
+
   function dfs(current: Creator, path: Creator[]) {
     const influenced = current.influenced
-      .map(id => allCreators.find(c => c.id === id))
+      .map((id) => allCreators.find((c) => c.id === id))
       .filter((c): c is Creator => c !== undefined);
-    
+
     if (influenced.length === 0) {
       if (path.length > longest.length) {
         longest = [...path];
       }
       return;
     }
-    
+
     for (const next of influenced) {
       if (!path.includes(next)) {
         dfs(next, [...path, next]);
       }
     }
   }
-  
+
   dfs(start, [start]);
   return longest;
 }
 
 function findBridges(creators: Creator[], graph: Graph): Bridge[] {
   // Find nodes that connect otherwise separate communities
-  const betweennessScores = creators.map(creator => {
+  const betweennessScores = creators.map((creator) => {
     const score = calculateBetweennessCentrality(creator, creators, graph);
     return { creator, betweennessCentrality: score };
   });
-  
+
   return betweennessScores
-    .filter(b => b.betweennessCentrality > 0)
+    .filter((b) => b.betweennessCentrality > 0)
     .sort((a, b) => b.betweennessCentrality - a.betweennessCentrality);
 }
 
-function calculateBetweennessCentrality(creator: Creator, allCreators: Creator[], graph: Graph): number {
+function calculateBetweennessCentrality(
+  creator: Creator,
+  allCreators: Creator[],
+  graph: Graph,
+): number {
   let shortestPathsThrough = 0;
   let totalShortestPaths = 0;
-  
-  allCreators.forEach(source => {
-    allCreators.forEach(target => {
-      if (source.id === target.id || source.id === creator.id || target.id === creator.id) return;
-      
+
+  allCreators.forEach((source) => {
+    allCreators.forEach((target) => {
+      if (
+        source.id === target.id ||
+        source.id === creator.id ||
+        target.id === creator.id
+      )
+        return;
+
       const paths = findAllShortestPaths(source.id, target.id, graph);
       if (paths.length === 0) return;
-      
+
       totalShortestPaths += paths.length;
-      shortestPathsThrough += paths.filter(p => p.includes(creator.id)).length;
+      shortestPathsThrough += paths.filter((p) =>
+        p.includes(creator.id),
+      ).length;
     });
   });
-  
+
   return totalShortestPaths > 0 ? shortestPathsThrough / totalShortestPaths : 0;
 }
 
-function findAllShortestPaths(start: string, end: string, graph: Graph): string[][] {
-  const queue: { node: string; path: string[] }[] = [{ node: start, path: [start] }];
-  const paths: string[][] = [];
-  let shortestLength = Infinity;
-  
-  while (queue.length > 0) {
-    const { node, path } = queue.shift()!;
-    
-    if (path.length > shortestLength) continue;
-    
-    if (node === end) {
-      if (path.length < shortestLength) {
-        shortestLength = path.length;
-        paths.length = 0;
-      }
-      if (path.length === shortestLength) {
-        paths.push(path);
-      }
-      continue;
-    }
-    
-    graph[node]?.forEach(neighbor => {
-      if (!path.includes(neighbor)) {
-        queue.push({ node: neighbor, path: [...path, neighbor] });
+function findAllShortestPaths(
+  start: string,
+  end: string,
+  graph: Graph,
+): string[][] {
+  if (start === end) return [[start]];
+
+  // Proper BFS with distance + parent tracking (O(V+E) instead of exponential)
+  const dist = new Map<string, number>();
+  const parents = new Map<string, string[]>();
+  dist.set(start, 0);
+  parents.set(start, []);
+
+  const queue: string[] = [start];
+  let head = 0; // Index-based dequeue: O(1) instead of shift()'s O(n)
+
+  while (head < queue.length) {
+    const node = queue[head++];
+    const d = dist.get(node)!;
+
+    // Stop exploring beyond target distance
+    if (dist.has(end) && d >= dist.get(end)!) break;
+
+    graph[node]?.forEach((neighbor) => {
+      const nd = d + 1;
+      const existingDist = dist.get(neighbor);
+
+      if (existingDist === undefined) {
+        dist.set(neighbor, nd);
+        parents.set(neighbor, [node]);
+        queue.push(neighbor);
+      } else if (nd === existingDist) {
+        parents.get(neighbor)!.push(node);
       }
     });
   }
-  
-  return paths;
+
+  if (!dist.has(end)) return [];
+
+  // Reconstruct all shortest paths via backtracking
+  const result: string[][] = [];
+  function backtrack(node: string, path: string[]) {
+    if (node === start) {
+      result.push([start, ...path]);
+      return;
+    }
+    for (const p of parents.get(node) || []) {
+      backtrack(p, [node, ...path]);
+    }
+  }
+  backtrack(end, []);
+  return result;
 }
 
 // Additional analysis functions
-export function getMovementClusters(creators: Creator[]): { name: string; members: Creator[]; era: string }[] {
+export function getMovementClusters(
+  creators: Creator[],
+): { name: string; members: Creator[]; era: string }[] {
   const components = findConnectedComponents(creators, buildGraph(creators));
-  
-  return components.map(comp => {
-    const years = comp.map(c => parseInt(c.years.split('-')[0]));
+
+  return components.map((comp) => {
+    const years = comp.map((c) => parseInt(c.years.split("-")[0]));
     const avgYear = years.reduce((a, b) => a + b, 0) / years.length;
-    
-    let era = 'Unknown';
-    if (avgYear < 1900) era = 'Pre-Modern';
-    else if (avgYear < 1920) era = 'Modernist';
-    else if (avgYear < 1960) era = 'Mid-Century';
-    else if (avgYear < 1990) era = 'Late 20th Century';
-    else era = 'Contemporary';
-    
+
+    let era = "Unknown";
+    if (avgYear < 1900) era = "Pre-Modern";
+    else if (avgYear < 1920) era = "Modernist";
+    else if (avgYear < 1960) era = "Mid-Century";
+    else if (avgYear < 1990) era = "Late 20th Century";
+    else era = "Contemporary";
+
     // Determine movement name based on connections
-    const names = comp.map(c => c.name.split(' ').pop());
-    
+    const names = comp.map((c) => c.name.split(" ").pop());
+
     return {
-      name: names.slice(0, 2).join('-') + ' School',
+      name: names.slice(0, 2).join("-") + " School",
       members: comp,
-      era
+      era,
     };
   });
 }
 
-export function getKeyWorks(creators: Creator[]): { work: string; creator: string; influenceScore: number }[] {
+export function getKeyWorks(
+  creators: Creator[],
+): { work: string; creator: string; influenceScore: number }[] {
   const workScores: { [key: string]: { creator: string; score: number } } = {};
-  
-  creators.forEach(c => {
+
+  creators.forEach((c) => {
     const influenceScore = c.influenced.length + c.influencedBy.length;
-    c.works.forEach(w => {
+    c.works.forEach((w) => {
       workScores[w.id] = {
         creator: c.name,
-        score: influenceScore
+        score: influenceScore,
       };
     });
   });
-  
+
   return Object.entries(workScores)
     .map(([id, data]) => ({
       work: id,
       creator: data.creator,
-      influenceScore: data.score
+      influenceScore: data.score,
     }))
     .sort((a, b) => b.influenceScore - a.influenceScore);
 }
 
-export function getInfluencePath(fromId: string, toId: string, creators: Creator[]): Creator[] | null {
-  const graph = buildGraph(creators);
-  const creatorMap = new Map(creators.map(c => [c.id, c]));
-  
-  const queue: { id: string; path: string[] }[] = [{ id: fromId, path: [fromId] }];
+export function getInfluencePath(
+  fromId: string,
+  toId: string,
+  creators: Creator[],
+): Creator[] | null {
+  const creatorMap = new Map(creators.map((c) => [c.id, c]));
+
+  const queue: { id: string; path: string[] }[] = [
+    { id: fromId, path: [fromId] },
+  ];
   const visited = new Set<string>();
-  
+
   while (queue.length > 0) {
     const { id, path } = queue.shift()!;
-    
+
     if (id === toId) {
-      return path.map(pid => creatorMap.get(pid)).filter((c): c is Creator => c !== undefined);
+      return path
+        .map((pid) => creatorMap.get(pid))
+        .filter((c): c is Creator => c !== undefined);
     }
-    
+
     if (visited.has(id)) continue;
     visited.add(id);
-    
+
     // Follow influence direction (who they influenced)
     const creator = creatorMap.get(id);
     if (creator) {
-      creator.influenced.forEach(nextId => {
+      creator.influenced.forEach((nextId) => {
         if (!visited.has(nextId)) {
           queue.push({ id: nextId, path: [...path, nextId] });
         }
       });
     }
   }
-  
+
   return null;
 }

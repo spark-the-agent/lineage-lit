@@ -28,6 +28,7 @@ No test framework is configured.
 ### Data Flow
 
 All data is hardcoded mock data — no API calls, no database. The source of truth is:
+
 - `lib/data.ts` — Creator and Work types + seed data (8 creators)
 - `lib/social.ts` — Mock user profiles, activity, following
 - `lib/recommendations.ts` — Client-side recommendation algorithm
@@ -71,6 +72,7 @@ Creator IDs are slug strings (e.g., `"hemingway"`, `"carver"`). Influence relati
 ### Static Export Constraints
 
 `next.config.ts` sets `output: 'export'`, `trailingSlash: true`, `images: { unoptimized: true }`. This means:
+
 - No server-side features (API routes, middleware, SSR)
 - All dynamic routes must use `generateStaticParams`
 - Images cannot use Next.js optimization

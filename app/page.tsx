@@ -6,23 +6,28 @@ import StreakBanner from "./components/StreakBanner";
 import WeeklyChallenge from "./components/WeeklyChallenge";
 import InteractiveGraphSection from "./components/InteractiveGraphSection";
 import DNAShareCTA from "./components/DNAShareCTA";
-import MobileNav, { MobileHeaderSpacer, MobileBottomSpacer } from "./components/MobileNav";
+import MobileNav, {
+  MobileHeaderSpacer,
+  MobileBottomSpacer,
+} from "./components/MobileNav";
 import { DesktopNav } from "./components/MobileNav";
 import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Lineage Lit - Discover the Lineage of Ideas",
-  description: "Track books, screenplays, and articles through their creative DNA. Trace how Hemingway influenced Carver, how Faulkner shaped McCarthy, and discover hidden connections.",
+  description:
+    "Track books, screenplays, and articles through their creative DNA. Trace how Hemingway influenced Carver, how Faulkner shaped McCarthy, and discover hidden connections.",
   openGraph: {
     title: "Lineage Lit - Discover the Lineage of Ideas",
-    description: "Trace creative influence chains between writers. See where writers learned their craft and what influenced their work.",
+    description:
+      "Trace creative influence chains between writers. See where writers learned their craft and what influenced their work.",
     type: "website",
   },
 };
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-zinc-900 to-zinc-950 text-zinc-100">
+    <div className="min-h-screen bg-linear-to-b from-zinc-900 to-zinc-950 text-zinc-100">
       <MobileNav />
       <MobileHeaderSpacer />
 
@@ -31,7 +36,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 min-h-[44px]">
             <Network className="w-8 h-8 text-amber-400" />
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
+            <h1 className="text-2xl font-bold bg-linear-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
               Lineage Lit
             </h1>
           </Link>
@@ -46,7 +51,8 @@ export default function Home() {
             See How <span className="text-amber-400">Ideas</span> Connect
           </h2>
           <p className="text-base sm:text-lg text-zinc-400 max-w-xl mx-auto">
-            Trace creative influence chains between writers. Click any creator to start exploring.
+            Trace creative influence chains between writers. Click any creator
+            to start exploring.
           </p>
         </div>
 
@@ -79,16 +85,29 @@ export default function Home() {
           </h3>
 
           <div className="flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-4">
-            <CreatorCard name="Ernest Hemingway" years="1899-1961" work="The Sun Also Rises" />
+            <CreatorCard
+              name="Ernest Hemingway"
+              years="1899-1961"
+              work="The Sun Also Rises"
+            />
             <Arrow />
-            <CreatorCard name="Raymond Carver" years="1938-1988" work="What We Talk About..." />
+            <CreatorCard
+              name="Raymond Carver"
+              years="1938-1988"
+              work="What We Talk About..."
+            />
             <Arrow />
-            <CreatorCard name="Tobias Wolff" years="b. 1945" work="This Boy's Life" />
+            <CreatorCard
+              name="Tobias Wolff"
+              years="b. 1945"
+              work="This Boy's Life"
+            />
           </div>
 
           <p className="mt-4 sm:mt-6 text-zinc-400 text-sm">
-            The &ldquo;iceberg theory&rdquo; - show only the tip, but the reader feels the weight beneath.
-            Hemingway&apos;s sparse prose influenced generations of writers.
+            The &ldquo;iceberg theory&rdquo; - show only the tip, but the reader
+            feels the weight beneath. Hemingway&apos;s sparse prose influenced
+            generations of writers.
           </p>
         </div>
 
@@ -122,7 +141,8 @@ export default function Home() {
               Join the Community
             </h3>
             <p className="text-zinc-300 mb-6">
-              Help map the creative lineage of literature. Contribute connections, verify influences, and earn reputation.
+              Help map the creative lineage of literature. Contribute
+              connections, verify influences, and earn reputation.
             </p>
             <a
               href="/community"
@@ -139,9 +159,7 @@ export default function Home() {
       <footer className="border-t border-zinc-800/50 mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-zinc-500 text-sm">
-              Built with ⚡ by Spark
-            </p>
+            <p className="text-zinc-500 text-sm">Built with ⚡ by Spark</p>
           </div>
         </div>
       </footer>
@@ -151,12 +169,22 @@ export default function Home() {
   );
 }
 
-function CreatorCard({ name, years, work }: { name: string, years: string, work: string }) {
+function CreatorCard({
+  name,
+  years,
+  work,
+}: {
+  name: string;
+  years: string;
+  work: string;
+}) {
   return (
     <div className="bg-zinc-950 rounded-lg p-4 border border-zinc-800 min-w-[140px] flex-1">
       <div className="font-medium text-sm">{name}</div>
       <div className="text-zinc-500 text-xs mb-2">{years}</div>
-      <div className="text-amber-400/80 text-xs italic">&ldquo;{work}&rdquo;</div>
+      <div className="text-amber-400/80 text-xs italic">
+        &ldquo;{work}&rdquo;
+      </div>
     </div>
   );
 }
@@ -164,8 +192,18 @@ function CreatorCard({ name, years, work }: { name: string, years: string, work:
 function Arrow() {
   return (
     <div className="flex justify-center lg:justify-start text-zinc-600">
-      <svg className="w-6 h-6 lg:w-8 lg:h-8 rotate-90 lg:rotate-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+      <svg
+        className="w-6 h-6 lg:w-8 lg:h-8 rotate-90 lg:rotate-0"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M17 8l4 4m0 0l-4 4m4-4H3"
+        />
       </svg>
     </div>
   );

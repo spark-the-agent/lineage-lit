@@ -1,7 +1,12 @@
-'use client';
+"use client";
 
-import { LogIn } from 'lucide-react';
-import { useAuthAvailable, SignInButton, UserButton, useUser } from './AuthProvider';
+import { LogIn } from "lucide-react";
+import {
+  useAuthAvailable,
+  SignInButton,
+  UserButton,
+  useUser,
+} from "./AuthProvider";
 
 export default function AuthButton() {
   const authAvailable = useAuthAvailable();
@@ -17,9 +22,7 @@ function AuthButtonInner() {
   const { isSignedIn, isLoaded } = useUser();
 
   if (!isLoaded) {
-    return (
-      <div className="w-8 h-8 rounded-full bg-zinc-800 animate-pulse" />
-    );
+    return <div className="w-8 h-8 rounded-full bg-zinc-800 animate-pulse" />;
   }
 
   if (isSignedIn) {

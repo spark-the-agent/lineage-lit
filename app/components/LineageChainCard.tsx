@@ -1,27 +1,29 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Zap, Share2 } from 'lucide-react';
-import { creators, getCreatorById } from '@/lib/data';
-import { findPath } from '@/lib/path-finder';
-import CreatorPicker from './CreatorPicker';
+import { useState } from "react";
+import { Zap, Share2 } from "lucide-react";
+import { getCreatorById } from "@/lib/data";
+import { findPath } from "@/lib/path-finder";
+import CreatorPicker from "./CreatorPicker";
 
 interface LineageChainCardProps {
   fromCreatorId: string;
 }
 
-export default function LineageChainCard({ fromCreatorId }: LineageChainCardProps) {
-  const [targetId, setTargetId] = useState('');
+export default function LineageChainCard({
+  fromCreatorId,
+}: LineageChainCardProps) {
+  const [targetId, setTargetId] = useState("");
 
   const result = targetId ? findPath(fromCreatorId, targetId) : null;
   const fromCreator = getCreatorById(fromCreatorId);
 
   const handleShare = async () => {
     if (!result) return;
-    const names = result.path.map(c => c.name).join(' → ');
+    const names = result.path.map((c) => c.name).join(" → ");
     const text = `${names} — ${result.length} degrees of literary influence!`;
     if (navigator.share) {
-      await navigator.share({ title: 'Literary Connection', text });
+      await navigator.share({ title: "Literary Connection", text });
     } else {
       await navigator.clipboard.writeText(text);
     }
@@ -38,7 +40,7 @@ export default function LineageChainCard({ fromCreatorId }: LineageChainCardProp
         value={targetId}
         onChange={setTargetId}
         excludeId={fromCreatorId}
-        label={`Connect ${fromCreator?.name?.split(' ').pop() || ''} to`}
+        label={`Connect ${fromCreator?.name?.split(" ").pop() || ""} to`}
       />
 
       {result && (
@@ -53,7 +55,7 @@ export default function LineageChainCard({ fromCreatorId }: LineageChainCardProp
                     <line
                       x1={x + 12}
                       y1={30}
-                      x2={(((i + 1) / (result.path.length - 1)) * 340 + 30) - 12}
+                      x2={((i + 1) / (result.path.length - 1)) * 340 + 30 - 12}
                       y2={30}
                       stroke="#f59e0b"
                       strokeWidth="2"
@@ -75,7 +77,7 @@ export default function LineageChainCard({ fromCreatorId }: LineageChainCardProp
                     fill="#d4d4d8"
                     fontSize="9"
                   >
-                    {creator.name.split(' ').pop()}
+                    {creator.name.split(" ").pop()}
                   </text>
                 </g>
               );
@@ -84,7 +86,8 @@ export default function LineageChainCard({ fromCreatorId }: LineageChainCardProp
 
           <div className="flex items-center justify-between mt-2">
             <span className="text-xs text-zinc-500">
-              {result.length} degree{result.length !== 1 ? 's' : ''} of separation
+              {result.length} degree{result.length !== 1 ? "s" : ""} of
+              separation
             </span>
             <button
               onClick={handleShare}

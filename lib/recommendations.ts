@@ -1,9 +1,15 @@
-import { Creator, Work, creators, getCreatorById, getAllCreators } from './data';
-import { UserProfile, currentUser, getUserById } from './social';
+import {
+  Creator,
+  Work,
+  creators,
+  getCreatorById,
+  getAllCreators,
+} from "./data";
+import { UserProfile, currentUser, getUserById } from "./social";
 
 export interface Recommendation {
   id: string;
-  type: 'creator' | 'work';
+  type: "creator" | "work";
   item: Creator | Work;
   score: number;
   reasons: RecommendationReason[];
@@ -11,10 +17,17 @@ export interface Recommendation {
 }
 
 export interface RecommendationReason {
-  type: 'shared_influence' | 'genre_match' | 'era_match' | 'lineage_proximity' | 
-        'similar_readers' | 'influence_chain' | 'saved_creator' | 'followed_user_interest';
+  type:
+    | "shared_influence"
+    | "genre_match"
+    | "era_match"
+    | "lineage_proximity"
+    | "similar_readers"
+    | "influence_chain"
+    | "saved_creator"
+    | "followed_user_interest";
   description: string;
-  strength: 'strong' | 'medium' | 'weak';
+  strength: "strong" | "medium" | "weak";
   relatedItem?: string;
 }
 
@@ -22,8 +35,8 @@ export interface FeedbackData {
   recommendationId: string;
   userId: string;
   itemId: string;
-  itemType: 'creator' | 'work';
-  feedback: 'thumbs_up' | 'thumbs_down';
+  itemType: "creator" | "work";
+  feedback: "thumbs_up" | "thumbs_down";
   timestamp: Date;
 }
 
@@ -33,219 +46,252 @@ const feedbackStore: FeedbackData[] = [];
 // Genre mappings for creators
 const creatorGenres: Record<string, string[]> = {
   // Roots of Modernism
-  'twain': ['Literary Fiction', 'Satire', 'Adventure'],
-  'chekhov': ['Literary Fiction', 'Short Stories', 'Drama'],
-  'wells': ['Science Fiction', 'Speculative Fiction'],
-  'stein': ['Literary Fiction', 'Modernism', 'Experimental'],
-  'joyce': ['Literary Fiction', 'Modernism', 'Experimental'],
-  'woolf': ['Literary Fiction', 'Modernism', 'Feminist Literature'],
-  'kafka': ['Literary Fiction', 'Modernism', 'Surrealism'],
-  'fitzgerald': ['Literary Fiction', 'Modernism'],
-  'tolkien': ['Fantasy', 'Epic Fantasy'],
+  twain: ["Literary Fiction", "Satire", "Adventure"],
+  chekhov: ["Literary Fiction", "Short Stories", "Drama"],
+  wells: ["Science Fiction", "Speculative Fiction"],
+  stein: ["Literary Fiction", "Modernism", "Experimental"],
+  joyce: ["Literary Fiction", "Modernism", "Experimental"],
+  woolf: ["Literary Fiction", "Modernism", "Feminist Literature"],
+  kafka: ["Literary Fiction", "Modernism", "Surrealism"],
+  fitzgerald: ["Literary Fiction", "Modernism"],
+  tolkien: ["Fantasy", "Epic Fantasy"],
   // American Masters
-  'hemingway': ['Literary Fiction', 'Modernism', 'Minimalism'],
-  'faulkner': ['Literary Fiction', 'Southern Gothic', 'Modernism', 'Experimental'],
-  'oconnor': ['Literary Fiction', 'Southern Gothic', 'Short Stories'],
-  'plath': ['Poetry', 'Confessional', 'Literary Fiction'],
-  'morrison': ['Literary Fiction', 'African American Literature', 'Magical Realism'],
-  'angelou': ['Memoir', 'Poetry', 'African American Literature'],
-  'didion': ['Literary Fiction', 'Journalism', 'Memoir'],
-  'kerouac': ['Literary Fiction', 'Beat Literature'],
-  'vonnegut': ['Science Fiction', 'Satire', 'Literary Fiction'],
+  hemingway: ["Literary Fiction", "Modernism", "Minimalism"],
+  faulkner: [
+    "Literary Fiction",
+    "Southern Gothic",
+    "Modernism",
+    "Experimental",
+  ],
+  oconnor: ["Literary Fiction", "Southern Gothic", "Short Stories"],
+  plath: ["Poetry", "Confessional", "Literary Fiction"],
+  morrison: [
+    "Literary Fiction",
+    "African American Literature",
+    "Magical Realism",
+  ],
+  angelou: ["Memoir", "Poetry", "African American Literature"],
+  didion: ["Literary Fiction", "Journalism", "Memoir"],
+  kerouac: ["Literary Fiction", "Beat Literature"],
+  vonnegut: ["Science Fiction", "Satire", "Literary Fiction"],
   // Minimalism
-  'carver': ['Literary Fiction', 'Minimalism', 'Short Stories'],
-  'wolff': ['Literary Fiction', 'Minimalism', 'Memoir'],
-  'hempel': ['Literary Fiction', 'Minimalism', 'Short Stories'],
-  'ford': ['Literary Fiction', 'Minimalism'],
+  carver: ["Literary Fiction", "Minimalism", "Short Stories"],
+  wolff: ["Literary Fiction", "Minimalism", "Memoir"],
+  hempel: ["Literary Fiction", "Minimalism", "Short Stories"],
+  ford: ["Literary Fiction", "Minimalism"],
   // Southern / American Epic
-  'mccarthy': ['Literary Fiction', 'Southern Gothic', 'Western'],
-  'whitehead': ['Literary Fiction', 'African American Literature', 'Historical Fiction'],
-  'ward': ['Literary Fiction', 'Southern Gothic', 'African American Literature'],
-  'vuong': ['Poetry', 'Literary Fiction', 'Memoir'],
+  mccarthy: ["Literary Fiction", "Southern Gothic", "Western"],
+  whitehead: [
+    "Literary Fiction",
+    "African American Literature",
+    "Historical Fiction",
+  ],
+  ward: ["Literary Fiction", "Southern Gothic", "African American Literature"],
+  vuong: ["Poetry", "Literary Fiction", "Memoir"],
   // Postmodernism
-  'pynchon': ['Literary Fiction', 'Postmodernism', 'Experimental'],
-  'delillo': ['Literary Fiction', 'Postmodernism'],
-  'wallace': ['Literary Fiction', 'Postmodernism', 'Experimental'],
+  pynchon: ["Literary Fiction", "Postmodernism", "Experimental"],
+  delillo: ["Literary Fiction", "Postmodernism"],
+  wallace: ["Literary Fiction", "Postmodernism", "Experimental"],
   // Speculative Fiction
-  'huxley': ['Science Fiction', 'Dystopia', 'Philosophy'],
-  'orwell': ['Science Fiction', 'Dystopia', 'Political'],
-  'bradbury': ['Science Fiction', 'Fantasy', 'Short Stories'],
-  'asimov': ['Science Fiction', 'Hard SF'],
-  'dick': ['Science Fiction', 'Cyberpunk'],
-  'le-guin': ['Science Fiction', 'Fantasy', 'Speculative Fiction'],
-  'butler': ['Science Fiction', 'Speculative Fiction', 'African American Literature'],
-  'atwood': ['Speculative Fiction', 'Dystopia', 'Feminist Literature'],
-  'chiang': ['Science Fiction', 'Speculative Fiction', 'Philosophy'],
-  'jemisin': ['Fantasy', 'Science Fiction', 'Speculative Fiction'],
-  'clarke': ['Science Fiction', 'Hard SF'],
-  'heinlein': ['Science Fiction', 'Hard SF'],
-  'l-engle': ['Fantasy', 'Science Fiction', 'Young Adult'],
-  'lowry': ['Young Adult', 'Dystopia', 'Historical Fiction'],
+  huxley: ["Science Fiction", "Dystopia", "Philosophy"],
+  orwell: ["Science Fiction", "Dystopia", "Political"],
+  bradbury: ["Science Fiction", "Fantasy", "Short Stories"],
+  asimov: ["Science Fiction", "Hard SF"],
+  dick: ["Science Fiction", "Cyberpunk"],
+  "le-guin": ["Science Fiction", "Fantasy", "Speculative Fiction"],
+  butler: [
+    "Science Fiction",
+    "Speculative Fiction",
+    "African American Literature",
+  ],
+  atwood: ["Speculative Fiction", "Dystopia", "Feminist Literature"],
+  chiang: ["Science Fiction", "Speculative Fiction", "Philosophy"],
+  jemisin: ["Fantasy", "Science Fiction", "Speculative Fiction"],
+  clarke: ["Science Fiction", "Hard SF"],
+  heinlein: ["Science Fiction", "Hard SF"],
+  "l-engle": ["Fantasy", "Science Fiction", "Young Adult"],
+  lowry: ["Young Adult", "Dystopia", "Historical Fiction"],
   // Magic Realism / International
-  'borges': ['Literary Fiction', 'Magical Realism', 'Philosophy'],
-  'marquez': ['Literary Fiction', 'Magical Realism'],
-  'murakami': ['Literary Fiction', 'Magical Realism', 'Surrealism'],
-  'achebe': ['Literary Fiction', 'Postcolonial'],
-  'adichie': ['Literary Fiction', 'Postcolonial', 'Feminist Literature'],
-  'rushdie': ['Literary Fiction', 'Magical Realism', 'Postcolonial'],
-  'ishiguro': ['Literary Fiction', 'Speculative Fiction'],
+  borges: ["Literary Fiction", "Magical Realism", "Philosophy"],
+  marquez: ["Literary Fiction", "Magical Realism"],
+  murakami: ["Literary Fiction", "Magical Realism", "Surrealism"],
+  achebe: ["Literary Fiction", "Postcolonial"],
+  adichie: ["Literary Fiction", "Postcolonial", "Feminist Literature"],
+  rushdie: ["Literary Fiction", "Magical Realism", "Postcolonial"],
+  ishiguro: ["Literary Fiction", "Speculative Fiction"],
   // Screenwriting
-  'wilder': ['Screenwriting', 'Comedy', 'Drama'],
-  'chayefsky': ['Screenwriting', 'Satire', 'Drama'],
-  'ephron': ['Screenwriting', 'Romantic Comedy'],
-  'sorkin': ['Screenwriting', 'Drama', 'Political'],
-  'waller-bridge': ['Screenwriting', 'Comedy', 'Drama'],
+  wilder: ["Screenwriting", "Comedy", "Drama"],
+  chayefsky: ["Screenwriting", "Satire", "Drama"],
+  ephron: ["Screenwriting", "Romantic Comedy"],
+  sorkin: ["Screenwriting", "Drama", "Political"],
+  "waller-bridge": ["Screenwriting", "Comedy", "Drama"],
   // Pulitzer Winners
-  'harper-lee': ['Literary Fiction', 'Southern Gothic', 'Coming-of-Age'],
-  'walker': ['Literary Fiction', 'African American Literature', 'Feminist Literature'],
-  'roth': ['Literary Fiction', 'Satire'],
-  'robinson': ['Literary Fiction', 'Philosophical Fiction'],
-  'chabon': ['Literary Fiction', 'Genre Fiction', 'Historical Fiction'],
-  'egan': ['Literary Fiction', 'Postmodernism', 'Experimental'],
+  "harper-lee": ["Literary Fiction", "Southern Gothic", "Coming-of-Age"],
+  walker: [
+    "Literary Fiction",
+    "African American Literature",
+    "Feminist Literature",
+  ],
+  roth: ["Literary Fiction", "Satire"],
+  robinson: ["Literary Fiction", "Philosophical Fiction"],
+  chabon: ["Literary Fiction", "Genre Fiction", "Historical Fiction"],
+  egan: ["Literary Fiction", "Postmodernism", "Experimental"],
   // National Book Award
-  'baldwin': ['Literary Fiction', 'African American Literature', 'Essay'],
-  'erdrich': ['Literary Fiction', 'Native American Literature'],
-  'johnson': ['Literary Fiction', 'Minimalism', 'Short Stories'],
+  baldwin: ["Literary Fiction", "African American Literature", "Essay"],
+  erdrich: ["Literary Fiction", "Native American Literature"],
+  johnson: ["Literary Fiction", "Minimalism", "Short Stories"],
   // Screenplay Oscar Winners
-  'kaufman': ['Screenwriting', 'Surrealism', 'Drama'],
-  'tarantino': ['Screenwriting', 'Crime', 'Drama'],
-  'coen-brothers': ['Screenwriting', 'Crime', 'Dark Comedy'],
-  'cody': ['Screenwriting', 'Comedy', 'Coming-of-Age'],
-  'peele': ['Screenwriting', 'Horror', 'Social Commentary'],
+  kaufman: ["Screenwriting", "Surrealism", "Drama"],
+  tarantino: ["Screenwriting", "Crime", "Drama"],
+  "coen-brothers": ["Screenwriting", "Crime", "Dark Comedy"],
+  cody: ["Screenwriting", "Comedy", "Coming-of-Age"],
+  peele: ["Screenwriting", "Horror", "Social Commentary"],
   // Teleplay Emmy Winners
-  'chase': ['Screenwriting', 'Drama', 'Crime'],
-  'gilligan': ['Screenwriting', 'Drama', 'Crime'],
-  'simon': ['Screenwriting', 'Drama', 'Social Commentary'],
-  'coel': ['Screenwriting', 'Drama', 'Comedy'],
+  chase: ["Screenwriting", "Drama", "Crime"],
+  gilligan: ["Screenwriting", "Drama", "Crime"],
+  simon: ["Screenwriting", "Drama", "Social Commentary"],
+  coel: ["Screenwriting", "Drama", "Comedy"],
 };
 
 // Era mappings
 const creatorEras: Record<string, string> = {
   // Pre-1900
-  'twain': '1860s-1900s',
-  'chekhov': '1880s-1900s',
-  'wells': '1890s-1940s',
+  twain: "1860s-1900s",
+  chekhov: "1880s-1900s",
+  wells: "1890s-1940s",
   // Early Modernism
-  'stein': '1900s-1930s',
-  'joyce': '1910s-1940s',
-  'woolf': '1910s-1940s',
-  'kafka': '1910s-1920s',
-  'fitzgerald': '1920s-1940s',
-  'tolkien': '1930s-1960s',
+  stein: "1900s-1930s",
+  joyce: "1910s-1940s",
+  woolf: "1910s-1940s",
+  kafka: "1910s-1920s",
+  fitzgerald: "1920s-1940s",
+  tolkien: "1930s-1960s",
   // Mid-Century
-  'hemingway': '1920s-1950s',
-  'faulkner': '1920s-1950s',
-  'huxley': '1930s-1960s',
-  'orwell': '1930s-1950s',
-  'borges': '1940s-1970s',
-  'bradbury': '1940s-1980s',
-  'asimov': '1940s-1980s',
-  'wilder': '1940s-1970s',
-  'chayefsky': '1950s-1970s',
-  'kerouac': '1950s-1960s',
-  'harper-lee': '1960s',
-  'angelou': '1960s-2000s',
-  'baldwin': '1950s-1980s',
-  'heinlein': '1940s-1980s',
-  'clarke': '1950s-1990s',
+  hemingway: "1920s-1950s",
+  faulkner: "1920s-1950s",
+  huxley: "1930s-1960s",
+  orwell: "1930s-1950s",
+  borges: "1940s-1970s",
+  bradbury: "1940s-1980s",
+  asimov: "1940s-1980s",
+  wilder: "1940s-1970s",
+  chayefsky: "1950s-1970s",
+  kerouac: "1950s-1960s",
+  "harper-lee": "1960s",
+  angelou: "1960s-2000s",
+  baldwin: "1950s-1980s",
+  heinlein: "1940s-1980s",
+  clarke: "1950s-1990s",
   // Late 20th Century
-  'oconnor': '1950s-1960s',
-  'plath': '1950s-1960s',
-  'marquez': '1960s-2000s',
-  'le-guin': '1960s-1980s',
-  'vonnegut': '1960s-1990s',
-  'pynchon': '1960s-2000s',
-  'didion': '1960s-2000s',
-  'morrison': '1970s-2000s',
-  'mccarthy': '1960s-1980s',
-  'carver': '1960s-1980s',
-  'wolff': '1970s-2000s',
-  'hempel': '1980s-2000s',
-  'ford': '1980s-2000s',
-  'dick': '1960s-1980s',
-  'achebe': '1950s-1990s',
-  'atwood': '1980s-2010s',
-  'murakami': '1980s-2010s',
-  'butler': '1970s-2000s',
-  'ishiguro': '1980s-2010s',
-  'rushdie': '1980s-2010s',
-  'ephron': '1980s-2000s',
-  'roth': '1960s-2000s',
-  'walker': '1970s-2000s',
-  'robinson': '1980s-2010s',
-  'erdrich': '1980s-2010s',
-  'l-engle': '1960s-1980s',
+  oconnor: "1950s-1960s",
+  plath: "1950s-1960s",
+  marquez: "1960s-2000s",
+  "le-guin": "1960s-1980s",
+  vonnegut: "1960s-1990s",
+  pynchon: "1960s-2000s",
+  didion: "1960s-2000s",
+  morrison: "1970s-2000s",
+  mccarthy: "1960s-1980s",
+  carver: "1960s-1980s",
+  wolff: "1970s-2000s",
+  hempel: "1980s-2000s",
+  ford: "1980s-2000s",
+  dick: "1960s-1980s",
+  achebe: "1950s-1990s",
+  atwood: "1980s-2010s",
+  murakami: "1980s-2010s",
+  butler: "1970s-2000s",
+  ishiguro: "1980s-2010s",
+  rushdie: "1980s-2010s",
+  ephron: "1980s-2000s",
+  roth: "1960s-2000s",
+  walker: "1970s-2000s",
+  robinson: "1980s-2010s",
+  erdrich: "1980s-2010s",
+  "l-engle": "1960s-1980s",
   // Contemporary
-  'delillo': '1980s-2010s',
-  'sorkin': '1990s-2010s',
-  'wallace': '1990s-2000s',
-  'chiang': '1990s-2010s',
-  'whitehead': '2000s-2020s',
-  'ward': '2010s-2020s',
-  'adichie': '2000s-2020s',
-  'jemisin': '2010s-2020s',
-  'vuong': '2010s-2020s',
-  'waller-bridge': '2010s-2020s',
-  'chabon': '1990s-2010s',
-  'egan': '2000s-2020s',
-  'johnson': '1990s-2000s',
-  'lowry': '1980s-2000s',
-  'kaufman': '1990s-2010s',
-  'tarantino': '1990s-2010s',
-  'coen-brothers': '1990s-2010s',
-  'cody': '2000s-2010s',
-  'peele': '2010s-2020s',
-  'chase': '1990s-2000s',
-  'gilligan': '2000s-2010s',
-  'simon': '2000s-2010s',
-  'coel': '2010s-2020s',
+  delillo: "1980s-2010s",
+  sorkin: "1990s-2010s",
+  wallace: "1990s-2000s",
+  chiang: "1990s-2010s",
+  whitehead: "2000s-2020s",
+  ward: "2010s-2020s",
+  adichie: "2000s-2020s",
+  jemisin: "2010s-2020s",
+  vuong: "2010s-2020s",
+  "waller-bridge": "2010s-2020s",
+  chabon: "1990s-2010s",
+  egan: "2000s-2020s",
+  johnson: "1990s-2000s",
+  lowry: "1980s-2000s",
+  kaufman: "1990s-2010s",
+  tarantino: "1990s-2010s",
+  "coen-brothers": "1990s-2010s",
+  cody: "2000s-2010s",
+  peele: "2010s-2020s",
+  chase: "1990s-2000s",
+  gilligan: "2000s-2010s",
+  simon: "2000s-2010s",
+  coel: "2010s-2020s",
 };
 
 // Recommendation Algorithm
-export function generateRecommendations(user: UserProfile = currentUser, limit: number = 10): Recommendation[] {
+export function generateRecommendations(
+  user: UserProfile = currentUser,
+  limit: number = 10,
+): Recommendation[] {
   const recommendations: Recommendation[] = [];
-  const scoredItems = new Map<string, { score: number; reasons: RecommendationReason[] }>();
+  const scoredItems = new Map<
+    string,
+    { score: number; reasons: RecommendationReason[] }
+  >();
 
   // Get all creators and works
   const allCreators = getAllCreators();
 
   // 1. Shared Influences Analysis
   // If user likes a creator, recommend those they influenced or were influenced by
-  user.readingDNA.topAuthors.forEach(authorId => {
+  user.readingDNA.topAuthors.forEach((authorId) => {
     const author = getCreatorById(authorId);
     if (!author) return;
 
     // Recommend creators influenced by this author
-    author.influenced.forEach(influencedId => {
+    author.influenced.forEach((influencedId) => {
       if (user.savedCreators.includes(influencedId)) return; // Already saved
-      
+
       const influenced = getCreatorById(influencedId);
       if (!influenced) return;
 
-      const existing = scoredItems.get(influencedId) || { score: 0, reasons: [] };
+      const existing = scoredItems.get(influencedId) || {
+        score: 0,
+        reasons: [],
+      };
       existing.score += 25;
       existing.reasons.push({
-        type: 'shared_influence',
+        type: "shared_influence",
         description: `Influenced by ${author.name}, one of your favorite authors`,
-        strength: 'strong',
+        strength: "strong",
         relatedItem: authorId,
       });
       scoredItems.set(influencedId, existing);
     });
 
     // Recommend creators who influenced this author
-    author.influencedBy.forEach(influencerId => {
+    author.influencedBy.forEach((influencerId) => {
       if (user.savedCreators.includes(influencerId)) return;
 
       const influencer = getCreatorById(influencerId);
       if (!influencer) return;
 
-      const existing = scoredItems.get(influencerId) || { score: 0, reasons: [] };
+      const existing = scoredItems.get(influencerId) || {
+        score: 0,
+        reasons: [],
+      };
       existing.score += 20;
       existing.reasons.push({
-        type: 'shared_influence',
+        type: "shared_influence",
         description: `Influenced ${author.name}, showing you the roots of their style`,
-        strength: 'strong',
+        strength: "strong",
         relatedItem: authorId,
       });
       scoredItems.set(influencerId, existing);
@@ -253,22 +299,27 @@ export function generateRecommendations(user: UserProfile = currentUser, limit: 
   });
 
   // 2. Genre Overlap Analysis
-  user.favoriteGenres.forEach(genre => {
-    allCreators.forEach(creator => {
+  user.favoriteGenres.forEach((genre) => {
+    allCreators.forEach((creator) => {
       if (user.savedCreators.includes(creator.id)) return;
 
       const genres = creatorGenres[creator.id] || [];
       if (genres.includes(genre)) {
-        const existing = scoredItems.get(creator.id) || { score: 0, reasons: [] };
+        const existing = scoredItems.get(creator.id) || {
+          score: 0,
+          reasons: [],
+        };
         existing.score += 15;
-        
+
         // Check if we already have this reason
-        const hasGenreReason = existing.reasons.some(r => r.type === 'genre_match' && r.relatedItem === genre);
+        const hasGenreReason = existing.reasons.some(
+          (r) => r.type === "genre_match" && r.relatedItem === genre,
+        );
         if (!hasGenreReason) {
           existing.reasons.push({
-            type: 'genre_match',
+            type: "genre_match",
             description: `Matches your interest in ${genre}`,
-            strength: 'medium',
+            strength: "medium",
             relatedItem: genre,
           });
         }
@@ -278,20 +329,25 @@ export function generateRecommendations(user: UserProfile = currentUser, limit: 
   });
 
   // 3. Era Preference Matching
-  user.eraPreferences.forEach(era => {
-    allCreators.forEach(creator => {
+  user.eraPreferences.forEach((era) => {
+    allCreators.forEach((creator) => {
       if (user.savedCreators.includes(creator.id)) return;
 
       if (creatorEras[creator.id] === era) {
-        const existing = scoredItems.get(creator.id) || { score: 0, reasons: [] };
+        const existing = scoredItems.get(creator.id) || {
+          score: 0,
+          reasons: [],
+        };
         existing.score += 10;
-        
-        const hasEraReason = existing.reasons.some(r => r.type === 'era_match');
+
+        const hasEraReason = existing.reasons.some(
+          (r) => r.type === "era_match",
+        );
         if (!hasEraReason) {
           existing.reasons.push({
-            type: 'era_match',
+            type: "era_match",
             description: `From the ${era} era you enjoy`,
-            strength: 'medium',
+            strength: "medium",
             relatedItem: era,
           });
         }
@@ -301,47 +357,53 @@ export function generateRecommendations(user: UserProfile = currentUser, limit: 
   });
 
   // 4. Lineage Proximity - Second degree connections
-  user.savedCreators.forEach(savedId => {
+  user.savedCreators.forEach((savedId) => {
     const saved = getCreatorById(savedId);
     if (!saved) return;
 
     // Check who influenced the saved creator's influences
-    saved.influencedBy.forEach(firstDegreeId => {
+    saved.influencedBy.forEach((firstDegreeId) => {
       const firstDegree = getCreatorById(firstDegreeId);
       if (!firstDegree) return;
 
-      firstDegree.influencedBy.forEach(secondDegreeId => {
+      firstDegree.influencedBy.forEach((secondDegreeId) => {
         if (user.savedCreators.includes(secondDegreeId)) return;
         if (secondDegreeId === savedId) return;
 
         const secondDegree = getCreatorById(secondDegreeId);
         if (!secondDegree) return;
 
-        const existing = scoredItems.get(secondDegreeId) || { score: 0, reasons: [] };
+        const existing = scoredItems.get(secondDegreeId) || {
+          score: 0,
+          reasons: [],
+        };
         existing.score += 12;
         existing.reasons.push({
-          type: 'lineage_proximity',
+          type: "lineage_proximity",
           description: `Part of the same lineage as ${saved.name} → ${firstDegree.name}`,
-          strength: 'medium',
+          strength: "medium",
           relatedItem: savedId,
         });
         scoredItems.set(secondDegreeId, existing);
       });
 
       // Check who was influenced by the saved creator's influences
-      firstDegree.influenced.forEach(secondDegreeId => {
+      firstDegree.influenced.forEach((secondDegreeId) => {
         if (user.savedCreators.includes(secondDegreeId)) return;
         if (secondDegreeId === savedId) return;
 
         const secondDegree = getCreatorById(secondDegreeId);
         if (!secondDegree) return;
 
-        const existing = scoredItems.get(secondDegreeId) || { score: 0, reasons: [] };
+        const existing = scoredItems.get(secondDegreeId) || {
+          score: 0,
+          reasons: [],
+        };
         existing.score += 12;
         existing.reasons.push({
-          type: 'lineage_proximity',
+          type: "lineage_proximity",
           description: `Connected through ${saved.name} → ${firstDegree.name} lineage`,
-          strength: 'medium',
+          strength: "medium",
           relatedItem: savedId,
         });
         scoredItems.set(secondDegreeId, existing);
@@ -351,22 +413,24 @@ export function generateRecommendations(user: UserProfile = currentUser, limit: 
 
   // 5. Similar Readers Analysis
   // If users you follow like something, you might too
-  user.following.forEach(followingId => {
+  user.following.forEach((followingId) => {
     const followingUser = getUserById(followingId);
     if (!followingUser) return;
 
-    followingUser.savedCreators.forEach(creatorId => {
+    followingUser.savedCreators.forEach((creatorId) => {
       if (user.savedCreators.includes(creatorId)) return;
 
       const existing = scoredItems.get(creatorId) || { score: 0, reasons: [] };
       existing.score += 8;
-      
-      const hasFollowerReason = existing.reasons.some(r => r.type === 'followed_user_interest');
+
+      const hasFollowerReason = existing.reasons.some(
+        (r) => r.type === "followed_user_interest",
+      );
       if (!hasFollowerReason) {
         existing.reasons.push({
-          type: 'followed_user_interest',
+          type: "followed_user_interest",
           description: `${followingUser.displayName} follows this creator`,
-          strength: 'weak',
+          strength: "weak",
           relatedItem: followingId,
         });
       }
@@ -376,22 +440,22 @@ export function generateRecommendations(user: UserProfile = currentUser, limit: 
 
   // 6. Influence Chain Discovery
   // Find chains: A → B → C where user has A and C, recommend B
-  user.savedCreators.forEach(startId => {
+  user.savedCreators.forEach((startId) => {
     const start = getCreatorById(startId);
     if (!start) return;
 
-    start.influenced.forEach(midId => {
+    start.influenced.forEach((midId) => {
       const mid = getCreatorById(midId);
       if (!mid || user.savedCreators.includes(midId)) return;
 
-      mid.influenced.forEach(endId => {
+      mid.influenced.forEach((endId) => {
         if (user.savedCreators.includes(endId)) {
           const existing = scoredItems.get(midId) || { score: 0, reasons: [] };
           existing.score += 30;
           existing.reasons.push({
-            type: 'influence_chain',
+            type: "influence_chain",
             description: `The missing link: ${start.name} → ? → ${getCreatorById(endId)?.name}`,
-            strength: 'strong',
+            strength: "strong",
             relatedItem: `${startId}-${endId}`,
           });
           scoredItems.set(midId, existing);
@@ -409,31 +473,38 @@ export function generateRecommendations(user: UserProfile = currentUser, limit: 
     data.score += creator.works.length * 2;
 
     // Add individual work recommendations
-    creator.works.forEach(work => {
+    creator.works.forEach((work) => {
       if (user.readWorks.includes(work.id)) return;
       if (user.likedWorks.includes(work.id)) return;
 
       let workScore = data.score * 0.8;
-      if (user.likedWorks.some(likedId => creator.works.some(w => w.id === likedId))) {
+      if (
+        user.likedWorks.some((likedId) =>
+          creator.works.some((w) => w.id === likedId),
+        )
+      ) {
         workScore += 10; // Boost if user liked other works by this creator
       }
 
       recommendations.push({
         id: `rec-work-${work.id}`,
-        type: 'work',
+        type: "work",
         item: work,
         creatorId: creator.id,
         score: workScore,
-        reasons: data.reasons.map(r => ({
+        reasons: data.reasons.map((r) => ({
           ...r,
-          description: r.description.replace(creator.name, `${creator.name}'s "${work.title}"`),
+          description: r.description.replace(
+            creator.name,
+            `${creator.name}'s "${work.title}"`,
+          ),
         })),
       });
     });
 
     recommendations.push({
       id: `rec-creator-${creatorId}`,
-      type: 'creator',
+      type: "creator",
       item: creator,
       score: data.score,
       reasons: data.reasons,
@@ -441,15 +512,19 @@ export function generateRecommendations(user: UserProfile = currentUser, limit: 
   });
 
   // Sort by score and take top N
-  return recommendations
-    .sort((a, b) => b.score - a.score)
-    .slice(0, limit);
+  return recommendations.sort((a, b) => b.score - a.score).slice(0, limit);
 }
 
 // Get personalized "Why Recommended" explanation
-export function getRecommendationExplanation(recommendation: Recommendation): string {
-  const strongReasons = recommendation.reasons.filter(r => r.strength === 'strong');
-  const mediumReasons = recommendation.reasons.filter(r => r.strength === 'medium');
+export function getRecommendationExplanation(
+  recommendation: Recommendation,
+): string {
+  const strongReasons = recommendation.reasons.filter(
+    (r) => r.strength === "strong",
+  );
+  const mediumReasons = recommendation.reasons.filter(
+    (r) => r.strength === "medium",
+  );
 
   if (strongReasons.length > 0) {
     return strongReasons[0].description;
@@ -457,11 +532,16 @@ export function getRecommendationExplanation(recommendation: Recommendation): st
   if (mediumReasons.length > 0) {
     return mediumReasons[0].description;
   }
-  return recommendation.reasons[0]?.description || 'Recommended based on your reading history';
+  return (
+    recommendation.reasons[0]?.description ||
+    "Recommended based on your reading history"
+  );
 }
 
 // Get all reasons for display
-export function getAllReasons(recommendation: Recommendation): RecommendationReason[] {
+export function getAllReasons(
+  recommendation: Recommendation,
+): RecommendationReason[] {
   return recommendation.reasons.sort((a, b) => {
     const strengthOrder = { strong: 3, medium: 2, weak: 1 };
     return strengthOrder[b.strength] - strengthOrder[a.strength];
@@ -472,8 +552,8 @@ export function getAllReasons(recommendation: Recommendation): RecommendationRea
 export function submitFeedback(
   recommendationId: string,
   itemId: string,
-  itemType: 'creator' | 'work',
-  feedback: 'thumbs_up' | 'thumbs_down'
+  itemType: "creator" | "work",
+  feedback: "thumbs_up" | "thumbs_down",
 ): void {
   feedbackStore.push({
     recommendationId,
@@ -485,42 +565,56 @@ export function submitFeedback(
   });
 }
 
-export function getUserFeedback(userId: string = currentUser.id): Map<string, 'thumbs_up' | 'thumbs_down'> {
-  const userFeedback = new Map<string, 'thumbs_up' | 'thumbs_down'>();
+export function getUserFeedback(
+  userId: string = currentUser.id,
+): Map<string, "thumbs_up" | "thumbs_down"> {
+  const userFeedback = new Map<string, "thumbs_up" | "thumbs_down">();
   feedbackStore
-    .filter(f => f.userId === userId)
-    .forEach(f => userFeedback.set(f.itemId, f.feedback));
+    .filter((f) => f.userId === userId)
+    .forEach((f) => userFeedback.set(f.itemId, f.feedback));
   return userFeedback;
 }
 
-export function hasFeedback(itemId: string, userId: string = currentUser.id): boolean {
-  return feedbackStore.some(f => f.userId === userId && f.itemId === itemId);
+export function hasFeedback(
+  itemId: string,
+  userId: string = currentUser.id,
+): boolean {
+  return feedbackStore.some((f) => f.userId === userId && f.itemId === itemId);
 }
 
 // Get similar creators based on shared influences
-export function getSimilarCreators(creatorId: string, limit: number = 3): Creator[] {
+export function getSimilarCreators(
+  creatorId: string,
+  limit: number = 3,
+): Creator[] {
   const creator = getCreatorById(creatorId);
   if (!creator) return [];
 
   const similarities = new Map<string, number>();
 
-  creators.forEach(other => {
+  creators.forEach((other) => {
     if (other.id === creatorId) return;
 
     let score = 0;
-    
+
     // Shared influences
-    const sharedInfluencedBy = creator.influencedBy.filter(id => other.influencedBy.includes(id));
+    const sharedInfluencedBy = creator.influencedBy.filter((id) =>
+      other.influencedBy.includes(id),
+    );
     score += sharedInfluencedBy.length * 10;
 
     // Shared influenced
-    const sharedInfluenced = creator.influenced.filter(id => other.influenced.includes(id));
+    const sharedInfluenced = creator.influenced.filter((id) =>
+      other.influenced.includes(id),
+    );
     score += sharedInfluenced.length * 10;
 
     // Genre overlap
     const creatorGenres_list = creatorGenres[creator.id] || [];
     const otherGenres = creatorGenres[other.id] || [];
-    const sharedGenres = creatorGenres_list.filter(g => otherGenres.includes(g));
+    const sharedGenres = creatorGenres_list.filter((g) =>
+      otherGenres.includes(g),
+    );
     score += sharedGenres.length * 5;
 
     // Same era
@@ -541,7 +635,10 @@ export function getSimilarCreators(creatorId: string, limit: number = 3): Creato
 }
 
 // Get discovery path - how to get from user favorites to this creator
-export function getDiscoveryPath(targetCreatorId: string, user: UserProfile = currentUser): string[] {
+export function getDiscoveryPath(
+  targetCreatorId: string,
+  user: UserProfile = currentUser,
+): string[] {
   const target = getCreatorById(targetCreatorId);
   if (!target) return [];
 
@@ -595,32 +692,42 @@ export interface RecommendationStats {
   userFeedbackRate: number;
 }
 
-export function getRecommendationStats(recommendations: Recommendation[]): RecommendationStats {
+export function getRecommendationStats(
+  recommendations: Recommendation[],
+): RecommendationStats {
   if (recommendations.length === 0) {
     return {
       totalRecommendations: 0,
       creatorsRecommended: 0,
       worksRecommended: 0,
       averageScore: 0,
-      topReason: '',
+      topReason: "",
       userFeedbackRate: 0,
     };
   }
 
-  const creatorsRecommended = recommendations.filter(r => r.type === 'creator').length;
-  const worksRecommended = recommendations.filter(r => r.type === 'work').length;
-  const averageScore = recommendations.reduce((sum, r) => sum + r.score, 0) / recommendations.length;
+  const creatorsRecommended = recommendations.filter(
+    (r) => r.type === "creator",
+  ).length;
+  const worksRecommended = recommendations.filter(
+    (r) => r.type === "work",
+  ).length;
+  const averageScore =
+    recommendations.reduce((sum, r) => sum + r.score, 0) /
+    recommendations.length;
 
   // Count reason types
   const reasonCounts = new Map<string, number>();
-  recommendations.forEach(rec => {
-    rec.reasons.forEach(reason => {
+  recommendations.forEach((rec) => {
+    rec.reasons.forEach((reason) => {
       reasonCounts.set(reason.type, (reasonCounts.get(reason.type) || 0) + 1);
     });
   });
 
-  const topReasonEntry = Array.from(reasonCounts.entries()).sort((a, b) => b[1] - a[1])[0];
-  const topReason = topReasonEntry ? topReasonEntry[0] : '';
+  const topReasonEntry = Array.from(reasonCounts.entries()).sort(
+    (a, b) => b[1] - a[1],
+  )[0];
+  const topReason = topReasonEntry ? topReasonEntry[0] : "";
 
   const userFeedback = getUserFeedback();
   const userFeedbackRate = (userFeedback.size / recommendations.length) * 100;

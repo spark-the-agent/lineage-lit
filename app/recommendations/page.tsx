@@ -1,39 +1,65 @@
-'use client';
+"use client";
 
-import { useState, useMemo } from 'react';
-import Link from 'next/link';
+import { useState, useMemo } from "react";
+import Link from "next/link";
 import {
-  Network, Sparkles, ThumbsUp, ThumbsDown, Share2,
-  BookOpen, Users, ArrowRight, Lightbulb, GitBranch,
-  Target, Clock, TrendingUp, Filter, RefreshCw,
-  Check, X, ExternalLink, Bookmark, Heart
-} from 'lucide-react';
-import MobileNav, { MobileHeaderSpacer, MobileBottomSpacer, DesktopNav } from '@/app/components/MobileNav';
-import { currentUser } from '@/lib/social';
+  Network,
+  Sparkles,
+  ThumbsUp,
+  ThumbsDown,
+  BookOpen,
+  Users,
+  ArrowRight,
+  Lightbulb,
+  GitBranch,
+  Target,
+  Clock,
+  TrendingUp,
+  RefreshCw,
+  ExternalLink,
+  Bookmark,
+  Heart,
+} from "lucide-react";
+import MobileNav, {
+  MobileHeaderSpacer,
+  MobileBottomSpacer,
+  DesktopNav,
+} from "@/app/components/MobileNav";
+import { currentUser } from "@/lib/social";
 import {
   generateRecommendations,
   submitFeedback,
-  hasFeedback,
   getRecommendationExplanation,
   getAllReasons,
-  getSimilarCreators,
-  getDiscoveryPath,
   getRecommendationStats,
   Recommendation,
-  RecommendationReason
-} from '@/lib/recommendations';
-import { getCreatorById, Creator } from '@/lib/data';
-import { usePersistence } from '@/app/components/PersistenceProvider';
+} from "@/lib/recommendations";
+import { getCreatorById, Creator } from "@/lib/data";
+import { usePersistence } from "@/app/components/PersistenceProvider";
 
 export default function RecommendationsPage() {
   const [refreshKey, setRefreshKey] = useState(0);
-  const [feedbackState, setFeedbackState] = useState<Record<string, 'thumbs_up' | 'thumbs_down'>>({});
-  const [expandedReasons, setExpandedReasons] = useState<Set<string>>(new Set());
-  const [filterType, setFilterType] = useState<'all' | 'creators' | 'works'>('all');
-  const { state, toggleSavedCreator, toggleLikedWork, isCreatorSaved, isWorkLiked } = usePersistence();
+  const [feedbackState, setFeedbackState] = useState<
+    Record<string, "thumbs_up" | "thumbs_down">
+  >({});
+  const [expandedReasons, setExpandedReasons] = useState<Set<string>>(
+    new Set(),
+  );
+  const [filterType, setFilterType] = useState<"all" | "creators" | "works">(
+    "all",
+  );
+  const {
+    state,
+    toggleSavedCreator,
+    toggleLikedWork,
+    isCreatorSaved,
+    isWorkLiked,
+  } = usePersistence();
 
   // Build a dynamic user profile from persistence state for recommendations
+  // refreshKey is read to force recomputation when the user clicks "refresh"
   const recommendations = useMemo(() => {
+    void refreshKey;
     const dynamicUser = {
       ...currentUser,
       savedCreators: state.savedCreators,
@@ -44,21 +70,27 @@ export default function RecommendationsPage() {
 
   // Filter recommendations
   const filteredRecommendations = useMemo(() => {
-    if (filterType === 'all') return recommendations;
-    return recommendations.filter(r => r.type === filterType.slice(0, -1));
+    if (filterType === "all") return recommendations;
+    return recommendations.filter((r) => r.type === filterType.slice(0, -1));
   }, [recommendations, filterType]);
 
   // Get stats
-  const stats = useMemo(() => getRecommendationStats(recommendations), [recommendations]);
+  const stats = useMemo(
+    () => getRecommendationStats(recommendations),
+    [recommendations],
+  );
 
-  const handleFeedback = (rec: Recommendation, feedback: 'thumbs_up' | 'thumbs_down') => {
-    const itemId = rec.type === 'creator' ? rec.item.id : rec.item.id;
+  const handleFeedback = (
+    rec: Recommendation,
+    feedback: "thumbs_up" | "thumbs_down",
+  ) => {
+    const itemId = rec.type === "creator" ? rec.item.id : rec.item.id;
     submitFeedback(rec.id, itemId, rec.type, feedback);
-    setFeedbackState(prev => ({ ...prev, [rec.id]: feedback }));
+    setFeedbackState((prev) => ({ ...prev, [rec.id]: feedback }));
   };
 
   const toggleReasons = (recId: string) => {
-    setExpandedReasons(prev => {
+    setExpandedReasons((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(recId)) {
         newSet.delete(recId);
@@ -81,7 +113,7 @@ export default function RecommendationsPage() {
   const moreRecommendations = filteredRecommendations.slice(3);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-zinc-900 to-zinc-950 text-zinc-100">
+    <div className="min-h-screen bg-linear-to-b from-zinc-900 to-zinc-950 text-zinc-100">
       <MobileNav currentPage="For You" />
       <MobileHeaderSpacer />
 
@@ -90,7 +122,7 @@ export default function RecommendationsPage() {
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 min-h-[44px]">
             <Network className="w-8 h-8 text-amber-400" />
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
+            <h1 className="text-2xl font-bold bg-linear-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
               Lineage Lit
             </h1>
           </Link>
@@ -106,29 +138,30 @@ export default function RecommendationsPage() {
             <h1 className="text-3xl font-bold">AI-Powered Recommendations</h1>
           </div>
           <p className="text-zinc-400 max-w-2xl">
-            Discover your next favorite read based on shared influences, genre overlap, 
-            era preferences, and lineage proximity. The more you explore, the better our recommendations get.
+            Discover your next favorite read based on shared influences, genre
+            overlap, era preferences, and lineage proximity. The more you
+            explore, the better our recommendations get.
           </p>
         </div>
 
         {/* Stats Bar */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <StatCard 
+          <StatCard
             icon={<Target className="w-5 h-5" />}
             value={stats.totalRecommendations}
             label="Recommendations"
           />
-          <StatCard 
+          <StatCard
             icon={<Users className="w-5 h-5" />}
             value={stats.creatorsRecommended}
             label="Creators"
           />
-          <StatCard 
+          <StatCard
             icon={<BookOpen className="w-5 h-5" />}
             value={stats.worksRecommended}
             label="Works"
           />
-          <StatCard 
+          <StatCard
             icon={<TrendingUp className="w-5 h-5" />}
             value={`${stats.averageScore}%`}
             label="Avg Match"
@@ -138,14 +171,14 @@ export default function RecommendationsPage() {
         {/* Filters */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
           <div className="flex gap-2">
-            {(['all', 'creators', 'works'] as const).map((type) => (
+            {(["all", "creators", "works"] as const).map((type) => (
               <button
                 key={type}
                 onClick={() => setFilterType(type)}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
                   filterType === type
-                    ? 'bg-amber-500 text-zinc-900'
-                    : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
+                    ? "bg-amber-500 text-zinc-900"
+                    : "bg-zinc-800 text-zinc-400 hover:bg-zinc-700"
                 }`}
               >
                 {type.charAt(0).toUpperCase() + type.slice(1)}
@@ -153,7 +186,7 @@ export default function RecommendationsPage() {
             ))}
           </div>
           <button
-            onClick={() => setRefreshKey(prev => prev + 1)}
+            onClick={() => setRefreshKey((prev) => prev + 1)}
             className="flex items-center gap-2 px-4 py-2 bg-zinc-800 rounded-lg text-sm text-zinc-400 hover:text-amber-400 hover:bg-zinc-700 transition"
           >
             <RefreshCw className="w-4 h-4" />
@@ -170,17 +203,27 @@ export default function RecommendationsPage() {
             </h2>
             <div className="grid md:grid-cols-3 gap-6">
               {topRecommendations.map((rec) => (
-                <TopRecommendationCard 
+                <TopRecommendationCard
                   key={rec.id}
                   recommendation={rec}
                   feedback={feedbackState[rec.id]}
                   onFeedback={(f) => handleFeedback(rec, f)}
                   showReasons={expandedReasons.has(rec.id)}
                   onToggleReasons={() => toggleReasons(rec.id)}
-                  isSaved={rec.type === 'creator' ? isCreatorSaved(rec.item.id) : undefined}
-                  isLiked={rec.type === 'work' ? isWorkLiked(rec.item.id) : undefined}
-                  onSave={() => rec.type === 'creator' && handleSaveCreator(rec.item.id)}
-                  onLike={() => rec.type === 'work' && handleLikeWork(rec.item.id)}
+                  isSaved={
+                    rec.type === "creator"
+                      ? isCreatorSaved(rec.item.id)
+                      : undefined
+                  }
+                  isLiked={
+                    rec.type === "work" ? isWorkLiked(rec.item.id) : undefined
+                  }
+                  onSave={() =>
+                    rec.type === "creator" && handleSaveCreator(rec.item.id)
+                  }
+                  onLike={() =>
+                    rec.type === "work" && handleLikeWork(rec.item.id)
+                  }
                 />
               ))}
             </div>
@@ -196,15 +239,25 @@ export default function RecommendationsPage() {
             </h2>
             <div className="grid md:grid-cols-2 gap-4">
               {moreRecommendations.map((rec) => (
-                <CompactRecommendationCard 
+                <CompactRecommendationCard
                   key={rec.id}
                   recommendation={rec}
                   feedback={feedbackState[rec.id]}
                   onFeedback={(f) => handleFeedback(rec, f)}
-                  isSaved={rec.type === 'creator' ? isCreatorSaved(rec.item.id) : undefined}
-                  isLiked={rec.type === 'work' ? isWorkLiked(rec.item.id) : undefined}
-                  onSave={() => rec.type === 'creator' && handleSaveCreator(rec.item.id)}
-                  onLike={() => rec.type === 'work' && handleLikeWork(rec.item.id)}
+                  isSaved={
+                    rec.type === "creator"
+                      ? isCreatorSaved(rec.item.id)
+                      : undefined
+                  }
+                  isLiked={
+                    rec.type === "work" ? isWorkLiked(rec.item.id) : undefined
+                  }
+                  onSave={() =>
+                    rec.type === "creator" && handleSaveCreator(rec.item.id)
+                  }
+                  onLike={() =>
+                    rec.type === "work" && handleLikeWork(rec.item.id)
+                  }
                 />
               ))}
             </div>
@@ -215,11 +268,14 @@ export default function RecommendationsPage() {
         {filteredRecommendations.length === 0 && (
           <div className="text-center py-16 bg-zinc-900/50 rounded-2xl border border-zinc-800">
             <Sparkles className="w-16 h-16 text-zinc-600 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-zinc-400 mb-2">No recommendations yet</h3>
+            <h3 className="text-xl font-semibold text-zinc-400 mb-2">
+              No recommendations yet
+            </h3>
             <p className="text-zinc-500 max-w-md mx-auto">
-              Explore more creators and save your favorites to get personalized recommendations.
+              Explore more creators and save your favorites to get personalized
+              recommendations.
             </p>
-            <Link 
+            <Link
               href="/explore"
               className="inline-block mt-6 px-6 py-3 bg-amber-500 text-zinc-900 rounded-lg font-medium hover:bg-amber-400 transition"
             >
@@ -271,8 +327,8 @@ export default function RecommendationsPage() {
   );
 }
 
-function TopRecommendationCard({ 
-  recommendation, 
+function TopRecommendationCard({
+  recommendation,
   feedback,
   onFeedback,
   showReasons,
@@ -280,11 +336,11 @@ function TopRecommendationCard({
   isSaved,
   isLiked,
   onSave,
-  onLike
-}: { 
+  onLike,
+}: {
   recommendation: Recommendation;
-  feedback?: 'thumbs_up' | 'thumbs_down';
-  onFeedback: (feedback: 'thumbs_up' | 'thumbs_down') => void;
+  feedback?: "thumbs_up" | "thumbs_down";
+  onFeedback: (feedback: "thumbs_up" | "thumbs_down") => void;
   showReasons: boolean;
   onToggleReasons: () => void;
   isSaved?: boolean;
@@ -292,10 +348,12 @@ function TopRecommendationCard({
   onSave?: () => void;
   onLike?: () => void;
 }) {
-  const isCreator = recommendation.type === 'creator';
+  const isCreator = recommendation.type === "creator";
   const item = recommendation.item;
-  const creator = isCreator ? item as Creator : getCreatorById(recommendation.creatorId || '');
-  
+  const creator = isCreator
+    ? (item as Creator)
+    : getCreatorById(recommendation.creatorId || "");
+
   const mainText = getRecommendationExplanation(recommendation);
   const allReasons = getAllReasons(recommendation);
 
@@ -304,10 +362,14 @@ function TopRecommendationCard({
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-2">
-          <span className={`px-2 py-1 rounded text-xs font-medium ${
-            isCreator ? 'bg-amber-500/20 text-amber-400' : 'bg-blue-500/20 text-blue-400'
-          }`}>
-            {isCreator ? 'Creator' : 'Work'}
+          <span
+            className={`px-2 py-1 rounded text-xs font-medium ${
+              isCreator
+                ? "bg-amber-500/20 text-amber-400"
+                : "bg-blue-500/20 text-blue-400"
+            }`}
+          >
+            {isCreator ? "Creator" : "Work"}
           </span>
           <span className="text-xs text-zinc-500">
             {recommendation.score}% match
@@ -318,24 +380,26 @@ function TopRecommendationCard({
             <button
               onClick={onSave}
               className={`p-2 rounded-lg transition ${
-                isSaved 
-                  ? 'text-amber-400 bg-amber-500/10' 
-                  : 'text-zinc-500 hover:text-amber-400 hover:bg-zinc-800'
+                isSaved
+                  ? "text-amber-400 bg-amber-500/10"
+                  : "text-zinc-500 hover:text-amber-400 hover:bg-zinc-800"
               }`}
             >
-              <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-current' : ''}`} />
+              <Bookmark
+                className={`w-4 h-4 ${isSaved ? "fill-current" : ""}`}
+              />
             </button>
           )}
           {!isCreator && onLike && (
             <button
               onClick={onLike}
               className={`p-2 rounded-lg transition ${
-                isLiked 
-                  ? 'text-red-400 bg-red-500/10' 
-                  : 'text-zinc-500 hover:text-red-400 hover:bg-zinc-800'
+                isLiked
+                  ? "text-red-400 bg-red-500/10"
+                  : "text-zinc-500 hover:text-red-400 hover:bg-zinc-800"
               }`}
             >
-              <Heart className={`w-4 h-4 ${isLiked ? 'fill-current' : ''}`} />
+              <Heart className={`w-4 h-4 ${isLiked ? "fill-current" : ""}`} />
             </button>
           )}
         </div>
@@ -344,13 +408,19 @@ function TopRecommendationCard({
       {/* Content */}
       <div className="mb-4">
         <h3 className="text-xl font-semibold text-zinc-100 group-hover:text-amber-400 transition">
-          {isCreator ? (item as {name: string}).name : (item as {title: string}).title}
+          {isCreator
+            ? (item as { name: string }).name
+            : (item as { title: string }).title}
         </h3>
         {!isCreator && creator && (
-          <p className="text-sm text-zinc-500">by {(creator as {name: string}).name}</p>
+          <p className="text-sm text-zinc-500">
+            by {(creator as { name: string }).name}
+          </p>
         )}
         {isCreator && (
-          <p className="text-sm text-zinc-500">{(item as {years: string}).years}</p>
+          <p className="text-sm text-zinc-500">
+            {(item as { years: string }).years}
+          </p>
         )}
       </div>
 
@@ -365,17 +435,24 @@ function TopRecommendationCard({
             onClick={onToggleReasons}
             className="mt-2 text-xs text-zinc-500 hover:text-amber-400 transition"
           >
-            {showReasons ? 'Hide details' : `+${allReasons.length - 1} more reasons`}
+            {showReasons
+              ? "Hide details"
+              : `+${allReasons.length - 1} more reasons`}
           </button>
         )}
         {showReasons && allReasons.length > 1 && (
           <div className="mt-3 pt-3 border-t border-zinc-700 space-y-2">
             {allReasons.slice(1).map((reason, i) => (
               <div key={i} className="flex items-center gap-2 text-xs">
-                <span className={`w-2 h-2 rounded-full ${
-                  reason.strength === 'strong' ? 'bg-green-400' :
-                  reason.strength === 'medium' ? 'bg-yellow-400' : 'bg-zinc-500'
-                }`} />
+                <span
+                  className={`w-2 h-2 rounded-full ${
+                    reason.strength === "strong"
+                      ? "bg-green-400"
+                      : reason.strength === "medium"
+                        ? "bg-yellow-400"
+                        : "bg-zinc-500"
+                  }`}
+                />
                 <span className="text-zinc-400">{reason.description}</span>
               </div>
             ))}
@@ -386,33 +463,41 @@ function TopRecommendationCard({
       {/* Actions */}
       <div className="flex items-center justify-between">
         <Link
-          href={isCreator ? `/creators/${item.id}` : `/creators/${recommendation.creatorId}`}
+          href={
+            isCreator
+              ? `/creators/${item.id}`
+              : `/creators/${recommendation.creatorId}`
+          }
           className="flex items-center gap-2 text-sm text-amber-400 hover:text-amber-300 transition"
         >
           Explore
           <ArrowRight className="w-4 h-4" />
         </Link>
-        
+
         <div className="flex gap-2">
           <button
-            onClick={() => onFeedback('thumbs_up')}
+            onClick={() => onFeedback("thumbs_up")}
             className={`p-2 rounded-lg transition ${
-              feedback === 'thumbs_up' 
-                ? 'bg-green-500/20 text-green-400' 
-                : 'text-zinc-500 hover:bg-zinc-800'
+              feedback === "thumbs_up"
+                ? "bg-green-500/20 text-green-400"
+                : "text-zinc-500 hover:bg-zinc-800"
             }`}
           >
-            <ThumbsUp className={`w-4 h-4 ${feedback === 'thumbs_up' ? 'fill-current' : ''}`} />
+            <ThumbsUp
+              className={`w-4 h-4 ${feedback === "thumbs_up" ? "fill-current" : ""}`}
+            />
           </button>
           <button
-            onClick={() => onFeedback('thumbs_down')}
+            onClick={() => onFeedback("thumbs_down")}
             className={`p-2 rounded-lg transition ${
-              feedback === 'thumbs_down' 
-                ? 'bg-red-500/20 text-red-400' 
-                : 'text-zinc-500 hover:bg-zinc-800'
+              feedback === "thumbs_down"
+                ? "bg-red-500/20 text-red-400"
+                : "text-zinc-500 hover:bg-zinc-800"
             }`}
           >
-            <ThumbsDown className={`w-4 h-4 ${feedback === 'thumbs_down' ? 'fill-current' : ''}`} />
+            <ThumbsDown
+              className={`w-4 h-4 ${feedback === "thumbs_down" ? "fill-current" : ""}`}
+            />
           </button>
         </div>
       </div>
@@ -420,46 +505,56 @@ function TopRecommendationCard({
   );
 }
 
-function CompactRecommendationCard({ 
+function CompactRecommendationCard({
   recommendation,
   feedback,
   onFeedback,
   isSaved,
   isLiked,
   onSave,
-  onLike
-}: { 
+  onLike,
+}: {
   recommendation: Recommendation;
-  feedback?: 'thumbs_up' | 'thumbs_down';
-  onFeedback: (feedback: 'thumbs_up' | 'thumbs_down') => void;
+  feedback?: "thumbs_up" | "thumbs_down";
+  onFeedback: (feedback: "thumbs_up" | "thumbs_down") => void;
   isSaved?: boolean;
   isLiked?: boolean;
   onSave?: () => void;
   onLike?: () => void;
 }) {
-  const isCreator = recommendation.type === 'creator';
+  const isCreator = recommendation.type === "creator";
   const item = recommendation.item;
-  const creator = isCreator ? item : getCreatorById(recommendation.creatorId || '');
-  
+  // const creator = isCreator
+  //   ? item
+  //   : getCreatorById(recommendation.creatorId || "");
+
   const mainReason = getRecommendationExplanation(recommendation);
 
   return (
     <div className="bg-zinc-900/50 rounded-xl p-4 border border-zinc-800 hover:border-zinc-700 transition flex items-center gap-4">
       {/* Score */}
-      <div className="flex-shrink-0 w-12 h-12 rounded-full bg-zinc-800 flex items-center justify-center">
-        <span className="text-sm font-bold text-amber-400">{recommendation.score}</span>
+      <div className="shrink-0 w-12 h-12 rounded-full bg-zinc-800 flex items-center justify-center">
+        <span className="text-sm font-bold text-amber-400">
+          {recommendation.score}
+        </span>
       </div>
 
       {/* Content */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1">
           <h4 className="font-medium text-zinc-200 truncate">
-            {isCreator ? (item as {name: string}).name : (item as {title: string}).title}
+            {isCreator
+              ? (item as { name: string }).name
+              : (item as { title: string }).title}
           </h4>
-          <span className={`flex-shrink-0 px-1.5 py-0.5 rounded text-[10px] ${
-            isCreator ? 'bg-amber-500/10 text-amber-400' : 'bg-blue-500/10 text-blue-400'
-          }`}>
-            {isCreator ? 'Creator' : 'Work'}
+          <span
+            className={`shrink-0 px-1.5 py-0.5 rounded text-[10px] ${
+              isCreator
+                ? "bg-amber-500/10 text-amber-400"
+                : "bg-blue-500/10 text-blue-400"
+            }`}
+          >
+            {isCreator ? "Creator" : "Work"}
           </span>
         </div>
         <p className="text-xs text-zinc-500 truncate">{mainReason}</p>
@@ -471,56 +566,68 @@ function CompactRecommendationCard({
           <button
             onClick={onSave}
             className={`p-2 rounded-lg transition ${
-              isSaved ? 'text-amber-400' : 'text-zinc-500 hover:text-amber-400'
+              isSaved ? "text-amber-400" : "text-zinc-500 hover:text-amber-400"
             }`}
           >
-            <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-current' : ''}`} />
+            <Bookmark className={`w-4 h-4 ${isSaved ? "fill-current" : ""}`} />
           </button>
         )}
         {!isCreator && onLike && (
           <button
             onClick={onLike}
             className={`p-2 rounded-lg transition ${
-              isLiked ? 'text-red-400' : 'text-zinc-500 hover:text-red-400'
+              isLiked ? "text-red-400" : "text-zinc-500 hover:text-red-400"
             }`}
           >
-            <Heart className={`w-4 h-4 ${isLiked ? 'fill-current' : ''}`} />
+            <Heart className={`w-4 h-4 ${isLiked ? "fill-current" : ""}`} />
           </button>
         )}
         <Link
-          href={isCreator ? `/creators/${item.id}` : `/creators/${recommendation.creatorId}`}
+          href={
+            isCreator
+              ? `/creators/${item.id}`
+              : `/creators/${recommendation.creatorId}`
+          }
           className="p-2 text-zinc-500 hover:text-amber-400 transition"
         >
           <ExternalLink className="w-4 h-4" />
         </Link>
         <button
-          onClick={() => onFeedback('thumbs_up')}
+          onClick={() => onFeedback("thumbs_up")}
           className={`p-2 rounded-lg transition ${
-            feedback === 'thumbs_up' ? 'text-green-400' : 'text-zinc-500 hover:text-green-400'
+            feedback === "thumbs_up"
+              ? "text-green-400"
+              : "text-zinc-500 hover:text-green-400"
           }`}
         >
-          <ThumbsUp className={`w-4 h-4 ${feedback === 'thumbs_up' ? 'fill-current' : ''}`} />
+          <ThumbsUp
+            className={`w-4 h-4 ${feedback === "thumbs_up" ? "fill-current" : ""}`}
+          />
         </button>
         <button
-          onClick={() => onFeedback('thumbs_down')}
+          onClick={() => onFeedback("thumbs_down")}
           className={`p-2 rounded-lg transition ${
-            feedback === 'thumbs_down' ? 'text-red-400' : 'text-zinc-500 hover:text-red-400'
+            feedback === "thumbs_down"
+              ? "text-red-400"
+              : "text-zinc-500 hover:text-red-400"
           }`}
         >
-          <ThumbsDown className={`w-4 h-4 ${feedback === 'thumbs_down' ? 'fill-current' : ''}`} />
+          <ThumbsDown
+            className={`w-4 h-4 ${feedback === "thumbs_down" ? "fill-current" : ""}`}
+          />
         </button>
       </div>
     </div>
   );
 }
 
-function StatCard({ 
-  icon, 
-  value, 
-  label 
-}: { 
-  icon: React.ReactNode; 
-  value: number | string; 
+function StatCard({
+  icon,
+  value,
+  label,
+}: {
+  icon: React.ReactNode;
+  value: number | string;
   label: string;
 }) {
   return (
@@ -532,13 +639,13 @@ function StatCard({
   );
 }
 
-function HowItWorksStep({ 
-  icon, 
-  title, 
-  description 
-}: { 
-  icon: React.ReactNode; 
-  title: string; 
+function HowItWorksStep({
+  icon,
+  title,
+  description,
+}: {
+  icon: React.ReactNode;
+  title: string;
   description: string;
 }) {
   return (

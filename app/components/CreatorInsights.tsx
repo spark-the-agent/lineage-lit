@@ -1,8 +1,14 @@
-import { Creator, creators } from '@/lib/data';
-import { analyzeNetwork } from '@/lib/network-analysis';
-import { getSimilarCreators } from '@/lib/recommendations';
-import { TrendingUp, Zap, GitBranch, Link as LinkIcon, Users } from 'lucide-react';
-import Link from 'next/link';
+import { Creator, creators } from "@/lib/data";
+import { analyzeNetwork } from "@/lib/network-analysis";
+import { getSimilarCreators } from "@/lib/recommendations";
+import {
+  TrendingUp,
+  Zap,
+  GitBranch,
+  Link as LinkIcon,
+  Users,
+} from "lucide-react";
+import Link from "next/link";
 
 interface CreatorInsightsProps {
   creator: Creator;
@@ -12,19 +18,26 @@ export default function CreatorInsights({ creator }: CreatorInsightsProps) {
   const metrics = analyzeNetwork(creators);
 
   // Influence rank
-  const influenceRank = metrics.mostInfluential.findIndex(s => s.creator.id === creator.id) + 1;
-  const influenceScore = metrics.mostInfluential.find(s => s.creator.id === creator.id)?.score ?? 0;
+  const influenceRank =
+    metrics.mostInfluential.findIndex((s) => s.creator.id === creator.id) + 1;
+  const influenceScore =
+    metrics.mostInfluential.find((s) => s.creator.id === creator.id)?.score ??
+    0;
 
   // Centrality
-  const centralityEntry = metrics.mostCentral.find(s => s.creator.id === creator.id);
-  const centralityScore = centralityEntry ? Math.round(centralityEntry.score * 100) : 0;
+  const centralityEntry = metrics.mostCentral.find(
+    (s) => s.creator.id === creator.id,
+  );
+  const centralityScore = centralityEntry
+    ? Math.round(centralityEntry.score * 100)
+    : 0;
 
   // Bridge detection
-  const bridgeEntry = metrics.bridges.find(b => b.creator.id === creator.id);
+  const bridgeEntry = metrics.bridges.find((b) => b.creator.id === creator.id);
   const isBridge = bridgeEntry && bridgeEntry.betweennessCentrality > 0;
 
   // Longest chain from this creator
-  const chains = metrics.pathLengths.filter(p => p.from.id === creator.id);
+  const chains = metrics.pathLengths.filter((p) => p.from.id === creator.id);
   const longestChain = chains.length > 0 ? chains[0] : null;
 
   // Similar creators
@@ -71,10 +84,10 @@ export default function CreatorInsights({ creator }: CreatorInsightsProps) {
             <span className="text-xs font-medium">Bridge</span>
           </div>
           <div className="text-lg font-bold text-zinc-100">
-            {isBridge ? 'Yes' : 'No'}
+            {isBridge ? "Yes" : "No"}
           </div>
           <div className="text-[10px] text-zinc-500">
-            {isBridge ? 'Connects communities' : 'Within cluster'}
+            {isBridge ? "Connects communities" : "Within cluster"}
           </div>
         </div>
 
@@ -88,7 +101,9 @@ export default function CreatorInsights({ creator }: CreatorInsightsProps) {
             {longestChain ? longestChain.length : 0}
           </div>
           <div className="text-[10px] text-zinc-500">
-            {longestChain ? `→ ${longestChain.to.name.split(' ').pop()}` : 'No chain'}
+            {longestChain
+              ? `→ ${longestChain.to.name.split(" ").pop()}`
+              : "No chain"}
           </div>
         </div>
       </div>
@@ -96,11 +111,23 @@ export default function CreatorInsights({ creator }: CreatorInsightsProps) {
       {/* Influence score explanation */}
       {influenceScore > 0 && (
         <p className="text-xs text-zinc-400 mb-4">
-          {creator.name} has an influence score of <span className="text-amber-400 font-medium">{influenceScore.toFixed(1)}</span>,
-          ranking <span className="text-amber-400 font-medium">#{influenceRank}</span> most influential in the network
+          {creator.name} has an influence score of{" "}
+          <span className="text-amber-400 font-medium">
+            {influenceScore.toFixed(1)}
+          </span>
+          , ranking{" "}
+          <span className="text-amber-400 font-medium">#{influenceRank}</span>{" "}
+          most influential in the network
           {longestChain && (
-            <> with a chain spanning {longestChain.path.map(c => c.name.split(' ').pop()).join(' → ')}</>
-          )}.
+            <>
+              {" "}
+              with a chain spanning{" "}
+              {longestChain.path
+                .map((c) => c.name.split(" ").pop())
+                .join(" → ")}
+            </>
+          )}
+          .
         </p>
       )}
 
@@ -112,7 +139,7 @@ export default function CreatorInsights({ creator }: CreatorInsightsProps) {
             Similar Creators
           </h4>
           <div className="flex flex-wrap gap-2">
-            {similar.map(c => (
+            {similar.map((c) => (
               <Link
                 key={c.id}
                 href={`/creators/${c.id}`}

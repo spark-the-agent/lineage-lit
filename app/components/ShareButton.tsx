@@ -1,7 +1,35 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Share2, Link2, Twitter, Facebook, Check, X } from 'lucide-react';
+import { useState } from "react";
+import { Share2, Link2, Check, X } from "lucide-react";
+
+function XIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      role="img"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" />
+    </svg>
+  );
+}
+
+function FacebookIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      role="img"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 1.092.044 1.545.13v3.3a8 8 0 0 0-.833-.03c-1.184 0-1.642.45-1.642 1.62v2.538h2.362l-.406 3.668h-1.956v8.16C19.396 22.903 24 17.96 24 12c0-6.627-5.373-12-12-12S0 5.373 0 12c0 5.628 3.874 10.35 9.101 11.691" />
+    </svg>
+  );
+}
 
 interface ShareButtonProps {
   title: string;
@@ -9,11 +37,16 @@ interface ShareButtonProps {
   url?: string;
 }
 
-export default function ShareButton({ title, description = '', url }: ShareButtonProps) {
+export default function ShareButton({
+  title,
+  description = "",
+  url,
+}: ShareButtonProps) {
   const [showModal, setShowModal] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const shareUrl = url || (typeof window !== 'undefined' ? window.location.href : '');
+  const shareUrl =
+    url || (typeof window !== "undefined" ? window.location.href : "");
   const shareText = `Check out ${title} on Lineage Lit - ${description}`;
 
   const handleCopyLink = async () => {
@@ -22,18 +55,18 @@ export default function ShareButton({ title, description = '', url }: ShareButto
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      console.error('Failed to copy:', err);
+      console.error("Failed to copy:", err);
     }
   };
 
   const handleTwitterShare = () => {
     const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
-    window.open(twitterUrl, '_blank', 'width=600,height=400');
+    window.open(twitterUrl, "_blank", "width=600,height=400");
   };
 
   const handleFacebookShare = () => {
     const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
-    window.open(facebookUrl, '_blank', 'width=600,height=400');
+    window.open(facebookUrl, "_blank", "width=600,height=400");
   };
 
   return (
@@ -47,17 +80,17 @@ export default function ShareButton({ title, description = '', url }: ShareButto
       </button>
 
       {showModal && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
           onClick={() => setShowModal(false)}
         >
-          <div 
+          <div
             className="bg-zinc-900 rounded-2xl p-6 max-w-md w-full border border-zinc-700"
-            onClick={e => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-semibold">Share Lineage</h3>
-              <button 
+              <button
                 onClick={() => setShowModal(false)}
                 className="p-2 text-zinc-400 hover:text-zinc-200 transition"
               >
@@ -88,13 +121,13 @@ export default function ShareButton({ title, description = '', url }: ShareButto
                 )}
               </button>
 
-              {/* Twitter */}
+              {/* X (formerly Twitter) */}
               <button
                 onClick={handleTwitterShare}
                 className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#1DA1F2]/20 text-[#1DA1F2] rounded-lg hover:bg-[#1DA1F2]/30 transition"
               >
-                <Twitter className="w-4 h-4" />
-                Share on Twitter
+                <XIcon className="w-4 h-4" />
+                Share on X
               </button>
 
               {/* Facebook */}
@@ -102,7 +135,7 @@ export default function ShareButton({ title, description = '', url }: ShareButto
                 onClick={handleFacebookShare}
                 className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#4267B2]/20 text-[#4267B2] rounded-lg hover:bg-[#4267B2]/30 transition"
               >
-                <Facebook className="w-4 h-4" />
+                <FacebookIcon className="w-4 h-4" />
                 Share on Facebook
               </button>
             </div>

@@ -1,18 +1,22 @@
-import { Network, Clock } from 'lucide-react';
-import Link from 'next/link';
-import type { Metadata } from 'next';
-import TimelineVisualization from '@/app/components/TimelineVisualization';
-import MobileNav, { MobileHeaderSpacer, MobileBottomSpacer } from '@/app/components/MobileNav';
-import { DesktopNav } from '@/app/components/MobileNav';
+import { Network, Clock } from "lucide-react";
+import Link from "next/link";
+import type { Metadata } from "next";
+import TimelineVisualization from "@/app/components/TimelineVisualization";
+import MobileNav, {
+  MobileHeaderSpacer,
+  MobileBottomSpacer,
+} from "@/app/components/MobileNav";
+import { DesktopNav } from "@/app/components/MobileNav";
 
 export const metadata: Metadata = {
-  title: 'Timeline - Lineage Lit',
-  description: 'Visualize literary influence across time. See how creators span generations from 1897 to today.',
+  title: "Timeline - Lineage Lit",
+  description:
+    "Visualize literary influence across time. See how creators span generations from 1897 to today.",
 };
 
 export default function TimelinePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-zinc-900 to-zinc-950 text-zinc-100">
+    <div className="min-h-screen bg-linear-to-b from-zinc-900 to-zinc-950 text-zinc-100">
       <MobileNav currentPage="Timeline" />
       <MobileHeaderSpacer />
 
@@ -21,7 +25,7 @@ export default function TimelinePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 min-h-[44px]">
             <Network className="w-8 h-8 text-amber-400" />
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
+            <h1 className="text-2xl font-bold bg-linear-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
               Lineage Lit
             </h1>
           </Link>
@@ -36,7 +40,8 @@ export default function TimelinePage() {
             Literary Timeline
           </h2>
           <p className="text-zinc-400 text-sm sm:text-base">
-            Visualize influence chains across generations. Bars span each creator&apos;s active years, dots mark notable works.
+            Visualize influence chains across generations. Bars span each
+            creator&apos;s active years, dots mark notable works.
           </p>
         </div>
 

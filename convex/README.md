@@ -53,6 +53,7 @@ npx convex dev
 ## Paid Feature: AI Lineage Discovery
 
 **How it works:**
+
 1. User submits work title + optional text (acknowledgments, preface)
 2. Request queued in `lineageRequests` table
 3. Convex action calls OpenAI GPT-4
@@ -60,6 +61,7 @@ npx convex dev
 5. User sees full lineage tree
 
 **Revenue model:**
+
 - Free: 3 AI discoveries/month
 - Pro ($8/mo): Unlimited + advanced analysis
 - Credit system: $0.50 per additional discovery
