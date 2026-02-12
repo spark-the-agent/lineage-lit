@@ -1,18 +1,21 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { FileText } from 'lucide-react';
-import ShareButton from './ShareButton';
-import SaveCreatorButton from './SaveCreatorButton';
-import CitationModal from './CitationModal';
-import { getCreatorById } from '@/lib/data';
+import { useState } from "react";
+import { FileText } from "lucide-react";
+import ShareButton from "./ShareButton";
+import SaveCreatorButton from "./SaveCreatorButton";
+import CitationModal from "./CitationModal";
+import { getCreatorById } from "@/lib/data";
 
 interface CreatorActionsProps {
   creatorId: string;
   creatorName: string;
 }
 
-export default function CreatorActions({ creatorId, creatorName }: CreatorActionsProps) {
+export default function CreatorActions({
+  creatorId,
+  creatorName,
+}: CreatorActionsProps) {
   const [showCitation, setShowCitation] = useState(false);
   const creator = getCreatorById(creatorId);
 
@@ -33,7 +36,10 @@ export default function CreatorActions({ creatorId, creatorName }: CreatorAction
         />
       </div>
       {showCitation && creator && (
-        <CitationModal creator={creator} onClose={() => setShowCitation(false)} />
+        <CitationModal
+          creator={creator}
+          onClose={() => setShowCitation(false)}
+        />
       )}
     </>
   );

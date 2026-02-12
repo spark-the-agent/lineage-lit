@@ -1,26 +1,27 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Sparkles, Share2, Dna } from 'lucide-react';
-import { usePersistence } from './PersistenceProvider';
-import { computeDNAFromState } from '@/lib/compute-dna';
-import ShareableCard from './ShareableCard';
+import { useState } from "react";
+import { Share2, Dna } from "lucide-react";
+import { usePersistence } from "./PersistenceProvider";
+import { computeDNAFromState } from "@/lib/compute-dna";
+import ShareableCard from "./ShareableCard";
 
 export default function DNAShareCTA() {
-  const { state } = usePersistence();
+  const { state, userProfile } = usePersistence();
   const [showCard, setShowCard] = useState(false);
 
-  const hasActivity = state.savedCreators.length > 0 || state.viewedCreators.length > 0;
+  const hasActivity =
+    state.savedCreators.length > 0 || state.viewedCreators.length > 0;
   const dna = computeDNAFromState(state);
 
   if (!hasActivity) return null;
 
   return (
     <>
-      <div className="bg-gradient-to-br from-amber-500/10 via-orange-500/5 to-zinc-900 rounded-2xl p-6 sm:p-8 border border-amber-500/20">
+      <div className="bg-linear-to-br from-amber-500/10 via-orange-500/5 to-zinc-900 rounded-2xl p-6 sm:p-8 border border-amber-500/20">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-          <div className="flex-shrink-0">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center border border-amber-500/30">
+          <div className="shrink-0">
+            <div className="w-16 h-16 rounded-2xl bg-linear-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center border border-amber-500/30">
               <Dna className="w-8 h-8 text-amber-400" />
             </div>
           </div>
@@ -32,11 +33,15 @@ export default function DNAShareCTA() {
             <p className="text-zinc-400 text-sm mb-3">
               Based on {dna.totalAuthors} authors you&apos;ve explored
               {dna.literaryDNA.length > 0 && (
-                <> &mdash; you&apos;re a <span className="text-amber-400">{dna.literaryDNA[0]}</span></>
+                <>
+                  {" "}
+                  &mdash; you&apos;re a{" "}
+                  <span className="text-amber-400">{dna.literaryDNA[0]}</span>
+                </>
               )}
             </p>
             <div className="flex flex-wrap gap-2">
-              {dna.literaryDNA.map(tag => (
+              {dna.literaryDNA.map((tag) => (
                 <span
                   key={tag}
                   className="px-3 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20"
@@ -60,8 +65,8 @@ export default function DNAShareCTA() {
       {showCard && (
         <ShareableCard
           data={{
-            displayName: 'Literary Explorer',
-            username: 'explorer',
+            displayName: userProfile.displayName,
+            username: userProfile.username,
             readingDNA: dna,
           }}
           onClose={() => setShowCard(false)}

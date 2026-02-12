@@ -18,17 +18,20 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Lineage Lit - Discover the Lineage of Ideas",
-  description: "Track books, screenplays, and articles through their creative DNA. See where writers learned their craft.",
+  description:
+    "Track books, screenplays, and articles through their creative DNA. See where writers learned their craft.",
   openGraph: {
     title: "Lineage Lit - Discover the Lineage of Ideas",
-    description: "Track books, screenplays, and articles through their creative DNA. See where writers learned their craft.",
+    description:
+      "Track books, screenplays, and articles through their creative DNA. See where writers learned their craft.",
     siteName: "Lineage Lit",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "Lineage Lit - Discover the Lineage of Ideas",
-    description: "Track books, screenplays, and articles through their creative DNA.",
+    description:
+      "Track books, screenplays, and articles through their creative DNA.",
   },
 };
 

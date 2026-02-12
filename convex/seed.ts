@@ -14,9 +14,21 @@ const seedCreators = [
     influencedBy: [],
     influenced: ["carver", "mccarthy"],
     works: [
-      { title: "The Sun Also Rises", slug: "sun-also-rises", year: 1926, type: "book", description: "Lost Generation classic" },
-      { title: "The Old Man and the Sea", slug: "old-man-sea", year: 1952, type: "book", description: "Pulitzer Prize winner" },
-    ]
+      {
+        title: "The Sun Also Rises",
+        slug: "sun-also-rises",
+        year: 1926,
+        type: "book",
+        description: "Lost Generation classic",
+      },
+      {
+        title: "The Old Man and the Sea",
+        slug: "old-man-sea",
+        year: 1952,
+        type: "book",
+        description: "Pulitzer Prize winner",
+      },
+    ],
   },
   {
     name: "Raymond Carver",
@@ -28,9 +40,21 @@ const seedCreators = [
     influencedBy: ["hemingway"],
     influenced: ["wolff"],
     works: [
-      { title: "What We Talk About When We Talk About Love", slug: "what-we-talk-about", year: 1981, type: "book", description: "Minimalist masterpiece" },
-      { title: "Cathedral", slug: "cathedral", year: 1983, type: "book", description: "Later, more expansive work" },
-    ]
+      {
+        title: "What We Talk About When We Talk About Love",
+        slug: "what-we-talk-about",
+        year: 1981,
+        type: "book",
+        description: "Minimalist masterpiece",
+      },
+      {
+        title: "Cathedral",
+        slug: "cathedral",
+        year: 1983,
+        type: "book",
+        description: "Later, more expansive work",
+      },
+    ],
   },
   {
     name: "Cormac McCarthy",
@@ -42,9 +66,21 @@ const seedCreators = [
     influencedBy: ["hemingway", "faulkner"],
     influenced: [],
     works: [
-      { title: "Blood Meridian", slug: "blood-meridian", year: 1985, type: "book", description: "Violent Western epic" },
-      { title: "The Road", slug: "the-road", year: 2006, type: "book", description: "Post-apocalyptic father-son journey" },
-    ]
+      {
+        title: "Blood Meridian",
+        slug: "blood-meridian",
+        year: 1985,
+        type: "book",
+        description: "Violent Western epic",
+      },
+      {
+        title: "The Road",
+        slug: "the-road",
+        year: 2006,
+        type: "book",
+        description: "Post-apocalyptic father-son journey",
+      },
+    ],
   },
   {
     name: "William Faulkner",
@@ -56,9 +92,21 @@ const seedCreators = [
     influencedBy: [],
     influenced: ["mccarthy", "marquez"],
     works: [
-      { title: "The Sound and the Fury", slug: "sound-fury", year: 1929, type: "book", description: "Stream of consciousness classic" },
-      { title: "Absalom, Absalom!", slug: "absalom-absalom", year: 1936, type: "book", description: "Southern tragedy" },
-    ]
+      {
+        title: "The Sound and the Fury",
+        slug: "sound-fury",
+        year: 1929,
+        type: "book",
+        description: "Stream of consciousness classic",
+      },
+      {
+        title: "Absalom, Absalom!",
+        slug: "absalom-absalom",
+        year: 1936,
+        type: "book",
+        description: "Southern tragedy",
+      },
+    ],
   },
   {
     name: "Ursula K. Le Guin",
@@ -70,9 +118,21 @@ const seedCreators = [
     influencedBy: [],
     influenced: ["chiang"],
     works: [
-      { title: "The Left Hand of Darkness", slug: "left-hand", year: 1969, type: "book", description: "Gender-fluid sci-fi classic" },
-      { title: "The Dispossessed", slug: "dispossessed", year: 1974, type: "book", description: "Anarchist utopia/dystopia" },
-    ]
+      {
+        title: "The Left Hand of Darkness",
+        slug: "left-hand",
+        year: 1969,
+        type: "book",
+        description: "Gender-fluid sci-fi classic",
+      },
+      {
+        title: "The Dispossessed",
+        slug: "dispossessed",
+        year: 1974,
+        type: "book",
+        description: "Anarchist utopia/dystopia",
+      },
+    ],
   },
   {
     name: "Ted Chiang",
@@ -83,9 +143,21 @@ const seedCreators = [
     influencedBy: ["le-guin"],
     influenced: [],
     works: [
-      { title: "Stories of Your Life and Others", slug: "stories-of-your-life", year: 2002, type: "book", description: "Mind-bending short stories" },
-      { title: "Exhalation", slug: "exhalation", year: 2019, type: "book", description: "More philosophical SF" },
-    ]
+      {
+        title: "Stories of Your Life and Others",
+        slug: "stories-of-your-life",
+        year: 2002,
+        type: "book",
+        description: "Mind-bending short stories",
+      },
+      {
+        title: "Exhalation",
+        slug: "exhalation",
+        year: 2019,
+        type: "book",
+        description: "More philosophical SF",
+      },
+    ],
   },
 ];
 
@@ -93,21 +165,25 @@ export const seedDatabase = mutation({
   args: {},
   handler: async (ctx) => {
     const results = [];
-    
+
     for (const creatorData of seedCreators) {
       const { works, ...creatorFields } = creatorData;
-      
+
       // Check if creator already exists
       const existing = await ctx.db
         .query("creators")
         .withIndex("by_slug", (q) => q.eq("slug", creatorFields.slug))
         .unique();
-      
+
       if (existing) {
-        results.push({ slug: creatorFields.slug, status: "skipped", id: existing._id });
+        results.push({
+          slug: creatorFields.slug,
+          status: "skipped",
+          id: existing._id,
+        });
         continue;
       }
-      
+
       // Create creator
       const creatorId = await ctx.db.insert("creators", {
         ...creatorFields,
@@ -116,7 +192,7 @@ export const seedDatabase = mutation({
         createdAt: Date.now(),
         updatedAt: Date.now(),
       });
-      
+
       // Create works
       const workIds = [];
       for (const work of works) {
@@ -132,15 +208,15 @@ export const seedDatabase = mutation({
         });
         workIds.push(workId);
       }
-      
-      results.push({ 
-        slug: creatorFields.slug, 
-        status: "created", 
+
+      results.push({
+        slug: creatorFields.slug,
+        status: "created",
         creatorId,
-        workCount: workIds.length 
+        workCount: workIds.length,
       });
     }
-    
+
     return results;
   },
 });

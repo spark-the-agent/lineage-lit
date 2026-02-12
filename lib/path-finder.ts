@@ -1,4 +1,4 @@
-import { Creator, creators, getCreatorById } from './data';
+import { Creator, creators, getCreatorById } from "./data";
 
 interface PathResult {
   path: Creator[];
@@ -18,14 +18,14 @@ export function findPath(fromId: string, toId: string): PathResult | null {
 
   // Build undirected adjacency
   const adj = new Map<string, Set<string>>();
-  creators.forEach(c => {
+  creators.forEach((c) => {
     if (!adj.has(c.id)) adj.set(c.id, new Set());
-    c.influencedBy.forEach(id => {
+    c.influencedBy.forEach((id) => {
       adj.get(c.id)!.add(id);
       if (!adj.has(id)) adj.set(id, new Set());
       adj.get(id)!.add(c.id);
     });
-    c.influenced.forEach(id => {
+    c.influenced.forEach((id) => {
       adj.get(c.id)!.add(id);
       if (!adj.has(id)) adj.set(id, new Set());
       adj.get(id)!.add(c.id);
@@ -63,7 +63,7 @@ export function findPath(fromId: string, toId: string): PathResult | null {
   }
 
   const path = pathIds
-    .map(id => getCreatorById(id))
+    .map((id) => getCreatorById(id))
     .filter((c): c is Creator => c !== undefined);
 
   return { path, length: path.length - 1 };

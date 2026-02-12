@@ -35,7 +35,7 @@ export default defineSchema({
       v.literal("article"),
       v.literal("screenplay"),
       v.literal("essay"),
-      v.literal("poem")
+      v.literal("poem"),
     ),
     description: v.string(),
     creatorId: v.id("creators"),
@@ -66,7 +66,7 @@ export default defineSchema({
       v.literal("free"),
       v.literal("active"),
       v.literal("canceled"),
-      v.literal("past_due")
+      v.literal("past_due"),
     ),
     stripeCustomerId: v.optional(v.string()),
     stripeSubscriptionId: v.optional(v.string()),
@@ -86,7 +86,7 @@ export default defineSchema({
       v.literal("want_to_read"),
       v.literal("reading"),
       v.literal("read"),
-      v.literal("dnf")
+      v.literal("dnf"),
     ),
     rating: v.optional(v.number()), // 1-5
     review: v.optional(v.string()),
@@ -109,18 +109,22 @@ export default defineSchema({
       v.literal("pending"),
       v.literal("processing"),
       v.literal("completed"),
-      v.literal("failed")
+      v.literal("failed"),
     ),
     // Results
-    result: v.optional(v.object({
-      identifiedInfluences: v.array(v.object({
-        name: v.string(),
-        confidence: v.number(),
-        evidence: v.string(),
-      })),
-      relatedWorks: v.array(v.string()),
-      lineageTree: v.optional(v.string()), // JSON string
-    })),
+    result: v.optional(
+      v.object({
+        identifiedInfluences: v.array(
+          v.object({
+            name: v.string(),
+            confidence: v.number(),
+            evidence: v.string(),
+          }),
+        ),
+        relatedWorks: v.array(v.string()),
+        lineageTree: v.optional(v.string()), // JSON string
+      }),
+    ),
     error: v.optional(v.string()),
     // Cost tracking
     tokensUsed: v.optional(v.number()),
@@ -136,14 +140,14 @@ export default defineSchema({
     type: v.union(
       v.literal("new_creator"),
       v.literal("new_work"),
-      v.literal("influence_claim")
+      v.literal("influence_claim"),
     ),
     targetId: v.optional(v.id("creators")), // For influence claims
     data: v.string(), // JSON blob
     status: v.union(
       v.literal("pending"),
       v.literal("approved"),
-      v.literal("rejected")
+      v.literal("rejected"),
     ),
     createdAt: v.number(),
   })
@@ -158,7 +162,7 @@ export default defineSchema({
       v.literal("added_reading"),
       v.literal("rated_work"),
       v.literal("discovered_lineage"),
-      v.literal("contributed")
+      v.literal("contributed"),
     ),
     targetType: v.optional(v.string()), // "creator" | "work"
     targetId: v.optional(v.string()),

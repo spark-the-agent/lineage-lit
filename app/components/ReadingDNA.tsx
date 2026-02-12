@@ -1,9 +1,17 @@
-'use client';
+"use client";
 
-import { BookOpen, TrendingUp, Users, Award, Share2, Import, Download } from 'lucide-react';
-import Link from 'next/link';
-import { downloadJSON } from '@/lib/export';
-import { creators } from '@/lib/data';
+import {
+  BookOpen,
+  TrendingUp,
+  Users,
+  Award,
+  Share2,
+  Import,
+  Download,
+} from "lucide-react";
+import Link from "next/link";
+import { downloadJSON } from "@/lib/export";
+import { creators } from "@/lib/data";
 
 interface ReadingStats {
   totalBooks: number;
@@ -20,18 +28,18 @@ export default function ReadingDNA() {
     totalBooks: 47,
     totalAuthors: 32,
     favoriteGenres: [
-      { name: 'Literary Fiction', percentage: 40 },
-      { name: 'Science Fiction', percentage: 30 },
-      { name: 'Screenwriting', percentage: 15 },
-      { name: 'Philosophy', percentage: 15 },
+      { name: "Literary Fiction", percentage: 40 },
+      { name: "Science Fiction", percentage: 30 },
+      { name: "Screenwriting", percentage: 15 },
+      { name: "Philosophy", percentage: 15 },
     ],
     eraBreakdown: [
-      { era: '1920s-1950s', count: 12 },
-      { era: '1960s-1980s', count: 18 },
-      { era: '1990s-2010s', count: 17 },
+      { era: "1920s-1950s", count: 12 },
+      { era: "1960s-1980s", count: 18 },
+      { era: "1990s-2010s", count: 17 },
     ],
     influenceScore: 78,
-    literaryDNA: ['Modernist', 'Speculative', 'Minimalist', 'Humanist'],
+    literaryDNA: ["Modernist", "Speculative", "Minimalist", "Humanist"],
   };
 
   return (
@@ -42,7 +50,9 @@ export default function ReadingDNA() {
             <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-amber-400" />
             Your Reading DNA
           </h2>
-          <p className="text-zinc-400 mt-1 text-sm sm:text-base">Based on 47 books across 32 authors</p>
+          <p className="text-zinc-400 mt-1 text-sm sm:text-base">
+            Based on 47 books across 32 authors
+          </p>
         </div>
         <div className="flex gap-2">
           <Link
@@ -61,12 +71,14 @@ export default function ReadingDNA() {
 
       {/* Literary DNA Badges */}
       <div className="mb-6 sm:mb-8">
-        <h3 className="text-xs sm:text-sm font-semibold text-zinc-500 mb-3 uppercase tracking-wider">Your Literary DNA</h3>
+        <h3 className="text-xs sm:text-sm font-semibold text-zinc-500 mb-3 uppercase tracking-wider">
+          Your Literary DNA
+        </h3>
         <div className="flex flex-wrap gap-2 sm:gap-3">
           {stats.literaryDNA.map((trait, i) => (
             <span
               key={trait}
-              className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-400 border border-amber-500/30"
+              className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium bg-linear-to-r from-amber-500/20 to-orange-500/20 text-amber-400 border border-amber-500/30"
               style={{ animationDelay: `${i * 0.1}s` }}
             >
               {trait}
@@ -105,7 +117,9 @@ export default function ReadingDNA() {
 
       {/* Genre Breakdown */}
       <div className="mb-6 sm:mb-8">
-        <h3 className="text-xs sm:text-sm font-semibold text-zinc-500 mb-3 sm:mb-4 uppercase tracking-wider">Genre Breakdown</h3>
+        <h3 className="text-xs sm:text-sm font-semibold text-zinc-500 mb-3 sm:mb-4 uppercase tracking-wider">
+          Genre Breakdown
+        </h3>
         <div className="space-y-3 sm:space-y-4">
           {stats.favoriteGenres.map((genre) => (
             <div key={genre.name}>
@@ -115,7 +129,7 @@ export default function ReadingDNA() {
               </div>
               <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-amber-500 to-orange-500 rounded-full transition-all duration-1000"
+                  className="h-full bg-linear-to-r from-amber-500 to-orange-500 rounded-full transition-all duration-1000"
                   style={{ width: `${genre.percentage}%` }}
                 />
               </div>
@@ -126,15 +140,21 @@ export default function ReadingDNA() {
 
       {/* Era Timeline */}
       <div className="mb-6 sm:mb-8">
-        <h3 className="text-xs sm:text-sm font-semibold text-zinc-500 mb-3 sm:mb-4 uppercase tracking-wider">Reading by Era</h3>
+        <h3 className="text-xs sm:text-sm font-semibold text-zinc-500 mb-3 sm:mb-4 uppercase tracking-wider">
+          Reading by Era
+        </h3>
         <div className="flex gap-2 sm:gap-4">
           {stats.eraBreakdown.map((era) => (
             <div
               key={era.era}
               className="flex-1 bg-zinc-800/50 rounded-lg p-3 sm:p-4 text-center border border-zinc-700 hover:border-amber-500/30 transition"
             >
-              <div className="text-xl sm:text-2xl font-bold text-amber-400">{era.count}</div>
-              <div className="text-[10px] sm:text-xs text-zinc-500 mt-1">{era.era}</div>
+              <div className="text-xl sm:text-2xl font-bold text-amber-400">
+                {era.count}
+              </div>
+              <div className="text-[10px] sm:text-xs text-zinc-500 mt-1">
+                {era.era}
+              </div>
             </div>
           ))}
         </div>
@@ -142,18 +162,33 @@ export default function ReadingDNA() {
 
       {/* Influence Network */}
       <div className="bg-zinc-800/30 rounded-xl p-4 sm:p-6 border border-zinc-800 mb-6 sm:mb-8">
-        <h3 className="text-xs sm:text-sm font-semibold text-zinc-500 mb-3 sm:mb-4 uppercase tracking-wider">Your Influence Network</h3>
+        <h3 className="text-xs sm:text-sm font-semibold text-zinc-500 mb-3 sm:mb-4 uppercase tracking-wider">
+          Your Influence Network
+        </h3>
         <p className="text-zinc-400 text-sm mb-4">
-          Your reading connects to <span className="text-amber-400">156 creators</span> through influence chains. 
-          You&apos;re most connected to the <span className="text-amber-400">Modernist → Minimalist</span> lineage.
+          Your reading connects to{" "}
+          <span className="text-amber-400">156 creators</span> through influence
+          chains. You&apos;re most connected to the{" "}
+          <span className="text-amber-400">Modernist → Minimalist</span>{" "}
+          lineage.
         </p>
         <Link
           href="/lineage"
           className="inline-flex items-center gap-2 text-amber-400 hover:text-amber-300 text-sm font-medium transition"
         >
           Explore your network
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 5l7 7-7 7"
+            />
           </svg>
         </Link>
       </div>
@@ -193,8 +228,12 @@ function StatCard({
     <div className="bg-zinc-800/50 rounded-xl p-3 sm:p-4 border border-zinc-800">
       <div className="text-amber-400 mb-1 sm:mb-2">{icon}</div>
       <div className="text-xl sm:text-2xl font-bold text-zinc-100">{value}</div>
-      <div className="text-[10px] sm:text-xs text-zinc-500 mt-0.5 sm:mt-1">{label}</div>
-      <div className="text-[10px] sm:text-xs text-amber-500/70 mt-0.5 sm:mt-1">{trend}</div>
+      <div className="text-[10px] sm:text-xs text-zinc-500 mt-0.5 sm:mt-1">
+        {label}
+      </div>
+      <div className="text-[10px] sm:text-xs text-amber-500/70 mt-0.5 sm:mt-1">
+        {trend}
+      </div>
     </div>
   );
 }

@@ -1,21 +1,21 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import LineageGraph from './LineageGraph';
-import { creators } from '@/lib/data';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import LineageGraph from "./LineageGraph";
+import { creators } from "@/lib/data";
+
+function getInitialShowHint(): boolean {
+  if (typeof window === "undefined") return false;
+  return !localStorage.getItem("lineage-graph-interacted");
+}
 
 export default function InteractiveGraphSection() {
   const router = useRouter();
-  const [showHint, setShowHint] = useState(false);
-
-  useEffect(() => {
-    const visited = localStorage.getItem('lineage-graph-interacted');
-    if (!visited) setShowHint(true);
-  }, []);
+  const [showHint, setShowHint] = useState(getInitialShowHint);
 
   const handleCreatorClick = (creatorId: string) => {
-    localStorage.setItem('lineage-graph-interacted', 'true');
+    localStorage.setItem("lineage-graph-interacted", "true");
     setShowHint(false);
     router.push(`/creators/${creatorId}`);
   };

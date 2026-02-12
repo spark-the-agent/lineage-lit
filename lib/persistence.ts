@@ -1,4 +1,18 @@
-'use client';
+"use client";
+
+export interface UserProfileData {
+  displayName: string;
+  username: string;
+  bio: string;
+  avatarSeed: string;
+}
+
+export const defaultUserProfile: UserProfileData = {
+  displayName: "Literary Explorer",
+  username: "explorer",
+  bio: "Discovering the lineage of ideas.",
+  avatarSeed: "explorer",
+};
 
 export interface PersistedState {
   savedCreators: string[];
@@ -12,20 +26,21 @@ export interface PersistedState {
     streakStartDate: string;
   };
   achievements: { id: string; unlockedAt: number }[];
+  userProfile?: UserProfileData;
 }
 
-const STORAGE_KEY = 'lineage-lit-state';
+const STORAGE_KEY = "lineage-lit-state";
 
 const defaultState: PersistedState = {
-  savedCreators: ['hemingway', 'carver', 'le-guin'],
-  likedWorks: ['cathedral', 'blood-meridian', 'dispossessed'],
-  followedUsers: ['user-2', 'user-5'],
+  savedCreators: ["hemingway", "carver", "le-guin"],
+  likedWorks: ["cathedral", "blood-meridian", "dispossessed"],
+  followedUsers: ["user-2", "user-5"],
   viewedCreators: [],
   streakData: {
     currentStreak: 0,
     longestStreak: 0,
-    lastVisitDate: '',
-    streakStartDate: '',
+    lastVisitDate: "",
+    streakStartDate: "",
   },
   achievements: [],
 };
@@ -36,7 +51,7 @@ const listeners = new Set<Listener>();
 let cachedState: PersistedState | null = null;
 
 function isClient(): boolean {
-  return typeof window !== 'undefined';
+  return typeof window !== "undefined";
 }
 
 export function getState(): PersistedState {
@@ -69,7 +84,7 @@ export function setState(partial: Partial<PersistedState>): void {
     }
   }
 
-  listeners.forEach(fn => fn(next));
+  listeners.forEach((fn) => fn(next));
 }
 
 export function subscribe(fn: Listener): () => void {
@@ -83,7 +98,7 @@ export function toggleSavedCreator(id: string): boolean {
   const saved = state.savedCreators.includes(id);
   setState({
     savedCreators: saved
-      ? state.savedCreators.filter(c => c !== id)
+      ? state.savedCreators.filter((c) => c !== id)
       : [...state.savedCreators, id],
   });
   return !saved;
@@ -94,7 +109,7 @@ export function toggleLikedWork(id: string): boolean {
   const liked = state.likedWorks.includes(id);
   setState({
     likedWorks: liked
-      ? state.likedWorks.filter(w => w !== id)
+      ? state.likedWorks.filter((w) => w !== id)
       : [...state.likedWorks, id],
   });
   return !liked;
@@ -105,7 +120,7 @@ export function toggleFollowedUser(id: string): boolean {
   const following = state.followedUsers.includes(id);
   setState({
     followedUsers: following
-      ? state.followedUsers.filter(u => u !== id)
+      ? state.followedUsers.filter((u) => u !== id)
       : [...state.followedUsers, id],
   });
   return !following;
@@ -113,7 +128,7 @@ export function toggleFollowedUser(id: string): boolean {
 
 export function recordCreatorView(id: string): void {
   const state = getState();
-  const already = state.viewedCreators.some(v => v.id === id);
+  const already = state.viewedCreators.some((v) => v.id === id);
   if (!already) {
     setState({
       viewedCreators: [...state.viewedCreators, { id, timestamp: Date.now() }],
@@ -123,9 +138,17 @@ export function recordCreatorView(id: string): void {
 
 export function unlockAchievement(id: string): boolean {
   const state = getState();
-  if (state.achievements.some(a => a.id === id)) return false;
+  if (state.achievements.some((a) => a.id === id)) return false;
   setState({
     achievements: [...state.achievements, { id, unlockedAt: Date.now() }],
   });
   return true;
+}
+
+export function updateUserProfile(profile: Partial<UserProfileData>): void {
+  const state = getState();
+  const current = state.userProfile ?? defaultUserProfile;
+  setState({
+    userProfile: { ...current, ...profile },
+  });
 }

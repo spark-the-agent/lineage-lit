@@ -1,6 +1,32 @@
 # Architecture
 
-## System Overview
+## Current Backend: Convex
+
+The app uses **Convex** as its backend: real-time, serverless, with schema, CRUD, AI integration, and seed data. The frontend uses `lib/convex-adapter.ts` and `lib/use-convex-data.ts` to talk to Convex when `NEXT_PUBLIC_CONVEX_URL` is set, and falls back to static mock data otherwise.
+
+```
+┌─────────────────┐     ┌─────────────────┐
+│   Frontend      │────▶│   Convex        │
+│   (Next.js)     │     │   (real-time DB │
+│   + localStorage│     │   + functions   │
+└─────────────────┘     │   + AI actions) │
+        │               └─────────────────┘
+        ▼
+┌─────────────────┐
+│   Visualization │
+│   (custom SVG)  │
+└─────────────────┘
+```
+
+See `convex/schema.ts`, `convex/README.md`, and the phase-two plan in `docs/plans/` for Convex-specific design.
+
+---
+
+## Deferred Stack (FastAPI + PostgreSQL + Neo4j)
+
+The original plan below is **not implemented**. It remains as a possible future path when you need fine-grained graph queries or dedicated graph DB traversal. Neo4j could be added alongside Convex later if graph performance demands it.
+
+### System Overview (deferred)
 
 ```
 ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
@@ -78,28 +104,33 @@ UserWork (Reading tracking)
 ## API Endpoints (Draft)
 
 ### Works
+
 - `GET /works` - List works (filter by type, genre, date)
 - `GET /works/{id}` - Get work details with lineage
 - `GET /works/{id}/lineage` - Get influence tree
 - `POST /works` - Create work (admin/curator)
 
 ### Creators
+
 - `GET /creators` - List creators
 - `GET /creators/{id}` - Get creator with works and influences
 - `GET /creators/{id}/network` - Get influence network graph
 - `POST /creators` - Create creator
 
 ### Influences
+
 - `GET /influences` - List influence relationships
 - `POST /influences` - Add influence (with evidence)
 - `GET /influences/verify` - Queue for verification
 
 ### Recommendations
+
 - `GET /recommendations/for-you` - Based on reading history
 - `GET /recommendations/similar-to/{work_id}` - Similar by lineage
 - `GET /recommendations/by-influence/{creator_id}` - Same influences
 
 ### Users
+
 - `POST /auth/register`
 - `POST /auth/login`
 - `GET /users/me`
@@ -133,18 +164,21 @@ RETURN path
 ## Tech Decisions
 
 ### Why Neo4j for Graph?
+
 - Native graph operations
 - Efficient shortest-path queries
 - Natural fit for lineage/hierarchy
 - Can visualize directly
 
 ### Why PostgreSQL?
+
 - User data, reading lists (relational)
 - Search/indexing
 - ACID compliance for critical data
 - Familiar, well-supported
 
 ### Hybrid Approach
+
 - Postgres stores core entities and user data
 - Neo4j stores relationships (influences, lineage)
 - Sync via backend events
@@ -152,24 +186,25 @@ RETURN path
 ## MVP Scope
 
 **Week 1:**
+
 - Setup repo structure
 - Design mockups (Figma or similar)
 - Define 50 initial works with lineage
 
 **Week 2:**
+
 - Basic FastAPI backend
 - PostgreSQL schema
 - Simple React frontend
 
 **Week 3:**
+
 - Neo4j integration
 - Graph visualization
 - Influence tracking UI
 
-**Week 4:**
-- Recommendation engine v1
-- Polish and demo
+_Current product uses Convex + static export; see phase-two plan for rollout._
 
 ---
 
-*Architecture by Spark ⚡*
+_Architecture by Spark ⚡_

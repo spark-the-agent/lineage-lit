@@ -1,14 +1,26 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { Flame, Target, Compass } from 'lucide-react';
-import { recordDailyVisit, getStreakInfo, getDiscoveryProgress } from '@/lib/streaks';
-import { usePersistence } from './PersistenceProvider';
+import { useEffect, useState } from "react";
+import { Flame, Target, Compass } from "lucide-react";
+import {
+  recordDailyVisit,
+  getStreakInfo,
+  getDiscoveryProgress,
+} from "@/lib/streaks";
+import { usePersistence } from "./PersistenceProvider";
 
 export default function StreakBanner() {
   const { state } = usePersistence();
-  const [streak, setStreak] = useState({ currentStreak: 0, longestStreak: 0, isActiveToday: false });
-  const [progress, setProgress] = useState({ viewed: 0, total: 8, percentage: 0 });
+  const [streak, setStreak] = useState({
+    currentStreak: 0,
+    longestStreak: 0,
+    isActiveToday: false,
+  });
+  const [progress, setProgress] = useState({
+    viewed: 0,
+    total: 8,
+    percentage: 0,
+  });
 
   useEffect(() => {
     recordDailyVisit();

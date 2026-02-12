@@ -18,9 +18,9 @@ export const searchCreators = query({
   handler: async (ctx, args) => {
     const allCreators = await ctx.db.query("creators").collect();
     const lowerQuery = args.query.toLowerCase();
-    return allCreators.filter(c => 
-      c.name.toLowerCase().includes(lowerQuery)
-    ).slice(0, 20);
+    return allCreators
+      .filter((c) => c.name.toLowerCase().includes(lowerQuery))
+      .slice(0, 20);
   },
 });
 
@@ -32,15 +32,15 @@ export const getCreator = query({
       .query("creators")
       .withIndex("by_slug", (q) => q.eq("slug", args.slug))
       .unique();
-    
+
     if (!creator) return null;
-    
+
     // Get works
     const works = await ctx.db
       .query("works")
       .withIndex("by_creator", (q) => q.eq("creatorId", creator._id))
       .collect();
-    
+
     // Get influence relationships (full objects)
     const influencedBy = await Promise.all(
       creator.influencedBy.map(async (slug: string) => {
@@ -49,9 +49,9 @@ export const getCreator = query({
           .withIndex("by_slug", (q) => q.eq("slug", slug))
           .unique();
         return c ? { id: c._id, slug: c.slug, name: c.name } : null;
-      })
+      }),
     );
-    
+
     const influenced = await Promise.all(
       creator.influenced.map(async (slug: string) => {
         const c = await ctx.db
@@ -59,9 +59,9 @@ export const getCreator = query({
           .withIndex("by_slug", (q) => q.eq("slug", slug))
           .unique();
         return c ? { id: c._id, slug: c.slug, name: c.name } : null;
-      })
+      }),
     );
-    
+
     return {
       ...creator,
       works,
@@ -79,19 +79,19 @@ export const getWork = query({
       .query("works")
       .withIndex("by_slug", (q) => q.eq("slug", args.slug))
       .unique();
-    
+
     if (!work) return null;
-    
+
     const creator = await ctx.db.get(work.creatorId);
-    
+
     // Get influence relationships
     const influences = await Promise.all(
-      work.influences.map((id: GenericId<"works">) => ctx.db.get(id))
+      work.influences.map((id: GenericId<"works">) => ctx.db.get(id)),
     );
     const influenced = await Promise.all(
-      work.influenced.map((id: GenericId<"works">) => ctx.db.get(id))
+      work.influenced.map((id: GenericId<"works">) => ctx.db.get(id)),
     );
-    
+
     return {
       ...work,
       creator,
@@ -140,7 +140,7 @@ export const createWork = mutation({
       v.literal("article"),
       v.literal("screenplay"),
       v.literal("essay"),
-      v.literal("poem")
+      v.literal("poem"),
     ),
     description: v.string(),
     creatorId: v.id("creators"),
@@ -172,7 +172,7 @@ export const requestLineageDiscovery = mutation({
   handler: async (ctx, args) => {
     // TODO: Check user subscription status and limits
     // For now, just create the request
-    
+
     const requestId = await ctx.db.insert("lineageRequests", {
       // This will be set after auth is added
       userId: "temp" as GenericId<"users">, // Placeholder until auth is added
@@ -180,12 +180,12 @@ export const requestLineageDiscovery = mutation({
       status: "pending",
       createdAt: Date.now(),
     });
-    
+
     // Schedule AI processing
     await ctx.scheduler.runAfter(0, internal.ai.processLineageRequest, {
       requestId,
     });
-    
+
     return requestId;
   },
 });
@@ -195,9 +195,6 @@ export const getMyLineageRequests = query({
   args: {},
   handler: async (ctx) => {
     // TODO: Get actual user ID from auth
-    return await ctx.db
-      .query("lineageRequests")
-      .order("desc")
-      .take(20);
+    return await ctx.db.query("lineageRequests").order("desc").take(20);
   },
 });

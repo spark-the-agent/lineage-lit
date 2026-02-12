@@ -17,7 +17,7 @@ export const updateLineageStatus = internalMutation({
       v.literal("pending"),
       v.literal("processing"),
       v.literal("completed"),
-      v.literal("failed")
+      v.literal("failed"),
     ),
   },
   handler: async (ctx, args) => {
@@ -29,12 +29,14 @@ export const completeLineageRequest = internalMutation({
   args: {
     id: v.id("lineageRequests"),
     result: v.object({
-      identifiedInfluences: v.array(v.object({
-        name: v.string(),
-        confidence: v.number(),
-        evidence: v.string(),
-        type: v.optional(v.string()),
-      })),
+      identifiedInfluences: v.array(
+        v.object({
+          name: v.string(),
+          confidence: v.number(),
+          evidence: v.string(),
+          type: v.optional(v.string()),
+        }),
+      ),
       relatedWorks: v.array(v.string()),
       lineageSummary: v.optional(v.string()),
       tokensUsed: v.number(),

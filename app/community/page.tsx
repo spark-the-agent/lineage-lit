@@ -1,13 +1,23 @@
-'use client';
+/* eslint-disable @next/next/no-img-element */
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
+import { useState } from "react";
+import Link from "next/link";
 import {
-  Network, Users, Share2,
-  UserPlus, UserCheck, Search, TrendingUp,
-  Sparkles
-} from 'lucide-react';
-import MobileNav, { MobileHeaderSpacer, MobileBottomSpacer, DesktopNav } from '@/app/components/MobileNav';
+  Network,
+  Users,
+  Share2,
+  UserPlus,
+  UserCheck,
+  Search,
+  TrendingUp,
+  Sparkles,
+} from "lucide-react";
+import MobileNav, {
+  MobileHeaderSpacer,
+  MobileBottomSpacer,
+  DesktopNav,
+} from "@/app/components/MobileNav";
 import {
   currentUser,
   mockUsers,
@@ -15,28 +25,32 @@ import {
   formatTimeAgo,
   getActivityIcon,
   getActivityText,
-  Activity
-} from '@/lib/social';
-import { getCreatorById } from '@/lib/data';
-import { computeDNAFromState } from '@/lib/compute-dna';
-import Leaderboard from '@/app/components/Leaderboard';
-import DNAComparison from '@/app/components/DNAComparison';
-import WeeklyChallenge from '@/app/components/WeeklyChallenge';
-import { usePersistence } from '@/app/components/PersistenceProvider';
+  Activity,
+} from "@/lib/social";
+import { getCreatorById } from "@/lib/data";
+import { computeDNAFromState } from "@/lib/compute-dna";
+import Leaderboard from "@/app/components/Leaderboard";
+import DNAComparison from "@/app/components/DNAComparison";
+import WeeklyChallenge from "@/app/components/WeeklyChallenge";
+import { usePersistence } from "@/app/components/PersistenceProvider";
 
 export default function CommunityPage() {
-  const [activeTab, setActiveTab] = useState<'feed' | 'people'>('feed');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [comparingUser, setComparingUser] = useState<typeof mockUsers[0] | null>(null);
-  const { state, isUserFollowed, toggleFollowedUser } = usePersistence();
+  const [activeTab, setActiveTab] = useState<"feed" | "people">("feed");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [comparingUser, setComparingUser] = useState<
+    (typeof mockUsers)[0] | null
+  >(null);
+  const { state, userProfile, isUserFollowed, toggleFollowedUser } =
+    usePersistence();
 
   const activityFeed = getActivityFeed(currentUser.id);
   const myDNA = computeDNAFromState(state);
 
-  const filteredUsers = mockUsers.filter(user =>
-    user.displayName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.bio.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredUsers = mockUsers.filter(
+    (user) =>
+      user.displayName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.bio.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const handleFollowToggle = (userId: string) => {
@@ -44,7 +58,7 @@ export default function CommunityPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-zinc-900 to-zinc-950 text-zinc-100">
+    <div className="min-h-screen bg-linear-to-b from-zinc-900 to-zinc-950 text-zinc-100">
       <MobileNav currentPage="Community" />
       <MobileHeaderSpacer />
 
@@ -53,7 +67,7 @@ export default function CommunityPage() {
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 min-h-[44px]">
             <Network className="w-8 h-8 text-amber-400" />
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
+            <h1 className="text-2xl font-bold bg-linear-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
               Lineage Lit
             </h1>
           </Link>
@@ -78,32 +92,34 @@ export default function CommunityPage() {
           <div className="lg:col-span-2 space-y-6">
             {/* Tabs */}
             <div className="flex gap-2 border-b border-zinc-800">
-              {(['feed', 'people'] as const).map((tab) => (
+              {(["feed", "people"] as const).map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
                   className={`px-6 py-3 text-sm font-medium capitalize transition border-b-2 -mb-[2px] ${
-                    activeTab === tab 
-                      ? 'text-amber-400 border-amber-400' 
-                      : 'text-zinc-500 border-transparent hover:text-zinc-300'
+                    activeTab === tab
+                      ? "text-amber-400 border-amber-400"
+                      : "text-zinc-500 border-transparent hover:text-zinc-300"
                   }`}
                 >
-                  {tab === 'feed' ? 'Activity Feed' : 'People'}
+                  {tab === "feed" ? "Activity Feed" : "People"}
                 </button>
               ))}
             </div>
 
-            {activeTab === 'feed' ? (
+            {activeTab === "feed" ? (
               <div className="space-y-4">
                 {/* Your Recent Explorations (from persistence data) */}
                 {state.viewedCreators.length > 0 && (
                   <div className="bg-zinc-900/50 rounded-xl p-4 border border-zinc-800">
-                    <h4 className="text-sm font-medium text-zinc-500 uppercase tracking-wider mb-3">Your Recent Explorations</h4>
-                    <div className="flex flex-wrap gap-2">
+                    <h4 className="text-sm font-medium text-zinc-500 uppercase tracking-wider mb-3">
+                      Your Recent Explorations
+                    </h4>
+                    <div className="flex flex-wrap gap-1.5 sm:gap-2">
                       {state.viewedCreators
                         .sort((a, b) => b.timestamp - a.timestamp)
                         .slice(0, 8)
-                        .map(v => {
+                        .map((v) => {
                           const creator = getCreatorById(v.id);
                           if (!creator) return null;
                           return (
@@ -129,12 +145,14 @@ export default function CommunityPage() {
                 ) : (
                   <div className="text-center py-12 bg-zinc-900/50 rounded-2xl border border-zinc-800">
                     <Sparkles className="w-12 h-12 text-zinc-600 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-zinc-400">No activity yet</h3>
+                    <h3 className="text-lg font-medium text-zinc-400">
+                      No activity yet
+                    </h3>
                     <p className="text-zinc-500 text-sm mt-2">
                       Start following people to see their activity here
                     </p>
                     <button
-                      onClick={() => setActiveTab('people')}
+                      onClick={() => setActiveTab("people")}
                       className="mt-4 px-4 py-2 bg-amber-500 text-zinc-900 rounded-lg font-medium hover:bg-amber-400 transition"
                     >
                       Discover People
@@ -188,21 +206,25 @@ export default function CommunityPage() {
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <span className="text-zinc-400">Following</span>
-                  <span className="font-medium text-amber-400">{currentUser.following.length}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-zinc-400">Followers</span>
-                  <span className="font-medium text-amber-400">{currentUser.followers.length}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-zinc-400">Network Reach</span>
                   <span className="font-medium text-amber-400">
-                    {currentUser.following.length + currentUser.followers.length}
+                    {state.followedUsers.length}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-zinc-400">Saved Creators</span>
+                  <span className="font-medium text-amber-400">
+                    {state.savedCreators.length}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-zinc-400">Explored</span>
+                  <span className="font-medium text-amber-400">
+                    {state.viewedCreators.length}
                   </span>
                 </div>
               </div>
-              <Link 
-                href="/profile" 
+              <Link
+                href="/profile"
                 className="mt-4 block text-center text-sm text-amber-400 hover:text-amber-300 transition"
               >
                 View Your Profile →
@@ -217,22 +239,28 @@ export default function CommunityPage() {
               </h3>
               <div className="space-y-3">
                 {mockUsers
-                  .filter(u => !isUserFollowed(u.id) && u.id !== currentUser.id)
+                  .filter(
+                    (u) => !isUserFollowed(u.id) && u.id !== currentUser.id,
+                  )
                   .slice(0, 3)
                   .map((user) => (
                     <div key={user.id} className="flex items-center gap-3">
-                      <img 
-                        src={user.avatar} 
+                      <img
+                        src={user.avatar}
                         alt={user.displayName}
                         className="w-10 h-10 rounded-full bg-zinc-800"
                       />
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-zinc-200 truncate">{user.displayName}</p>
-                        <p className="text-xs text-zinc-500 truncate">@{user.username}</p>
+                        <p className="font-medium text-zinc-200 truncate">
+                          {user.displayName}
+                        </p>
+                        <p className="text-xs text-zinc-500 truncate">
+                          @{user.username}
+                        </p>
                       </div>
                       <button
                         onClick={() => handleFollowToggle(user.id)}
-                        className="p-2 text-zinc-400 hover:text-amber-400 hover:bg-amber-500/10 rounded-lg transition"
+                        className="p-2 text-zinc-400 hover:text-amber-400 hover:bg-amber-500/10 rounded-lg transition min-h-[44px] min-w-[44px] flex items-center justify-center"
                       >
                         <UserPlus className="w-4 h-4" />
                       </button>
@@ -248,17 +276,13 @@ export default function CommunityPage() {
                 Trending Now
               </h3>
               <div className="space-y-3">
-                <TrendingItem 
-                  rank={1}
-                  name="Ted Chiang"
-                  change="+45 readers"
-                />
-                <TrendingItem 
+                <TrendingItem rank={1} name="Ted Chiang" change="+45 readers" />
+                <TrendingItem
                   rank={2}
                   name="The Iceberg Theory"
                   change="+32 discussions"
                 />
-                <TrendingItem 
+                <TrendingItem
                   rank={3}
                   name="Southern Gothic"
                   change="+28 mentions"
@@ -273,15 +297,16 @@ export default function CommunityPage() {
             <Leaderboard />
 
             {/* Quick Share */}
-            <div className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 rounded-2xl p-6 border border-amber-500/20">
+            <div className="bg-linear-to-br from-amber-500/10 to-orange-500/10 rounded-2xl p-6 border border-amber-500/20">
               <h3 className="font-semibold mb-2 flex items-center gap-2 text-amber-400">
                 <Share2 className="w-5 h-5" />
                 Share Your Lineage
               </h3>
               <p className="text-sm text-zinc-400 mb-4">
-                Share your favorite creators and help others discover great literature.
+                Share your favorite creators and help others discover great
+                literature.
               </p>
-              <Link 
+              <Link
                 href="/profile"
                 className="block w-full text-center px-4 py-2 bg-amber-500 text-zinc-900 rounded-lg font-medium hover:bg-amber-400 transition"
               >
@@ -295,8 +320,11 @@ export default function CommunityPage() {
       {/* DNA Comparison Modal */}
       {comparingUser && (
         <DNAComparison
-          userA={{ name: currentUser.displayName, dna: myDNA }}
-          userB={{ name: comparingUser.displayName, dna: comparingUser.readingDNA }}
+          userA={{ name: userProfile.displayName, dna: myDNA }}
+          userB={{
+            name: comparingUser.displayName,
+            dna: comparingUser.readingDNA,
+          }}
           onClose={() => setComparingUser(null)}
         />
       )}
@@ -314,10 +342,11 @@ export default function CommunityPage() {
 }
 
 function ActivityCard({ activity }: { activity: Activity }) {
-  const user = activity.userId === currentUser.id 
-    ? currentUser 
-    : mockUsers.find(u => u.id === activity.userId);
-  
+  const user =
+    activity.userId === currentUser.id
+      ? currentUser
+      : mockUsers.find((u) => u.id === activity.userId);
+
   if (!user) return null;
 
   const icon = getActivityIcon(activity.type);
@@ -328,24 +357,26 @@ function ActivityCard({ activity }: { activity: Activity }) {
     <div className="bg-zinc-900/50 rounded-xl p-4 border border-zinc-800 hover:border-zinc-700 transition">
       <div className="flex items-start gap-4">
         <Link href={`/profile`}>
-          <img 
-            src={user.avatar} 
+          <img
+            src={user.avatar}
             alt={user.displayName}
             className="w-10 h-10 rounded-full bg-zinc-800 hover:ring-2 hover:ring-amber-500/50 transition"
           />
         </Link>
         <div className="flex-1 min-w-0">
           <p className="text-zinc-200">
-            <span className="font-medium text-amber-400">{user.displayName}</span>
-            {' '}{text.replace(user.displayName, '')}
+            <span className="font-medium text-amber-400">
+              {user.displayName}
+            </span>{" "}
+            {text.replace(user.displayName, "")}
           </p>
           <div className="flex items-center gap-3 mt-2 text-xs text-zinc-500">
             <span>{timeAgo}</span>
             <span className="text-xl leading-none">{icon}</span>
           </div>
         </div>
-        {activity.targetType === 'creator' && (
-          <Link 
+        {activity.targetType === "creator" && (
+          <Link
             href={`/creators/${activity.targetId}`}
             className="text-xs px-3 py-1 bg-zinc-800 rounded-full text-zinc-400 hover:text-amber-400 hover:bg-zinc-700 transition"
           >
@@ -363,7 +394,7 @@ function UserCard({
   onFollowToggle,
   onCompare,
 }: {
-  user: typeof mockUsers[0];
+  user: (typeof mockUsers)[0];
   isFollowing: boolean;
   onFollowToggle: () => void;
   onCompare: () => void;
@@ -371,8 +402,8 @@ function UserCard({
   return (
     <div className="bg-zinc-900/50 rounded-xl p-4 border border-zinc-800 hover:border-zinc-700 transition">
       <div className="flex items-start gap-4">
-        <img 
-          src={user.avatar} 
+        <img
+          src={user.avatar}
           alt={user.displayName}
           className="w-12 h-12 rounded-full bg-zinc-800"
         />
@@ -385,9 +416,9 @@ function UserCard({
             <button
               onClick={onFollowToggle}
               className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition ${
-                isFollowing 
-                  ? 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700' 
-                  : 'bg-amber-500 text-zinc-900 hover:bg-amber-400'
+                isFollowing
+                  ? "bg-zinc-800 text-zinc-400 hover:bg-zinc-700"
+                  : "bg-amber-500 text-zinc-900 hover:bg-amber-400"
               }`}
             >
               {isFollowing ? (
@@ -404,13 +435,13 @@ function UserCard({
             </button>
           </div>
           <p className="text-sm text-zinc-400 mt-2 line-clamp-2">{user.bio}</p>
-          
+
           {/* Stats */}
           <div className="flex items-center gap-4 mt-3 text-xs text-zinc-500">
             <span>{user.readingDNA.totalBooks} books</span>
             <span>{user.followers.length} followers</span>
             <span className="text-amber-500/70">
-              {user.readingDNA.literaryDNA.slice(0, 2).join(', ')}
+              {user.readingDNA.literaryDNA.slice(0, 2).join(", ")}
             </span>
             <button
               onClick={onCompare}
@@ -442,15 +473,28 @@ function UserCard({
   );
 }
 
-function TrendingItem({ rank, name, change }: { rank: number; name: string; change: string }) {
+function TrendingItem({
+  rank,
+  name,
+  change,
+}: {
+  rank: number;
+  name: string;
+  change: string;
+}) {
   return (
     <div className="flex items-center gap-3">
-      <span className={`w-6 h-6 flex items-center justify-center rounded text-xs font-bold ${
-        rank === 1 ? 'bg-amber-500 text-zinc-900' :
-        rank === 2 ? 'bg-zinc-600 text-zinc-200' :
-        rank === 3 ? 'bg-amber-700 text-zinc-200' :
-        'bg-zinc-800 text-zinc-400'
-      }`}>
+      <span
+        className={`w-6 h-6 flex items-center justify-center rounded text-xs font-bold ${
+          rank === 1
+            ? "bg-amber-500 text-zinc-900"
+            : rank === 2
+              ? "bg-zinc-600 text-zinc-200"
+              : rank === 3
+                ? "bg-amber-700 text-zinc-200"
+                : "bg-zinc-800 text-zinc-400"
+        }`}
+      >
         {rank}
       </span>
       <div className="flex-1">
