@@ -45,7 +45,7 @@ const navItems: NavItem[] = [
   { href: "/timeline", label: "Timeline", icon: <Clock className="w-5 h-5" /> },
   {
     href: "/community",
-    label: "Community",
+    label: "Activity",
     icon: <Users className="w-5 h-5" />,
   },
   {

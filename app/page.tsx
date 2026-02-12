@@ -138,19 +138,28 @@ export default function Home() {
 
           <div className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 rounded-2xl p-6 sm:p-8 border border-amber-500/20">
             <h3 className="text-xl font-semibold mb-4 text-amber-400">
-              Join the Community
+              Track Your Journey
             </h3>
-            <p className="text-zinc-300 mb-6">
-              Help map the creative lineage of literature. Contribute
-              connections, verify influences, and earn reputation.
+            <p className="text-zinc-300 mb-4">
+              Earn achievements, build your Reading DNA, and see how your
+              literary tastes connect across genres and eras.
             </p>
-            <a
-              href="/community"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-amber-500 text-zinc-900 font-semibold rounded-lg hover:bg-amber-400 transition"
-            >
-              <Users className="w-5 h-5" />
-              Get Started
-            </a>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Link
+                href="/profile"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-amber-500 text-zinc-900 font-semibold rounded-lg hover:bg-amber-400 transition"
+              >
+                <Users className="w-5 h-5" />
+                View Profile
+              </Link>
+              <Link
+                href="/import"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 border border-amber-500/30 text-amber-400 font-semibold rounded-lg hover:bg-amber-500/10 transition"
+              >
+                <Import className="w-5 h-5" />
+                Import Goodreads
+              </Link>
+            </div>
           </div>
         </div>
       </main>
