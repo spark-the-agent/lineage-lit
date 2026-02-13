@@ -12,8 +12,8 @@ export default function InfluenceRanking({ scores }: InfluenceRankingProps) {
     <div className="space-y-3">
       {scores.map((entry, i) => (
         <Link
-          key={entry.creator.id}
-          href={`/creators/${entry.creator.id}`}
+          key={entry.creator.slug}
+          href={`/creators/${entry.creator.slug}`}
           className="flex items-center gap-3 group"
         >
           <span

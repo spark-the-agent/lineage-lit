@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { downloadJSON } from "@/lib/export";
-import { creators } from "@/lib/data";
+import { useCreators } from "@/lib/use-convex-data";
 
 interface ReadingStats {
   totalBooks: number;
@@ -23,6 +23,7 @@ interface ReadingStats {
 }
 
 export default function ReadingDNA() {
+  const creators = useCreators();
   // Mock data - in real app, this comes from user's reading history
   const stats: ReadingStats = {
     totalBooks: 47,

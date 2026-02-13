@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import LineageGraph from "./LineageGraph";
-import { creators } from "@/lib/data";
+import { useCreators } from "@/lib/use-convex-data";
 
 function getInitialShowHint(): boolean {
   if (typeof window === "undefined") return false;
@@ -11,13 +11,14 @@ function getInitialShowHint(): boolean {
 }
 
 export default function InteractiveGraphSection() {
+  const creators = useCreators();
   const router = useRouter();
   const [showHint, setShowHint] = useState(getInitialShowHint);
 
-  const handleCreatorClick = (creatorId: string) => {
+  const handleCreatorClick = (creatorSlug: string) => {
     localStorage.setItem("lineage-graph-interacted", "true");
     setShowHint(false);
-    router.push(`/creators/${creatorId}`);
+    router.push(`/creators/${creatorSlug}`);
   };
 
   return (

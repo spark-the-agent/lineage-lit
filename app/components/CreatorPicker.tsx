@@ -1,20 +1,21 @@
 "use client";
 
-import { creators } from "@/lib/data";
+import { useCreators } from "@/lib/use-convex-data";
 
 interface CreatorPickerProps {
   value: string;
-  onChange: (id: string) => void;
-  excludeId?: string;
+  onChange: (slug: string) => void;
+  excludeSlug?: string;
   label: string;
 }
 
 export default function CreatorPicker({
   value,
   onChange,
-  excludeId,
+  excludeSlug,
   label,
 }: CreatorPickerProps) {
+  const creators = useCreators();
   return (
     <div>
       <label className="block text-xs font-medium text-zinc-500 uppercase tracking-wider mb-1.5">
@@ -27,9 +28,9 @@ export default function CreatorPicker({
       >
         <option value="">Select creator...</option>
         {creators
-          .filter((c) => c.id !== excludeId)
+          .filter((c) => c.slug !== excludeSlug)
           .map((c) => (
-            <option key={c.id} value={c.id}>
+            <option key={c.slug} value={c.slug}>
               {c.name}
             </option>
           ))}

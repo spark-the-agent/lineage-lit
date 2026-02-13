@@ -19,29 +19,34 @@ export default function CreatorInsights({ creator }: CreatorInsightsProps) {
 
   // Influence rank
   const influenceRank =
-    metrics.mostInfluential.findIndex((s) => s.creator.id === creator.id) + 1;
+    metrics.mostInfluential.findIndex((s) => s.creator.slug === creator.slug) +
+    1;
   const influenceScore =
-    metrics.mostInfluential.find((s) => s.creator.id === creator.id)?.score ??
-    0;
+    metrics.mostInfluential.find((s) => s.creator.slug === creator.slug)
+      ?.score ?? 0;
 
   // Centrality
   const centralityEntry = metrics.mostCentral.find(
-    (s) => s.creator.id === creator.id,
+    (s) => s.creator.slug === creator.slug,
   );
   const centralityScore = centralityEntry
     ? Math.round(centralityEntry.score * 100)
     : 0;
 
   // Bridge detection
-  const bridgeEntry = metrics.bridges.find((b) => b.creator.id === creator.id);
+  const bridgeEntry = metrics.bridges.find(
+    (b) => b.creator.slug === creator.slug,
+  );
   const isBridge = bridgeEntry && bridgeEntry.betweennessCentrality > 0;
 
   // Longest chain from this creator
-  const chains = metrics.pathLengths.filter((p) => p.from.id === creator.id);
+  const chains = metrics.pathLengths.filter(
+    (p) => p.from.slug === creator.slug,
+  );
   const longestChain = chains.length > 0 ? chains[0] : null;
 
   // Similar creators
-  const similar = getSimilarCreators(creator.id, 3);
+  const similar = getSimilarCreators(creator.slug, 3);
 
   return (
     <div className="bg-zinc-900/50 rounded-2xl p-4 sm:p-6 border border-zinc-800">
@@ -141,8 +146,8 @@ export default function CreatorInsights({ creator }: CreatorInsightsProps) {
           <div className="flex flex-wrap gap-2">
             {similar.map((c) => (
               <Link
-                key={c.id}
-                href={`/creators/${c.id}`}
+                key={c.slug}
+                href={`/creators/${c.slug}`}
                 className="px-3 py-1.5 bg-zinc-800 rounded-lg text-sm text-zinc-300 hover:text-amber-400 hover:bg-zinc-700 transition"
               >
                 {c.name}

@@ -18,7 +18,7 @@ export interface PersistedState {
   savedCreators: string[];
   likedWorks: string[];
   followedUsers: string[];
-  viewedCreators: { id: string; timestamp: number }[];
+  viewedCreators: { slug: string; timestamp: number }[];
   streakData: {
     currentStreak: number;
     longestStreak: number;
@@ -31,10 +31,10 @@ export interface PersistedState {
 
 const STORAGE_KEY = "lineage-lit-state";
 
-const defaultState: PersistedState = {
-  savedCreators: ["hemingway", "carver", "le-guin"],
-  likedWorks: ["cathedral", "blood-meridian", "dispossessed"],
-  followedUsers: ["user-2", "user-5"],
+export const defaultState: PersistedState = {
+  savedCreators: [],
+  likedWorks: [],
+  followedUsers: [],
   viewedCreators: [],
   streakData: {
     currentStreak: 0,
@@ -93,24 +93,24 @@ export function subscribe(fn: Listener): () => void {
 }
 
 // Convenience helpers
-export function toggleSavedCreator(id: string): boolean {
+export function toggleSavedCreator(slug: string): boolean {
   const state = getState();
-  const saved = state.savedCreators.includes(id);
+  const saved = state.savedCreators.includes(slug);
   setState({
     savedCreators: saved
-      ? state.savedCreators.filter((c) => c !== id)
-      : [...state.savedCreators, id],
+      ? state.savedCreators.filter((c) => c !== slug)
+      : [...state.savedCreators, slug],
   });
   return !saved;
 }
 
-export function toggleLikedWork(id: string): boolean {
+export function toggleLikedWork(slug: string): boolean {
   const state = getState();
-  const liked = state.likedWorks.includes(id);
+  const liked = state.likedWorks.includes(slug);
   setState({
     likedWorks: liked
-      ? state.likedWorks.filter((w) => w !== id)
-      : [...state.likedWorks, id],
+      ? state.likedWorks.filter((w) => w !== slug)
+      : [...state.likedWorks, slug],
   });
   return !liked;
 }
@@ -126,12 +126,15 @@ export function toggleFollowedUser(id: string): boolean {
   return !following;
 }
 
-export function recordCreatorView(id: string): void {
+export function recordCreatorView(slug: string): void {
   const state = getState();
-  const already = state.viewedCreators.some((v) => v.id === id);
+  const already = state.viewedCreators.some((v) => v.slug === slug);
   if (!already) {
     setState({
-      viewedCreators: [...state.viewedCreators, { id, timestamp: Date.now() }],
+      viewedCreators: [
+        ...state.viewedCreators,
+        { slug, timestamp: Date.now() },
+      ],
     });
   }
 }

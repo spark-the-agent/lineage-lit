@@ -8,7 +8,7 @@ export interface ExportOptions {
 }
 
 interface FlattenedCreator {
-  id: string;
+  slug: string;
   name: string;
   years: string;
   bio: string;
@@ -20,12 +20,12 @@ interface FlattenedCreator {
 }
 
 interface FlattenedWork {
-  id: string;
+  slug: string;
   title: string;
   year: number;
   type: string;
   description: string;
-  creatorId: string;
+  creatorSlug: string;
   creatorName: string;
 }
 
@@ -44,7 +44,7 @@ export function exportToCSV(
 
   // Main creators CSV
   const creatorHeaders = [
-    "id",
+    "slug",
     "name",
     "years",
     "bio",
@@ -54,7 +54,7 @@ export function exportToCSV(
     "influence_count",
   ];
   const creatorRows = creators.map((c) => [
-    c.id,
+    c.slug,
     `"${c.name.replace(/"/g, '""')}"`,
     c.years,
     `"${c.bio.replace(/"/g, '""')}"`,
@@ -72,12 +72,12 @@ export function exportToCSV(
   if (includeWorks) {
     csv += "\n\n--- WORKS ---\n\n";
     const workHeaders = [
-      "id",
+      "slug",
       "title",
       "year",
       "type",
       "description",
-      "creator_id",
+      "creator_slug",
       "creator_name",
     ];
     const workRows: (string | number)[][] = [];
@@ -85,12 +85,12 @@ export function exportToCSV(
     creators.forEach((c) => {
       c.works.forEach((w) => {
         workRows.push([
-          w.id,
+          w.slug,
           `"${w.title.replace(/"/g, '""')}"`,
           w.year,
           w.type,
           `"${w.description.replace(/"/g, '""')}"`,
-          c.id,
+          c.slug,
           c.name,
         ]);
       });
@@ -114,26 +114,26 @@ export function exportToCSV(
   const influenceRows: string[][] = [];
 
   creators.forEach((c) => {
-    c.influencedBy.forEach((influencerId) => {
-      const influencer = creators.find((x) => x.id === influencerId);
+    c.influencedBy.forEach((influencerSlug) => {
+      const influencer = creators.find((x) => x.slug === influencerSlug);
       if (influencer) {
         influenceRows.push([
-          influencer.id,
+          influencer.slug,
           influencer.name,
-          c.id,
+          c.slug,
           c.name,
           "influenced_by",
         ]);
       }
     });
 
-    c.influenced.forEach((influencedId) => {
-      const influenced = creators.find((x) => x.id === influencedId);
+    c.influenced.forEach((influencedSlug) => {
+      const influenced = creators.find((x) => x.slug === influencedSlug);
       if (influenced) {
         influenceRows.push([
-          c.id,
+          c.slug,
           c.name,
-          influenced.id,
+          influenced.slug,
           influenced.name,
           "influenced",
         ]);
@@ -167,19 +167,19 @@ export function exportToJSON(
 
   // Creators with expanded relationships
   data.creators = creators.map((c) => ({
-    id: c.id,
+    slug: c.slug,
     name: c.name,
     years: c.years,
     bio: c.bio,
     ...(includeWorks && { works: c.works }),
     ...(includeInfluences && {
-      influencedBy: c.influencedBy.map((id) => {
-        const inf = creators.find((x) => x.id === id);
-        return { id, name: inf?.name || id };
+      influencedBy: c.influencedBy.map((slug) => {
+        const inf = creators.find((x) => x.slug === slug);
+        return { slug, name: inf?.name || slug };
       }),
-      influenced: c.influenced.map((id) => {
-        const inf = creators.find((x) => x.id === id);
-        return { id, name: inf?.name || id };
+      influenced: c.influenced.map((slug) => {
+        const inf = creators.find((x) => x.slug === slug);
+        return { slug, name: inf?.name || slug };
       }),
     }),
     metrics: {
@@ -194,10 +194,10 @@ export function exportToJSON(
   if (includeInfluences) {
     data.networkEdges = [] as NetworkEdge[];
     creators.forEach((c) => {
-      c.influencedBy.forEach((id) => {
+      c.influencedBy.forEach((slug) => {
         data.networkEdges.push({
-          source: id,
-          target: c.id,
+          source: slug,
+          target: c.slug,
           relationship: "influenced_by",
           weight: 1,
         });
@@ -230,7 +230,7 @@ export function exportToJSON(
 
 export function generateNetworkJSON(creators: Creator[]): string {
   const nodes = creators.map((c) => ({
-    id: c.id,
+    slug: c.slug,
     label: c.name,
     group: determineEra(c.years),
     works: c.works.length,
@@ -240,10 +240,10 @@ export function generateNetworkJSON(creators: Creator[]): string {
 
   const edges: { from: string; to: string; label: string }[] = [];
   creators.forEach((c) => {
-    c.influencedBy.forEach((id) => {
+    c.influencedBy.forEach((slug) => {
       edges.push({
-        from: id,
-        to: c.id,
+        from: slug,
+        to: c.slug,
         label: "influenced",
       });
     });

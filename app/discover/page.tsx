@@ -17,7 +17,8 @@ import MobileNav, {
   MobileBottomSpacer,
   DesktopNav,
 } from "@/app/components/MobileNav";
-import { getCreatorById, creators } from "@/lib/data";
+import type { Creator } from "@/lib/data";
+import { useCreators, useCreatorLookup } from "@/lib/use-convex-data";
 
 interface InfluenceResult {
   name: string;
@@ -32,7 +33,12 @@ interface DiscoveryResult {
 }
 
 // Local mock analysis for when Convex is not connected
-function mockAnalyze(title: string, author: string): Promise<DiscoveryResult> {
+function mockAnalyze(
+  title: string,
+  author: string,
+  creators: Creator[],
+  getCreatorBySlug: (slug: string) => Creator | undefined,
+): Promise<DiscoveryResult> {
   return new Promise((resolve) => {
     setTimeout(() => {
       // Try to match against existing creators
@@ -46,7 +52,7 @@ function mockAnalyze(title: string, author: string): Promise<DiscoveryResult> {
 
       if (matchedCreator) {
         const influences = matchedCreator.influencedBy
-          .map((id) => getCreatorById(id))
+          .map((id) => getCreatorBySlug(id))
           .filter(Boolean)
           .map((c) => ({
             name: c!.name,
@@ -75,7 +81,7 @@ function mockAnalyze(title: string, author: string): Promise<DiscoveryResult> {
             (w) => `${w.title} by ${matchedCreator.name}`,
           ),
           lineageSummary: `This work sits within the ${matchedCreator.bio.includes("minimalis") ? "minimalist" : "modernist"} literary tradition, showing connections to ${matchedCreator.influencedBy
-            .map((id) => getCreatorById(id)?.name)
+            .map((id) => getCreatorBySlug(id)?.name)
             .filter(Boolean)
             .join(", ")}.`,
         });
@@ -114,6 +120,8 @@ function mockAnalyze(title: string, author: string): Promise<DiscoveryResult> {
 }
 
 export default function DiscoverPage() {
+  const creators = useCreators();
+  const getCreatorBySlug = useCreatorLookup();
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [sourceText, setSourceText] = useState("");
@@ -126,7 +134,12 @@ export default function DiscoverPage() {
     setResult(null);
 
     try {
-      const analysis = await mockAnalyze(title, author);
+      const analysis = await mockAnalyze(
+        title,
+        author,
+        creators,
+        getCreatorBySlug,
+      );
       setResult(analysis);
     } finally {
       setLoading(false);
@@ -301,7 +314,7 @@ export default function DiscoverPage() {
                             </h4>
                             {existing && (
                               <Link
-                                href={`/creators/${existing.id}`}
+                                href={`/creators/${existing.slug}`}
                                 className="text-xs px-2 py-0.5 bg-amber-500/10 text-amber-400 rounded-full hover:bg-amber-500/20 transition"
                               >
                                 View Profile

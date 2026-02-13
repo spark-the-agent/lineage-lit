@@ -4,7 +4,7 @@ import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Network, Zap, Share2, RotateCcw, Check } from "lucide-react";
 import Link from "next/link";
-import { creators, getCreatorById } from "@/lib/data";
+import { useCreators, useCreatorLookup } from "@/lib/use-convex-data";
 import { findPath } from "@/lib/path-finder";
 import PathAnimation from "@/app/components/PathAnimation";
 import MobileNav, {
@@ -23,18 +23,21 @@ export default function SixDegreesPage() {
 
 function getInitialParamsState(
   searchParams: ReturnType<typeof useSearchParams>,
+  getCreatorBySlug: ReturnType<typeof useCreatorLookup>,
 ) {
   const from = searchParams.get("from");
   const to = searchParams.get("to");
-  if (from && to && getCreatorById(from) && getCreatorById(to)) {
+  if (from && to && getCreatorBySlug(from) && getCreatorBySlug(to)) {
     return { from, to, result: findPath(from, to), searched: true };
   }
   return { from: "", to: "", result: null, searched: false };
 }
 
 function SixDegreesContent() {
+  const creators = useCreators();
+  const getCreatorBySlug = useCreatorLookup();
   const searchParams = useSearchParams();
-  const initial = getInitialParamsState(searchParams);
+  const initial = getInitialParamsState(searchParams, getCreatorBySlug);
   const [fromId, setFromId] = useState(initial.from);
   const [toId, setToId] = useState(initial.to);
   const [result, setResult] = useState<ReturnType<typeof findPath>>(
@@ -138,7 +141,7 @@ function SixDegreesContent() {
               >
                 <option value="">Select a creator...</option>
                 {creators.map((c) => (
-                  <option key={c.id} value={c.id}>
+                  <option key={c.slug} value={c.slug}>
                     {c.name}
                   </option>
                 ))}
@@ -158,9 +161,9 @@ function SixDegreesContent() {
               >
                 <option value="">Select a creator...</option>
                 {creators
-                  .filter((c) => c.id !== fromId)
+                  .filter((c) => c.slug !== fromId)
                   .map((c) => (
-                    <option key={c.id} value={c.id}>
+                    <option key={c.slug} value={c.slug}>
                       {c.name}
                     </option>
                   ))}

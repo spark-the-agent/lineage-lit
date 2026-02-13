@@ -2,7 +2,7 @@ import {
   Creator,
   Work,
   creators,
-  getCreatorById,
+  getCreatorBySlug,
   getAllCreators,
 } from "./data";
 import { UserProfile, currentUser, getUserById } from "./social";
@@ -13,7 +13,7 @@ export interface Recommendation {
   item: Creator | Work;
   score: number;
   reasons: RecommendationReason[];
-  creatorId?: string; // For work recommendations, the creator
+  creatorSlug?: string; // For work recommendations, the creator
 }
 
 export interface RecommendationReason {
@@ -251,18 +251,18 @@ export function generateRecommendations(
 
   // 1. Shared Influences Analysis
   // If user likes a creator, recommend those they influenced or were influenced by
-  user.readingDNA.topAuthors.forEach((authorId) => {
-    const author = getCreatorById(authorId);
+  user.readingDNA.topAuthors.forEach((authorSlug) => {
+    const author = getCreatorBySlug(authorSlug);
     if (!author) return;
 
     // Recommend creators influenced by this author
-    author.influenced.forEach((influencedId) => {
-      if (user.savedCreators.includes(influencedId)) return; // Already saved
+    author.influenced.forEach((influencedSlug) => {
+      if (user.savedCreators.includes(influencedSlug)) return; // Already saved
 
-      const influenced = getCreatorById(influencedId);
+      const influenced = getCreatorBySlug(influencedSlug);
       if (!influenced) return;
 
-      const existing = scoredItems.get(influencedId) || {
+      const existing = scoredItems.get(influencedSlug) || {
         score: 0,
         reasons: [],
       };
@@ -271,19 +271,19 @@ export function generateRecommendations(
         type: "shared_influence",
         description: `Influenced by ${author.name}, one of your favorite authors`,
         strength: "strong",
-        relatedItem: authorId,
+        relatedItem: authorSlug,
       });
-      scoredItems.set(influencedId, existing);
+      scoredItems.set(influencedSlug, existing);
     });
 
     // Recommend creators who influenced this author
-    author.influencedBy.forEach((influencerId) => {
-      if (user.savedCreators.includes(influencerId)) return;
+    author.influencedBy.forEach((influencerSlug) => {
+      if (user.savedCreators.includes(influencerSlug)) return;
 
-      const influencer = getCreatorById(influencerId);
+      const influencer = getCreatorBySlug(influencerSlug);
       if (!influencer) return;
 
-      const existing = scoredItems.get(influencerId) || {
+      const existing = scoredItems.get(influencerSlug) || {
         score: 0,
         reasons: [],
       };
@@ -292,20 +292,20 @@ export function generateRecommendations(
         type: "shared_influence",
         description: `Influenced ${author.name}, showing you the roots of their style`,
         strength: "strong",
-        relatedItem: authorId,
+        relatedItem: authorSlug,
       });
-      scoredItems.set(influencerId, existing);
+      scoredItems.set(influencerSlug, existing);
     });
   });
 
   // 2. Genre Overlap Analysis
   user.favoriteGenres.forEach((genre) => {
     allCreators.forEach((creator) => {
-      if (user.savedCreators.includes(creator.id)) return;
+      if (user.savedCreators.includes(creator.slug)) return;
 
-      const genres = creatorGenres[creator.id] || [];
+      const genres = creatorGenres[creator.slug] || [];
       if (genres.includes(genre)) {
-        const existing = scoredItems.get(creator.id) || {
+        const existing = scoredItems.get(creator.slug) || {
           score: 0,
           reasons: [],
         };
@@ -323,7 +323,7 @@ export function generateRecommendations(
             relatedItem: genre,
           });
         }
-        scoredItems.set(creator.id, existing);
+        scoredItems.set(creator.slug, existing);
       }
     });
   });
@@ -331,10 +331,10 @@ export function generateRecommendations(
   // 3. Era Preference Matching
   user.eraPreferences.forEach((era) => {
     allCreators.forEach((creator) => {
-      if (user.savedCreators.includes(creator.id)) return;
+      if (user.savedCreators.includes(creator.slug)) return;
 
-      if (creatorEras[creator.id] === era) {
-        const existing = scoredItems.get(creator.id) || {
+      if (creatorEras[creator.slug] === era) {
+        const existing = scoredItems.get(creator.slug) || {
           score: 0,
           reasons: [],
         };
@@ -351,29 +351,29 @@ export function generateRecommendations(
             relatedItem: era,
           });
         }
-        scoredItems.set(creator.id, existing);
+        scoredItems.set(creator.slug, existing);
       }
     });
   });
 
   // 4. Lineage Proximity - Second degree connections
-  user.savedCreators.forEach((savedId) => {
-    const saved = getCreatorById(savedId);
+  user.savedCreators.forEach((savedSlug) => {
+    const saved = getCreatorBySlug(savedSlug);
     if (!saved) return;
 
     // Check who influenced the saved creator's influences
-    saved.influencedBy.forEach((firstDegreeId) => {
-      const firstDegree = getCreatorById(firstDegreeId);
+    saved.influencedBy.forEach((firstDegreeSlug) => {
+      const firstDegree = getCreatorBySlug(firstDegreeSlug);
       if (!firstDegree) return;
 
-      firstDegree.influencedBy.forEach((secondDegreeId) => {
-        if (user.savedCreators.includes(secondDegreeId)) return;
-        if (secondDegreeId === savedId) return;
+      firstDegree.influencedBy.forEach((secondDegreeSlug) => {
+        if (user.savedCreators.includes(secondDegreeSlug)) return;
+        if (secondDegreeSlug === savedSlug) return;
 
-        const secondDegree = getCreatorById(secondDegreeId);
+        const secondDegree = getCreatorBySlug(secondDegreeSlug);
         if (!secondDegree) return;
 
-        const existing = scoredItems.get(secondDegreeId) || {
+        const existing = scoredItems.get(secondDegreeSlug) || {
           score: 0,
           reasons: [],
         };
@@ -382,20 +382,20 @@ export function generateRecommendations(
           type: "lineage_proximity",
           description: `Part of the same lineage as ${saved.name} → ${firstDegree.name}`,
           strength: "medium",
-          relatedItem: savedId,
+          relatedItem: savedSlug,
         });
-        scoredItems.set(secondDegreeId, existing);
+        scoredItems.set(secondDegreeSlug, existing);
       });
 
       // Check who was influenced by the saved creator's influences
-      firstDegree.influenced.forEach((secondDegreeId) => {
-        if (user.savedCreators.includes(secondDegreeId)) return;
-        if (secondDegreeId === savedId) return;
+      firstDegree.influenced.forEach((secondDegreeSlug) => {
+        if (user.savedCreators.includes(secondDegreeSlug)) return;
+        if (secondDegreeSlug === savedSlug) return;
 
-        const secondDegree = getCreatorById(secondDegreeId);
+        const secondDegree = getCreatorBySlug(secondDegreeSlug);
         if (!secondDegree) return;
 
-        const existing = scoredItems.get(secondDegreeId) || {
+        const existing = scoredItems.get(secondDegreeSlug) || {
           score: 0,
           reasons: [],
         };
@@ -404,9 +404,9 @@ export function generateRecommendations(
           type: "lineage_proximity",
           description: `Connected through ${saved.name} → ${firstDegree.name} lineage`,
           strength: "medium",
-          relatedItem: savedId,
+          relatedItem: savedSlug,
         });
-        scoredItems.set(secondDegreeId, existing);
+        scoredItems.set(secondDegreeSlug, existing);
       });
     });
   });
@@ -417,10 +417,13 @@ export function generateRecommendations(
     const followingUser = getUserById(followingId);
     if (!followingUser) return;
 
-    followingUser.savedCreators.forEach((creatorId) => {
-      if (user.savedCreators.includes(creatorId)) return;
+    followingUser.savedCreators.forEach((creatorSlug) => {
+      if (user.savedCreators.includes(creatorSlug)) return;
 
-      const existing = scoredItems.get(creatorId) || { score: 0, reasons: [] };
+      const existing = scoredItems.get(creatorSlug) || {
+        score: 0,
+        reasons: [],
+      };
       existing.score += 8;
 
       const hasFollowerReason = existing.reasons.some(
@@ -434,39 +437,42 @@ export function generateRecommendations(
           relatedItem: followingId,
         });
       }
-      scoredItems.set(creatorId, existing);
+      scoredItems.set(creatorSlug, existing);
     });
   });
 
   // 6. Influence Chain Discovery
   // Find chains: A → B → C where user has A and C, recommend B
-  user.savedCreators.forEach((startId) => {
-    const start = getCreatorById(startId);
+  user.savedCreators.forEach((startSlug) => {
+    const start = getCreatorBySlug(startSlug);
     if (!start) return;
 
-    start.influenced.forEach((midId) => {
-      const mid = getCreatorById(midId);
-      if (!mid || user.savedCreators.includes(midId)) return;
+    start.influenced.forEach((midSlug) => {
+      const mid = getCreatorBySlug(midSlug);
+      if (!mid || user.savedCreators.includes(midSlug)) return;
 
-      mid.influenced.forEach((endId) => {
-        if (user.savedCreators.includes(endId)) {
-          const existing = scoredItems.get(midId) || { score: 0, reasons: [] };
+      mid.influenced.forEach((endSlug) => {
+        if (user.savedCreators.includes(endSlug)) {
+          const existing = scoredItems.get(midSlug) || {
+            score: 0,
+            reasons: [],
+          };
           existing.score += 30;
           existing.reasons.push({
             type: "influence_chain",
-            description: `The missing link: ${start.name} → ? → ${getCreatorById(endId)?.name}`,
+            description: `The missing link: ${start.name} → ? → ${getCreatorBySlug(endSlug)?.name}`,
             strength: "strong",
-            relatedItem: `${startId}-${endId}`,
+            relatedItem: `${startSlug}-${endSlug}`,
           });
-          scoredItems.set(midId, existing);
+          scoredItems.set(midSlug, existing);
         }
       });
     });
   });
 
   // Convert scored items to recommendations
-  scoredItems.forEach((data, creatorId) => {
-    const creator = getCreatorById(creatorId);
+  scoredItems.forEach((data, creatorSlug) => {
+    const creator = getCreatorBySlug(creatorSlug);
     if (!creator) return;
 
     // Boost score for creators with more works
@@ -474,23 +480,23 @@ export function generateRecommendations(
 
     // Add individual work recommendations
     creator.works.forEach((work) => {
-      if (user.readWorks.includes(work.id)) return;
-      if (user.likedWorks.includes(work.id)) return;
+      if (user.readWorks.includes(work.slug)) return;
+      if (user.likedWorks.includes(work.slug)) return;
 
       let workScore = data.score * 0.8;
       if (
-        user.likedWorks.some((likedId) =>
-          creator.works.some((w) => w.id === likedId),
+        user.likedWorks.some((likedSlug) =>
+          creator.works.some((w) => w.slug === likedSlug),
         )
       ) {
         workScore += 10; // Boost if user liked other works by this creator
       }
 
       recommendations.push({
-        id: `rec-work-${work.id}`,
+        id: `rec-work-${work.slug}`,
         type: "work",
         item: work,
-        creatorId: creator.id,
+        creatorSlug: creator.slug,
         score: workScore,
         reasons: data.reasons.map((r) => ({
           ...r,
@@ -503,7 +509,7 @@ export function generateRecommendations(
     });
 
     recommendations.push({
-      id: `rec-creator-${creatorId}`,
+      id: `rec-creator-${creatorSlug}`,
       type: "creator",
       item: creator,
       score: data.score,
@@ -584,97 +590,97 @@ export function hasFeedback(
 
 // Get similar creators based on shared influences
 export function getSimilarCreators(
-  creatorId: string,
+  creatorSlug: string,
   limit: number = 3,
 ): Creator[] {
-  const creator = getCreatorById(creatorId);
+  const creator = getCreatorBySlug(creatorSlug);
   if (!creator) return [];
 
   const similarities = new Map<string, number>();
 
   creators.forEach((other) => {
-    if (other.id === creatorId) return;
+    if (other.slug === creatorSlug) return;
 
     let score = 0;
 
     // Shared influences
-    const sharedInfluencedBy = creator.influencedBy.filter((id) =>
-      other.influencedBy.includes(id),
+    const sharedInfluencedBy = creator.influencedBy.filter((slug) =>
+      other.influencedBy.includes(slug),
     );
     score += sharedInfluencedBy.length * 10;
 
     // Shared influenced
-    const sharedInfluenced = creator.influenced.filter((id) =>
-      other.influenced.includes(id),
+    const sharedInfluenced = creator.influenced.filter((slug) =>
+      other.influenced.includes(slug),
     );
     score += sharedInfluenced.length * 10;
 
     // Genre overlap
-    const creatorGenres_list = creatorGenres[creator.id] || [];
-    const otherGenres = creatorGenres[other.id] || [];
+    const creatorGenres_list = creatorGenres[creator.slug] || [];
+    const otherGenres = creatorGenres[other.slug] || [];
     const sharedGenres = creatorGenres_list.filter((g) =>
       otherGenres.includes(g),
     );
     score += sharedGenres.length * 5;
 
     // Same era
-    if (creatorEras[creator.id] === creatorEras[other.id]) {
+    if (creatorEras[creator.slug] === creatorEras[other.slug]) {
       score += 3;
     }
 
     if (score > 0) {
-      similarities.set(other.id, score);
+      similarities.set(other.slug, score);
     }
   });
 
   return Array.from(similarities.entries())
     .sort((a, b) => b[1] - a[1])
     .slice(0, limit)
-    .map(([id]) => getCreatorById(id))
+    .map(([slug]) => getCreatorBySlug(slug))
     .filter((c): c is Creator => c !== undefined);
 }
 
 // Get discovery path - how to get from user favorites to this creator
 export function getDiscoveryPath(
-  targetCreatorId: string,
+  targetCreatorSlug: string,
   user: UserProfile = currentUser,
 ): string[] {
-  const target = getCreatorById(targetCreatorId);
+  const target = getCreatorBySlug(targetCreatorSlug);
   if (!target) return [];
 
   // Direct influence
-  for (const savedId of user.savedCreators) {
-    const saved = getCreatorById(savedId);
+  for (const savedSlug of user.savedCreators) {
+    const saved = getCreatorBySlug(savedSlug);
     if (!saved) continue;
 
-    if (saved.influenced.includes(targetCreatorId)) {
-      return [savedId, targetCreatorId];
+    if (saved.influenced.includes(targetCreatorSlug)) {
+      return [savedSlug, targetCreatorSlug];
     }
-    if (saved.influencedBy.includes(targetCreatorId)) {
-      return [targetCreatorId, savedId];
+    if (saved.influencedBy.includes(targetCreatorSlug)) {
+      return [targetCreatorSlug, savedSlug];
     }
   }
 
   // Second degree
-  for (const savedId of user.savedCreators) {
-    const saved = getCreatorById(savedId);
+  for (const savedSlug of user.savedCreators) {
+    const saved = getCreatorBySlug(savedSlug);
     if (!saved) continue;
 
-    for (const firstDegreeId of saved.influenced) {
-      const firstDegree = getCreatorById(firstDegreeId);
+    for (const firstDegreeSlug of saved.influenced) {
+      const firstDegree = getCreatorBySlug(firstDegreeSlug);
       if (!firstDegree) continue;
 
-      if (firstDegree.influenced.includes(targetCreatorId)) {
-        return [savedId, firstDegreeId, targetCreatorId];
+      if (firstDegree.influenced.includes(targetCreatorSlug)) {
+        return [savedSlug, firstDegreeSlug, targetCreatorSlug];
       }
     }
 
-    for (const firstDegreeId of saved.influencedBy) {
-      const firstDegree = getCreatorById(firstDegreeId);
+    for (const firstDegreeSlug of saved.influencedBy) {
+      const firstDegree = getCreatorBySlug(firstDegreeSlug);
       if (!firstDegree) continue;
 
-      if (firstDegree.influencedBy.includes(targetCreatorId)) {
-        return [targetCreatorId, firstDegreeId, savedId];
+      if (firstDegree.influencedBy.includes(targetCreatorSlug)) {
+        return [targetCreatorSlug, firstDegreeSlug, savedSlug];
       }
     }
   }

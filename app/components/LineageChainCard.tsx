@@ -2,21 +2,22 @@
 
 import { useState } from "react";
 import { Zap, Share2 } from "lucide-react";
-import { getCreatorById } from "@/lib/data";
+import { useCreatorLookup } from "@/lib/use-convex-data";
 import { findPath } from "@/lib/path-finder";
 import CreatorPicker from "./CreatorPicker";
 
 interface LineageChainCardProps {
-  fromCreatorId: string;
+  fromCreatorSlug: string;
 }
 
 export default function LineageChainCard({
-  fromCreatorId,
+  fromCreatorSlug,
 }: LineageChainCardProps) {
-  const [targetId, setTargetId] = useState("");
+  const getCreatorBySlug = useCreatorLookup();
+  const [targetSlug, setTargetSlug] = useState("");
 
-  const result = targetId ? findPath(fromCreatorId, targetId) : null;
-  const fromCreator = getCreatorById(fromCreatorId);
+  const result = targetSlug ? findPath(fromCreatorSlug, targetSlug) : null;
+  const fromCreator = getCreatorBySlug(fromCreatorSlug);
 
   const handleShare = async () => {
     if (!result) return;
@@ -37,9 +38,9 @@ export default function LineageChainCard({
       </h4>
 
       <CreatorPicker
-        value={targetId}
-        onChange={setTargetId}
-        excludeId={fromCreatorId}
+        value={targetSlug}
+        onChange={setTargetSlug}
+        excludeSlug={fromCreatorSlug}
         label={`Connect ${fromCreator?.name?.split(" ").pop() || ""} to`}
       />
 
@@ -50,7 +51,7 @@ export default function LineageChainCard({
             {result.path.map((creator, i) => {
               const x = (i / (result.path.length - 1)) * 340 + 30;
               return (
-                <g key={creator.id}>
+                <g key={creator.slug}>
                   {i < result.path.length - 1 && (
                     <line
                       x1={x + 12}
@@ -100,7 +101,7 @@ export default function LineageChainCard({
         </div>
       )}
 
-      {targetId && !result && (
+      {targetSlug && !result && (
         <p className="mt-3 text-xs text-zinc-500">No connection found.</p>
       )}
     </div>

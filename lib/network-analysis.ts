@@ -60,9 +60,9 @@ function buildGraph(creators: Creator[]): Graph {
   const graph: Graph = {};
 
   creators.forEach((c) => {
-    graph[c.id] = new Set();
-    c.influencedBy.forEach((id) => graph[c.id].add(id));
-    c.influenced.forEach((id) => graph[c.id].add(id));
+    graph[c.slug] = new Set();
+    c.influencedBy.forEach((slug) => graph[c.slug].add(slug));
+    c.influenced.forEach((slug) => graph[c.slug].add(slug));
   });
 
   return graph;
@@ -110,12 +110,12 @@ function countIndirectInfluence(
   const queue = [...creator.influenced];
 
   while (queue.length > 0) {
-    const id = queue.shift()!;
-    if (visited.has(id)) continue;
-    visited.add(id);
+    const slug = queue.shift()!;
+    if (visited.has(slug)) continue;
+    visited.add(slug);
     count++;
 
-    const person = allCreators.find((c) => c.id === id);
+    const person = allCreators.find((c) => c.slug === slug);
     if (person) {
       queue.push(...person.influenced);
     }
@@ -130,7 +130,7 @@ function calculateCentralityScores(
 ): CreatorScore[] {
   // Degree centrality (normalized)
   const scores = creators.map((creator) => {
-    const connections = graph[creator.id]?.size || 0;
+    const connections = graph[creator.slug]?.size || 0;
     const maxPossible = creators.length - 1;
     const score = connections / maxPossible;
     return { creator, score };
@@ -144,7 +144,7 @@ function calculateClusteringCoefficients(
   graph: Graph,
 ): ClusterScore[] {
   const scores = creators.map((creator) => {
-    const neighbors = Array.from(graph[creator.id] || []);
+    const neighbors = Array.from(graph[creator.slug] || []);
     if (neighbors.length < 2) return { creator, coefficient: 0 };
 
     let connections = 0;
@@ -173,20 +173,20 @@ function findConnectedComponents(
   const components: Creator[][] = [];
 
   creators.forEach((creator) => {
-    if (visited.has(creator.id)) return;
+    if (visited.has(creator.slug)) return;
 
     const component: Creator[] = [];
-    const queue = [creator.id];
+    const queue = [creator.slug];
 
     while (queue.length > 0) {
-      const id = queue.shift()!;
-      if (visited.has(id)) continue;
-      visited.add(id);
+      const slug = queue.shift()!;
+      if (visited.has(slug)) continue;
+      visited.add(slug);
 
-      const person = creators.find((c) => c.id === id);
+      const person = creators.find((c) => c.slug === slug);
       if (person) component.push(person);
 
-      graph[id]?.forEach((neighbor) => {
+      graph[slug]?.forEach((neighbor) => {
         if (!visited.has(neighbor)) queue.push(neighbor);
       });
     }
@@ -232,7 +232,7 @@ function findLongestChain(start: Creator, allCreators: Creator[]): Creator[] {
 
   function dfs(current: Creator, path: Creator[]) {
     const influenced = current.influenced
-      .map((id) => allCreators.find((c) => c.id === id))
+      .map((slug) => allCreators.find((c) => c.slug === slug))
       .filter((c): c is Creator => c !== undefined);
 
     if (influenced.length === 0) {
@@ -276,18 +276,18 @@ function calculateBetweennessCentrality(
   allCreators.forEach((source) => {
     allCreators.forEach((target) => {
       if (
-        source.id === target.id ||
-        source.id === creator.id ||
-        target.id === creator.id
+        source.slug === target.slug ||
+        source.slug === creator.slug ||
+        target.slug === creator.slug
       )
         return;
 
-      const paths = findAllShortestPaths(source.id, target.id, graph);
+      const paths = findAllShortestPaths(source.slug, target.slug, graph);
       if (paths.length === 0) return;
 
       totalShortestPaths += paths.length;
       shortestPathsThrough += paths.filter((p) =>
-        p.includes(creator.id),
+        p.includes(creator.slug),
       ).length;
     });
   });
@@ -385,7 +385,7 @@ export function getKeyWorks(
   creators.forEach((c) => {
     const influenceScore = c.influenced.length + c.influencedBy.length;
     c.works.forEach((w) => {
-      workScores[w.id] = {
+      workScores[w.slug] = {
         creator: c.name,
         score: influenceScore,
       };
@@ -393,8 +393,8 @@ export function getKeyWorks(
   });
 
   return Object.entries(workScores)
-    .map(([id, data]) => ({
-      work: id,
+    .map(([slug, data]) => ({
+      work: slug,
       creator: data.creator,
       influenceScore: data.score,
     }))
@@ -402,35 +402,35 @@ export function getKeyWorks(
 }
 
 export function getInfluencePath(
-  fromId: string,
-  toId: string,
+  fromSlug: string,
+  toSlug: string,
   creators: Creator[],
 ): Creator[] | null {
-  const creatorMap = new Map(creators.map((c) => [c.id, c]));
+  const creatorMap = new Map(creators.map((c) => [c.slug, c]));
 
-  const queue: { id: string; path: string[] }[] = [
-    { id: fromId, path: [fromId] },
+  const queue: { slug: string; path: string[] }[] = [
+    { slug: fromSlug, path: [fromSlug] },
   ];
   const visited = new Set<string>();
 
   while (queue.length > 0) {
-    const { id, path } = queue.shift()!;
+    const { slug, path } = queue.shift()!;
 
-    if (id === toId) {
+    if (slug === toSlug) {
       return path
-        .map((pid) => creatorMap.get(pid))
+        .map((pslug) => creatorMap.get(pslug))
         .filter((c): c is Creator => c !== undefined);
     }
 
-    if (visited.has(id)) continue;
-    visited.add(id);
+    if (visited.has(slug)) continue;
+    visited.add(slug);
 
     // Follow influence direction (who they influenced)
-    const creator = creatorMap.get(id);
+    const creator = creatorMap.get(slug);
     if (creator) {
-      creator.influenced.forEach((nextId) => {
-        if (!visited.has(nextId)) {
-          queue.push({ id: nextId, path: [...path, nextId] });
+      creator.influenced.forEach((nextSlug) => {
+        if (!visited.has(nextSlug)) {
+          queue.push({ slug: nextSlug, path: [...path, nextSlug] });
         }
       });
     }

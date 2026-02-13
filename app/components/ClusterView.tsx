@@ -32,8 +32,8 @@ export default function ClusterView({ clusters }: ClusterViewProps) {
           <div className="flex flex-wrap gap-2">
             {cluster.members.map((member) => (
               <Link
-                key={member.id}
-                href={`/creators/${member.id}`}
+                key={member.slug}
+                href={`/creators/${member.slug}`}
                 className="text-xs px-2.5 py-1 bg-zinc-800/50 rounded-lg text-zinc-300 hover:text-amber-400 transition"
               >
                 {member.name}

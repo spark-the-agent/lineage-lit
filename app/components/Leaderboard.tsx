@@ -5,7 +5,7 @@ import { useMemo } from "react";
 import { Trophy, Flame, Target, Award } from "lucide-react";
 import { mockUsers, currentUser } from "@/lib/social";
 import { usePersistence } from "./PersistenceProvider";
-import { creators } from "@/lib/data";
+import { useCreators } from "@/lib/use-convex-data";
 
 interface LeaderEntry {
   name: string;
@@ -18,6 +18,7 @@ interface LeaderEntry {
 }
 
 export default function Leaderboard() {
+  const creators = useCreators();
   const { state } = usePersistence();
 
   const entries = useMemo<LeaderEntry[]>(() => {
@@ -52,7 +53,7 @@ export default function Leaderboard() {
     }));
 
     return [currentEntry, ...mockEntries].sort((a, b) => b.score - a.score);
-  }, [state]);
+  }, [state, creators]);
 
   return (
     <div className="bg-zinc-900/50 rounded-2xl p-6 border border-zinc-800">

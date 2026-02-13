@@ -5,6 +5,7 @@ import { PersistenceProvider } from "./components/PersistenceProvider";
 import AchievementToast from "./components/AchievementToast";
 import ConvexClientProvider from "./components/ConvexClientProvider";
 import AuthProvider from "./components/AuthProvider";
+import ConvexUserSync from "./components/ConvexUserSync";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -53,6 +54,7 @@ export default function RootLayout({
       >
         <AuthProvider>
           <ConvexClientProvider>
+            <ConvexUserSync />
             <PersistenceProvider>
               <AchievementToast />
               {children}
