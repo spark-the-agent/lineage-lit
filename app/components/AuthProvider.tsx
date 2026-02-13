@@ -1,115 +1,110 @@
 "use client";
 
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, createContext, useContext, useEffect } from "react";
 import { updateUserProfile } from "@/lib/persistence";
-
-// Clerk is loaded dynamically to avoid bundling Server Actions,
-// which are incompatible with Next.js static export (output: 'export').
+import {
+  ClerkProvider,
+  useUser as clerkUseUser,
+  SignInButton as ClerkSignInButton,
+  SignUpButton as ClerkSignUpButton,
+  UserButton as ClerkUserButton,
+} from "@clerk/nextjs";
+import { dark } from "@clerk/themes";
 
 const clerkKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-type ClerkModule = {
-  ClerkProvider: any;
-  useUser: any;
-  SignInButton: any;
-  SignUpButton: any;
-  UserButton: any;
-};
+interface UserData {
+  user: any;
+  isLoaded: boolean;
+  isSignedIn: boolean;
+}
 
-// Stubs used when Clerk is not loaded (accept any props for type compat)
-const stubUseUser = () => ({
+const STUB_USER_DATA: UserData = {
   user: null,
   isLoaded: true,
   isSignedIn: false,
-});
-/* eslint-disable @typescript-eslint/no-unused-vars */
-const StubComponent = ({
-  children,
-  ...rest
-}: { children?: ReactNode } & Record<string, unknown>) => <>{children}</>;
-const StubEmpty = ({ ...rest }: Record<string, unknown>) => null;
-/* eslint-enable @typescript-eslint/no-unused-vars */
+};
 
-// Singleton: resolved Clerk module (populated after dynamic import)
-let clerkModule: ClerkModule | null = null;
-let clerkPromise: Promise<ClerkModule> | null = null;
+const UserContext = createContext<UserData>(STUB_USER_DATA);
 
-function loadClerk(): Promise<ClerkModule> {
-  if (clerkModule) return Promise.resolve(clerkModule);
-  if (!clerkPromise) {
-    // Use a computed string to prevent the bundler from statically analyzing
-    // this import — @clerk/nextjs contains Server Actions that are incompatible
-    // with output: 'export'. The module is only loaded at runtime in the browser.
-    const pkg = ["@clerk", "nextjs"].join("/");
-    clerkPromise = import(/* webpackIgnore: true */ pkg).then((mod) => {
-      clerkModule = mod as unknown as ClerkModule;
-      return clerkModule;
-    });
-  }
-  return clerkPromise;
-}
-
-function ClerkProfileSync({ children }: { children: ReactNode }) {
-  const { user, isLoaded } = clerkModule!.useUser();
+function ClerkUserBridge({ children }: { children: ReactNode }) {
+  const userData = clerkUseUser() as UserData;
 
   useEffect(() => {
-    if (isLoaded && user) {
+    if (userData.isLoaded && userData.user) {
+      const user = userData.user as any;
       updateUserProfile({
-        displayName:
-          (user as any).fullName || (user as any).firstName || "Reader",
-        avatarSeed: (user as any).id,
+        displayName: user.fullName || user.firstName || "Reader",
+        avatarSeed: user.id,
       });
     }
-  }, [isLoaded, user]);
+  }, [userData.isLoaded, userData.user]);
 
-  return <>{children}</>;
+  return (
+    <UserContext.Provider value={userData}>{children}</UserContext.Provider>
+  );
 }
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
-  const [clerk, setClerk] = useState<ClerkModule | null>(clerkModule);
-
-  useEffect(() => {
-    if (!clerkKey) return;
-    loadClerk().then(setClerk);
-  }, []);
-
-  if (!clerkKey || !clerk) return <>{children}</>;
-
-  const { ClerkProvider } = clerk;
+  if (!clerkKey) return <>{children}</>;
 
   return (
     <ClerkProvider
       publishableKey={clerkKey}
       appearance={{
+        baseTheme: dark,
         variables: {
           colorPrimary: "#f59e0b",
           colorBackground: "#18181b",
           colorInputBackground: "#27272a",
           colorInputText: "#fafafa",
           colorText: "#fafafa",
+          colorTextSecondary: "#a1a1aa",
+          colorTextOnPrimaryBackground: "#18181b",
+          colorNeutral: "#fafafa",
         },
         elements: {
-          card: "bg-zinc-900 border border-zinc-800",
-          headerTitle: "text-zinc-100",
-          headerSubtitle: "text-zinc-400",
-          formButtonPrimary: "bg-amber-500 hover:bg-amber-400 text-zinc-900",
+          formButtonPrimary:
+            "bg-amber-500 hover:bg-amber-400 text-zinc-900 border-none",
+          footerActionLink: "text-amber-500 hover:text-amber-400",
         },
       }}
     >
-      <ClerkProfileSync>{children}</ClerkProfileSync>
+      <ClerkUserBridge>{children}</ClerkUserBridge>
     </ClerkProvider>
   );
 }
 
-// Re-export stubs — consumers use these; they work without Clerk loaded.
-// AuthButton already guards with useAuthAvailable() so these are safe no-ops.
-export const SignInButton = StubComponent;
-export const SignUpButton = StubComponent;
-export const UserButton = StubEmpty;
-export const useUser = stubUseUser;
+// --- Exported hooks ---
 
-// Hook to check if auth is available
+export function useUser(): UserData {
+  return useContext(UserContext);
+}
+
 export function useAuthAvailable(): boolean {
   return !!clerkKey;
+}
+
+// --- Exported components ---
+
+export function SignInButton({
+  children,
+  ...rest
+}: { children?: ReactNode } & Record<string, unknown>) {
+  if (!clerkKey) return <>{children}</>;
+  return <ClerkSignInButton {...rest}>{children}</ClerkSignInButton>;
+}
+
+export function SignUpButton({
+  children,
+  ...rest
+}: { children?: ReactNode } & Record<string, unknown>) {
+  if (!clerkKey) return <>{children}</>;
+  return <ClerkSignUpButton {...rest}>{children}</ClerkSignUpButton>;
+}
+
+export function UserButton(props: Record<string, unknown>) {
+  if (!clerkKey) return null;
+  return <ClerkUserButton {...props} />;
 }

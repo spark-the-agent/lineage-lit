@@ -5,24 +5,25 @@ import { FileText } from "lucide-react";
 import ShareButton from "./ShareButton";
 import SaveCreatorButton from "./SaveCreatorButton";
 import CitationModal from "./CitationModal";
-import { getCreatorById } from "@/lib/data";
+import { useCreatorLookup } from "@/lib/use-convex-data";
 
 interface CreatorActionsProps {
-  creatorId: string;
+  creatorSlug: string;
   creatorName: string;
 }
 
 export default function CreatorActions({
-  creatorId,
+  creatorSlug,
   creatorName,
 }: CreatorActionsProps) {
+  const getCreatorBySlug = useCreatorLookup();
   const [showCitation, setShowCitation] = useState(false);
-  const creator = getCreatorById(creatorId);
+  const creator = getCreatorBySlug(creatorSlug);
 
   return (
     <>
       <div className="flex gap-2">
-        <SaveCreatorButton creatorId={creatorId} />
+        <SaveCreatorButton creatorId={creatorSlug} />
         <button
           onClick={() => setShowCitation(true)}
           className="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-800 rounded-full text-xs text-zinc-400 hover:text-amber-400 hover:bg-zinc-700 transition min-h-[32px]"

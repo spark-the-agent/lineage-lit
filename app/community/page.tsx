@@ -16,13 +16,14 @@ import MobileNav, {
   MobileBottomSpacer,
   DesktopNav,
 } from "@/app/components/MobileNav";
-import { getCreatorById } from "@/lib/data";
+import { useCreatorLookup } from "@/lib/use-convex-data";
 import WeeklyChallenge from "@/app/components/WeeklyChallenge";
 import { usePersistence } from "@/app/components/PersistenceProvider";
 import { achievements } from "@/lib/achievements";
 import { creatorGenres } from "@/lib/filters";
 
 export default function ActivityPage() {
+  const getCreatorBySlug = useCreatorLookup();
   const { state } = usePersistence();
 
   const viewedSorted = [...state.viewedCreators].sort(
@@ -110,7 +111,7 @@ export default function ActivityPage() {
               {viewedSorted.length > 0 ? (
                 <div className="space-y-3">
                   {viewedSorted.map((v) => {
-                    const creator = getCreatorById(v.id);
+                    const creator = getCreatorBySlug(v.slug);
                     if (!creator) return null;
                     const date = new Date(v.timestamp);
                     const timeStr = date.toLocaleDateString("en-US", {
@@ -123,8 +124,8 @@ export default function ActivityPage() {
                     });
                     return (
                       <Link
-                        key={v.id}
-                        href={`/creators/${v.id}`}
+                        key={v.slug}
+                        href={`/creators/${v.slug}`}
                         className="flex items-center gap-4 p-3 rounded-lg hover:bg-zinc-800/50 transition group"
                       >
                         <div className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
@@ -133,9 +134,11 @@ export default function ActivityPage() {
                             {creator.name}
                           </p>
                           <p className="text-xs text-zinc-500 truncate">
-                            {creator.years} &middot;{" "}
-                            {creator.works.length} works &middot;{" "}
-                            {creator.influenced.length + creator.influencedBy.length} connections
+                            {creator.years} &middot; {creator.works.length}{" "}
+                            works &middot;{" "}
+                            {creator.influenced.length +
+                              creator.influencedBy.length}{" "}
+                            connections
                           </p>
                         </div>
                         <div className="text-right shrink-0">
@@ -179,7 +182,7 @@ export default function ActivityPage() {
                         </p>
                         <div className="flex flex-wrap gap-2">
                           {ids.map((id) => {
-                            const creator = getCreatorById(id);
+                            const creator = getCreatorBySlug(id);
                             if (!creator) return null;
                             return (
                               <Link

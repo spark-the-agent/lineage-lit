@@ -17,11 +17,11 @@ export default function PathAnimation({ path }: PathAnimationProps) {
       <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
         {path.map((creator, i) => (
           <div
-            key={creator.id}
+            key={creator.slug}
             className="flex items-center gap-2 sm:gap-3"
             style={{ animation: `fadeInUp 0.5s ease-out ${i * 0.3}s both` }}
           >
-            <Link href={`/creators/${creator.id}`} className="relative group">
+            <Link href={`/creators/${creator.slug}`} className="relative group">
               <div className="bg-zinc-900 rounded-xl px-4 py-3 border-2 border-amber-500/50 group-hover:border-amber-400 transition shadow-lg shadow-amber-500/10">
                 <div className="font-semibold text-amber-400 text-sm sm:text-base">
                   {creator.name}

@@ -21,7 +21,7 @@ interface LineageGraphProps {
   creators: Creator[];
   highlightedCreator?: string;
   height?: number;
-  onCreatorClick?: (creatorId: string) => void;
+  onCreatorClick?: (creatorSlug: string) => void;
   showHint?: boolean;
 }
 
@@ -72,21 +72,21 @@ export default function LineageGraph({
     const nodeSet = new Set<string>();
 
     creators.forEach((creator, i) => {
-      if (!nodeSet.has(creator.id)) {
+      if (!nodeSet.has(creator.slug)) {
         const angle = (i / creators.length) * 2 * Math.PI;
         const radius = isMobile ? 80 : 150;
         nodes.push({
-          id: creator.id,
+          id: creator.slug,
           name: creator.name,
           type: "creator",
           x: centerX + Math.cos(angle) * radius,
           y: centerY + Math.sin(angle) * radius,
         });
-        nodeSet.add(creator.id);
+        nodeSet.add(creator.slug);
       }
 
       creator.works.slice(0, isMobile ? 2 : undefined).forEach((work, j) => {
-        const workId = `work-${work.id}`;
+        const workId = `work-${work.slug}`;
         if (!nodeSet.has(workId)) {
           const angle = (i / creators.length) * 2 * Math.PI + j * 0.2;
           const radius = isMobile ? 140 : 250;
@@ -99,12 +99,12 @@ export default function LineageGraph({
           });
           nodeSet.add(workId);
         }
-        links.push({ source: creator.id, target: workId, type: "created" });
+        links.push({ source: creator.slug, target: workId, type: "created" });
       });
 
       creator.influenced.forEach((influencedId) => {
         links.push({
-          source: creator.id,
+          source: creator.slug,
           target: influencedId,
           type: "influenced",
         });

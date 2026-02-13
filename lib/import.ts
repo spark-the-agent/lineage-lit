@@ -42,7 +42,7 @@ export interface ImportResult {
 export interface MatchedCreator {
   bookTitle: string;
   author: string;
-  creatorId?: string;
+  creatorSlug?: string;
   creatorName?: string;
   confidence: "high" | "medium" | "low";
 }
@@ -316,7 +316,7 @@ export function matchBooksToCreators(books: GoodreadsBook[]): MatchedCreator[] {
     matches.push({
       bookTitle: book.title,
       author: book.author,
-      creatorId: bestMatch?.creator.id,
+      creatorSlug: bestMatch?.creator.slug,
       creatorName: bestMatch?.creator.name,
       confidence: bestMatch?.confidence || "low",
     });

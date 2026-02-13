@@ -36,8 +36,8 @@ export function getDailyLineage(): DailyLineage {
   // Fallback: pick a random influence pair
   const pairs: Creator[][] = [];
   creators.forEach((c) => {
-    c.influenced.forEach((id) => {
-      const target = creators.find((t) => t.id === id);
+    c.influenced.forEach((slug) => {
+      const target = creators.find((t) => t.slug === slug);
       if (target) pairs.push([c, target]);
     });
   });

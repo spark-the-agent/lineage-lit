@@ -10,7 +10,7 @@ import {
   Layers,
 } from "lucide-react";
 import Link from "next/link";
-import { creators } from "@/lib/data";
+import { useCreators } from "@/lib/use-convex-data";
 import { analyzeNetwork, getMovementClusters } from "@/lib/network-analysis";
 import LineageGraph from "@/app/components/LineageGraph";
 import InfluenceRanking from "@/app/components/InfluenceRanking";
@@ -23,8 +23,9 @@ import MobileNav, {
 import { DesktopNav } from "@/app/components/MobileNav";
 
 export default function InsightsContent() {
-  const metrics = useMemo(() => analyzeNetwork(creators), []);
-  const clusters = useMemo(() => getMovementClusters(creators), []);
+  const creators = useCreators();
+  const metrics = useMemo(() => analyzeNetwork(creators), [creators]);
+  const clusters = useMemo(() => getMovementClusters(creators), [creators]);
 
   return (
     <div className="min-h-screen bg-linear-to-b from-zinc-900 to-zinc-950 text-zinc-100">
@@ -88,8 +89,8 @@ export default function InsightsContent() {
               <div className="space-y-3">
                 {metrics.bridges.map((bridge) => (
                   <Link
-                    key={bridge.creator.id}
-                    href={`/creators/${bridge.creator.id}`}
+                    key={bridge.creator.slug}
+                    href={`/creators/${bridge.creator.slug}`}
                     className="flex items-center justify-between p-3 bg-zinc-800/50 rounded-lg border border-zinc-700 hover:border-amber-500/50 transition"
                   >
                     <div>
@@ -134,9 +135,9 @@ export default function InsightsContent() {
               {metrics.pathLengths.slice(0, 5).map((pl, i) => (
                 <div key={i} className="flex items-center gap-2 flex-wrap">
                   {pl.path.map((creator, j) => (
-                    <div key={creator.id} className="flex items-center gap-2">
+                    <div key={creator.slug} className="flex items-center gap-2">
                       <Link
-                        href={`/creators/${creator.id}`}
+                        href={`/creators/${creator.slug}`}
                         className="text-sm text-zinc-300 hover:text-amber-400 transition"
                       >
                         {creator.name}

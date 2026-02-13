@@ -1,4 +1,4 @@
-import { getCreatorById, getLineage, creators } from "@/lib/data";
+import { getCreatorBySlug, getLineage, creators } from "@/lib/data";
 import {
   Network,
   BookOpen,
@@ -26,27 +26,27 @@ interface Props {
 
 export async function generateStaticParams() {
   return creators.map((creator) => ({
-    id: creator.id,
+    id: creator.slug,
   }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const creator = getCreatorById(id);
+  const creator = getCreatorBySlug(id);
   if (!creator) return {};
 
   const workTitles = creator.works.map((w) => w.title).join(", ");
   const influenceChain =
     creator.influencedBy.length > 0
       ? `Influenced by: ${creator.influencedBy
-          .map((id) => getCreatorById(id)?.name)
+          .map((slug) => getCreatorBySlug(slug)?.name)
           .filter(Boolean)
           .join(", ")}. `
       : "";
   const influencedChain =
     creator.influenced.length > 0
       ? `Influenced: ${creator.influenced
-          .map((id) => getCreatorById(id)?.name)
+          .map((slug) => getCreatorBySlug(slug)?.name)
           .filter(Boolean)
           .join(", ")}.`
       : "";
@@ -71,7 +71,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CreatorPage({ params }: Props) {
   const { id } = await params;
-  const creator = getCreatorById(id);
+  const creator = getCreatorBySlug(id);
 
   if (!creator) {
     notFound();
@@ -81,7 +81,7 @@ export default async function CreatorPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-linear-to-b from-zinc-900 to-zinc-950 text-zinc-100">
-      <CreatorViewTracker creatorId={id} />
+      <CreatorViewTracker creatorSlug={id} />
       <MobileNav
         currentPage={creator.name}
         showBackButton
@@ -126,7 +126,7 @@ export default async function CreatorPage({ params }: Props) {
             </div>
             <div className="flex flex-wrap gap-2 shrink-0">
               <CreatorActions
-                creatorId={creator.id}
+                creatorSlug={creator.slug}
                 creatorName={creator.name}
               />
               {creator.works.some((w) => w.type === "book") && (
@@ -168,7 +168,7 @@ export default async function CreatorPage({ params }: Props) {
                 <div className="flex flex-wrap justify-center gap-3">
                   {ancestors.map((ancestor) => (
                     <LineageCard
-                      key={ancestor.id}
+                      key={ancestor.slug}
                       creator={ancestor}
                       type="ancestor"
                     />
@@ -209,7 +209,7 @@ export default async function CreatorPage({ params }: Props) {
                 <div className="flex flex-wrap justify-center gap-3">
                   {descendants.map((descendant) => (
                     <LineageCard
-                      key={descendant.id}
+                      key={descendant.slug}
                       creator={descendant}
                       type="descendant"
                     />
@@ -222,7 +222,7 @@ export default async function CreatorPage({ params }: Props) {
 
         {/* Find Connection */}
         <div className="mb-6 sm:mb-8">
-          <LineageChainCard fromCreatorId={id} />
+          <LineageChainCard fromCreatorSlug={id} />
         </div>
 
         {/* Works */}
@@ -233,7 +233,7 @@ export default async function CreatorPage({ params }: Props) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             {creator.works.map((work) => (
               <div
-                key={work.id}
+                key={work.slug}
                 className="bg-zinc-900/30 rounded-lg p-4 border border-zinc-800"
               >
                 <div className="flex items-start justify-between gap-2">
@@ -271,7 +271,7 @@ function LineageCard({
   type: "ancestor" | "descendant";
 }) {
   return (
-    <Link href={`/creators/${creator.id}`} className="block">
+    <Link href={`/creators/${creator.slug}`} className="block">
       <div
         className={`rounded-lg p-3 sm:p-4 min-w-[140px] sm:min-w-[160px] text-center border transition hover:scale-105 ${
           type === "ancestor"

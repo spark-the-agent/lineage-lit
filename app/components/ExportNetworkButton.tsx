@@ -2,9 +2,10 @@
 
 import { Download } from "lucide-react";
 import { downloadNetworkJSON } from "@/lib/export";
-import { creators } from "@/lib/data";
+import { useCreators } from "@/lib/use-convex-data";
 
 export default function ExportNetworkButton() {
+  const creators = useCreators();
   return (
     <button
       onClick={() => downloadNetworkJSON(creators)}

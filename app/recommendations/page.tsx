@@ -34,10 +34,12 @@ import {
   getRecommendationStats,
   Recommendation,
 } from "@/lib/recommendations";
-import { getCreatorById, Creator } from "@/lib/data";
+import type { Creator } from "@/lib/data";
+import { useCreatorLookup } from "@/lib/use-convex-data";
 import { usePersistence } from "@/app/components/PersistenceProvider";
 
 export default function RecommendationsPage() {
+  const getCreatorBySlug = useCreatorLookup();
   const [refreshKey, setRefreshKey] = useState(0);
   const [feedbackState, setFeedbackState] = useState<
     Record<string, "thumbs_up" | "thumbs_down">
@@ -84,7 +86,7 @@ export default function RecommendationsPage() {
     rec: Recommendation,
     feedback: "thumbs_up" | "thumbs_down",
   ) => {
-    const itemId = rec.type === "creator" ? rec.item.id : rec.item.id;
+    const itemId = rec.type === "creator" ? rec.item.slug : rec.item.slug;
     submitFeedback(rec.id, itemId, rec.type, feedback);
     setFeedbackState((prev) => ({ ...prev, [rec.id]: feedback }));
   };
@@ -206,23 +208,24 @@ export default function RecommendationsPage() {
                 <TopRecommendationCard
                   key={rec.id}
                   recommendation={rec}
+                  getCreatorBySlug={getCreatorBySlug}
                   feedback={feedbackState[rec.id]}
                   onFeedback={(f) => handleFeedback(rec, f)}
                   showReasons={expandedReasons.has(rec.id)}
                   onToggleReasons={() => toggleReasons(rec.id)}
                   isSaved={
                     rec.type === "creator"
-                      ? isCreatorSaved(rec.item.id)
+                      ? isCreatorSaved(rec.item.slug)
                       : undefined
                   }
                   isLiked={
-                    rec.type === "work" ? isWorkLiked(rec.item.id) : undefined
+                    rec.type === "work" ? isWorkLiked(rec.item.slug) : undefined
                   }
                   onSave={() =>
-                    rec.type === "creator" && handleSaveCreator(rec.item.id)
+                    rec.type === "creator" && handleSaveCreator(rec.item.slug)
                   }
                   onLike={() =>
-                    rec.type === "work" && handleLikeWork(rec.item.id)
+                    rec.type === "work" && handleLikeWork(rec.item.slug)
                   }
                 />
               ))}
@@ -246,17 +249,17 @@ export default function RecommendationsPage() {
                   onFeedback={(f) => handleFeedback(rec, f)}
                   isSaved={
                     rec.type === "creator"
-                      ? isCreatorSaved(rec.item.id)
+                      ? isCreatorSaved(rec.item.slug)
                       : undefined
                   }
                   isLiked={
-                    rec.type === "work" ? isWorkLiked(rec.item.id) : undefined
+                    rec.type === "work" ? isWorkLiked(rec.item.slug) : undefined
                   }
                   onSave={() =>
-                    rec.type === "creator" && handleSaveCreator(rec.item.id)
+                    rec.type === "creator" && handleSaveCreator(rec.item.slug)
                   }
                   onLike={() =>
-                    rec.type === "work" && handleLikeWork(rec.item.id)
+                    rec.type === "work" && handleLikeWork(rec.item.slug)
                   }
                 />
               ))}
@@ -329,6 +332,7 @@ export default function RecommendationsPage() {
 
 function TopRecommendationCard({
   recommendation,
+  getCreatorBySlug,
   feedback,
   onFeedback,
   showReasons,
@@ -339,6 +343,7 @@ function TopRecommendationCard({
   onLike,
 }: {
   recommendation: Recommendation;
+  getCreatorBySlug: (slug: string) => Creator | undefined;
   feedback?: "thumbs_up" | "thumbs_down";
   onFeedback: (feedback: "thumbs_up" | "thumbs_down") => void;
   showReasons: boolean;
@@ -352,7 +357,7 @@ function TopRecommendationCard({
   const item = recommendation.item;
   const creator = isCreator
     ? (item as Creator)
-    : getCreatorById(recommendation.creatorId || "");
+    : getCreatorBySlug(recommendation.creatorSlug || "");
 
   const mainText = getRecommendationExplanation(recommendation);
   const allReasons = getAllReasons(recommendation);
@@ -465,8 +470,8 @@ function TopRecommendationCard({
         <Link
           href={
             isCreator
-              ? `/creators/${item.id}`
-              : `/creators/${recommendation.creatorId}`
+              ? `/creators/${item.slug}`
+              : `/creators/${recommendation.creatorSlug}`
           }
           className="flex items-center gap-2 text-sm text-amber-400 hover:text-amber-300 transition"
         >
@@ -526,7 +531,7 @@ function CompactRecommendationCard({
   const item = recommendation.item;
   // const creator = isCreator
   //   ? item
-  //   : getCreatorById(recommendation.creatorId || "");
+  //   : getCreatorBySlug(recommendation.creatorSlug || "");
 
   const mainReason = getRecommendationExplanation(recommendation);
 
@@ -585,8 +590,8 @@ function CompactRecommendationCard({
         <Link
           href={
             isCreator
-              ? `/creators/${item.id}`
-              : `/creators/${recommendation.creatorId}`
+              ? `/creators/${item.slug}`
+              : `/creators/${recommendation.creatorSlug}`
           }
           className="p-2 text-zinc-500 hover:text-amber-400 transition"
         >

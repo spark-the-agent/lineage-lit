@@ -30,9 +30,9 @@ export default function DailyLineage() {
       {/* Chain visualization */}
       <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-4">
         {daily.chain.map((creator, i) => (
-          <div key={creator.id} className="flex items-center gap-2 sm:gap-3">
+          <div key={creator.slug} className="flex items-center gap-2 sm:gap-3">
             <Link
-              href={`/creators/${creator.id}`}
+              href={`/creators/${creator.slug}`}
               className="bg-zinc-900/80 rounded-lg px-3 py-2 border border-zinc-700 hover:border-amber-500/50 transition group"
             >
               <div className="font-medium text-sm text-zinc-200 group-hover:text-amber-400 transition">

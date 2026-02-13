@@ -18,11 +18,13 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import AuthButton from "./AuthButton";
+import { useUser, useAuthAvailable } from "./AuthProvider";
 
 interface NavItem {
   href: string;
   label: string;
   icon: React.ReactNode;
+  requiresAuth?: boolean;
 }
 
 const navItems: NavItem[] = [
@@ -58,8 +60,21 @@ const navItems: NavItem[] = [
     label: "For You",
     icon: <Sparkles className="w-5 h-5" />,
   },
-  { href: "/profile", label: "Profile", icon: <User className="w-5 h-5" /> },
+  {
+    href: "/profile",
+    label: "Profile",
+    icon: <User className="w-5 h-5" />,
+    requiresAuth: true,
+  },
 ];
+
+function useVisibleNavItems(): NavItem[] {
+  const authAvailable = useAuthAvailable();
+  const { isSignedIn } = useUser();
+  const isAuthenticated = authAvailable && isSignedIn;
+
+  return navItems.filter((item) => !item.requiresAuth || isAuthenticated);
+}
 
 interface MobileNavProps {
   currentPage?: string;
@@ -76,6 +91,7 @@ export default function MobileNav({
 }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const visibleItems = useVisibleNavItems();
 
   const toggleMenu = () => setIsOpen(!isOpen);
   const closeMenu = () => setIsOpen(false);
@@ -148,7 +164,7 @@ export default function MobileNav({
           <div className="fixed top-14 left-0 right-0 bottom-0 bg-zinc-900 z-40 lg:hidden overflow-y-auto">
             <nav className="p-4">
               <ul className="space-y-1">
-                {navItems.map((item) => {
+                {visibleItems.map((item) => {
                   const isActive = pathname === item.href;
                   return (
                     <li key={item.href}>
@@ -192,7 +208,7 @@ export default function MobileNav({
       {/* Bottom Navigation Bar (Mobile) */}
       <nav className="fixed bottom-0 left-0 right-0 bg-zinc-900/95 backdrop-blur-md border-t border-zinc-800/50 z-40 lg:hidden pb-safe">
         <div className="flex items-center justify-around h-16">
-          {navItems.slice(0, 5).map((item) => {
+          {visibleItems.slice(0, 5).map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link
@@ -223,16 +239,17 @@ export default function MobileNav({
 // Desktop Navigation (for use in layouts)
 export function DesktopNav() {
   const pathname = usePathname();
+  const visibleItems = useVisibleNavItems();
 
   return (
     <nav className="hidden lg:flex items-center gap-1">
-      {navItems.map((item) => {
+      {visibleItems.map((item) => {
         const isActive = pathname === item.href;
         return (
           <Link
             key={item.href}
             href={item.href}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition min-h-[44px] ${
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition whitespace-nowrap shrink-0 ${
               isActive
                 ? "bg-amber-500/10 text-amber-400"
                 : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50"

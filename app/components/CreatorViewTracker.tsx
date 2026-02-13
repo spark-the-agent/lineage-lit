@@ -5,20 +5,22 @@ import { usePersistence } from "./PersistenceProvider";
 import { Sparkles } from "lucide-react";
 
 interface CreatorViewTrackerProps {
-  creatorId: string;
+  creatorSlug: string;
 }
 
 export default function CreatorViewTracker({
-  creatorId,
+  creatorSlug,
 }: CreatorViewTrackerProps) {
   const { state, recordCreatorView } = usePersistence();
   const [showDiscovery, setShowDiscovery] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    const alreadyViewed = state.viewedCreators.some((v) => v.id === creatorId);
+    const alreadyViewed = state.viewedCreators.some(
+      (v) => v.slug === creatorSlug,
+    );
     if (!alreadyViewed) {
-      recordCreatorView(creatorId);
+      recordCreatorView(creatorSlug);
       timerRef.current = setTimeout(() => {
         setShowDiscovery(true);
         timerRef.current = setTimeout(() => setShowDiscovery(false), 3000);
@@ -27,7 +29,7 @@ export default function CreatorViewTracker({
         if (timerRef.current) clearTimeout(timerRef.current);
       };
     }
-  }, [creatorId, recordCreatorView, state.viewedCreators]);
+  }, [creatorSlug, recordCreatorView, state.viewedCreators]);
 
   if (!showDiscovery) return null;
 

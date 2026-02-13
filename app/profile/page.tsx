@@ -21,7 +21,7 @@ import MobileNav, {
   MobileBottomSpacer,
   DesktopNav,
 } from "../components/MobileNav";
-import { creators, getCreatorById } from "@/lib/data";
+import { useCreators, useCreatorLookup } from "@/lib/use-convex-data";
 import { computeDNAFromState } from "@/lib/compute-dna";
 import LineageGraph from "../components/LineageGraph";
 import ShareableCard from "../components/ShareableCard";
@@ -30,6 +30,8 @@ import EditProfileModal from "../components/EditProfileModal";
 import { usePersistence } from "../components/PersistenceProvider";
 
 export default function ProfilePage() {
+  const creators = useCreators();
+  const getCreatorBySlug = useCreatorLookup();
   const [activeTab, setActiveTab] = useState<
     "overview" | "saved" | "dna" | "achievements"
   >("overview");
@@ -44,7 +46,7 @@ export default function ProfilePage() {
   } = usePersistence();
 
   const savedCreatorsList = state.savedCreators
-    .map((id) => getCreatorById(id))
+    .map((id) => getCreatorBySlug(id))
     .filter(Boolean);
   const dynamicDNA = computeDNAFromState(state);
   const avatarUrl = `https://api.dicebear.com/7.x/thumbs/svg?seed=${encodeURIComponent(userProfile.avatarSeed)}`;
@@ -241,7 +243,7 @@ export default function ProfilePage() {
               </h3>
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {dynamicDNA.topAuthors.map((authorId) => {
-                  const author = getCreatorById(authorId);
+                  const author = getCreatorBySlug(authorId);
                   if (!author) return null;
                   return (
                     <Link
@@ -269,7 +271,7 @@ export default function ProfilePage() {
               </h3>
               <div className="flex flex-wrap gap-3">
                 {dynamicDNA.recentlyViewed.map((creatorId) => {
-                  const creator = getCreatorById(creatorId);
+                  const creator = getCreatorBySlug(creatorId);
                   if (!creator) return null;
                   return (
                     <Link
@@ -300,12 +302,12 @@ export default function ProfilePage() {
                   if (!creator) return null;
                   return (
                     <div
-                      key={creator.id}
+                      key={creator.slug}
                       className="p-4 bg-zinc-800/50 rounded-xl border border-zinc-700 hover:border-amber-500/50 transition hover-lift"
                     >
                       <div className="flex items-start justify-between">
                         <Link
-                          href={`/creators/${creator.id}`}
+                          href={`/creators/${creator.slug}`}
                           className="flex-1"
                         >
                           <h4 className="font-medium text-zinc-200 hover:text-amber-400 transition">
@@ -319,7 +321,7 @@ export default function ProfilePage() {
                           </p>
                         </Link>
                         <button
-                          onClick={() => toggleSavedCreator(creator.id)}
+                          onClick={() => toggleSavedCreator(creator.slug)}
                           className="p-2 text-amber-400 hover:bg-amber-500/10 rounded-lg transition min-h-[44px] min-w-[44px] flex items-center justify-center"
                           title="Remove from saved"
                         >
@@ -345,16 +347,16 @@ export default function ProfilePage() {
               </h3>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {creators
-                  .filter((c) => !isCreatorSaved(c.id))
+                  .filter((c) => !isCreatorSaved(c.slug))
                   .slice(0, 3)
                   .map((creator) => (
                     <div
-                      key={creator.id}
+                      key={creator.slug}
                       className="p-4 bg-zinc-800/30 rounded-xl border border-zinc-700/50 hover:border-zinc-600 transition"
                     >
                       <div className="flex items-start justify-between">
                         <Link
-                          href={`/creators/${creator.id}`}
+                          href={`/creators/${creator.slug}`}
                           className="flex-1"
                         >
                           <h4 className="font-medium text-zinc-200 hover:text-amber-400 transition">
@@ -365,7 +367,7 @@ export default function ProfilePage() {
                           </p>
                         </Link>
                         <button
-                          onClick={() => toggleSavedCreator(creator.id)}
+                          onClick={() => toggleSavedCreator(creator.slug)}
                           className="p-2 text-zinc-500 hover:text-amber-400 hover:bg-amber-500/10 rounded-lg transition"
                           title="Save creator"
                         >

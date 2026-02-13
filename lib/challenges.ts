@@ -29,7 +29,7 @@ const allChallenges: Challenge[] = [
     icon: "🔍",
     target: 1,
     check: () => {
-      const viewed = getState().viewedCreators.map((v) => v.id);
+      const viewed = getState().viewedCreators.map((v) => v.slug);
       return viewed.includes("hemingway") && viewed.includes("chiang") ? 1 : 0;
     },
   },
@@ -40,8 +40,9 @@ const allChallenges: Challenge[] = [
     icon: "🎬",
     target: 2,
     check: () => {
-      const viewed = getState().viewedCreators.map((v) => v.id);
-      return ["sorkin", "chayefsky"].filter((id) => viewed.includes(id)).length;
+      const viewed = getState().viewedCreators.map((v) => v.slug);
+      return ["sorkin", "chayefsky"].filter((slug) => viewed.includes(slug))
+        .length;
     },
   },
   {
@@ -59,8 +60,8 @@ const allChallenges: Challenge[] = [
     icon: "🏚️",
     target: 2,
     check: () => {
-      const viewed = getState().viewedCreators.map((v) => v.id);
-      return ["faulkner", "mccarthy"].filter((id) => viewed.includes(id))
+      const viewed = getState().viewedCreators.map((v) => v.slug);
+      return ["faulkner", "mccarthy"].filter((slug) => viewed.includes(slug))
         .length;
     },
   },
@@ -71,8 +72,9 @@ const allChallenges: Challenge[] = [
     icon: "✂️",
     target: 2,
     check: () => {
-      const viewed = getState().viewedCreators.map((v) => v.id);
-      return ["hemingway", "carver"].filter((id) => viewed.includes(id)).length;
+      const viewed = getState().viewedCreators.map((v) => v.slug);
+      return ["hemingway", "carver"].filter((slug) => viewed.includes(slug))
+        .length;
     },
   },
 ];

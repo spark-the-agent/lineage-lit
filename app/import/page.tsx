@@ -119,14 +119,14 @@ export default function ImportPage() {
 
         // Persist high-confidence matches: save creators and record views
         const highMatches = matched.filter(
-          (m) => m.confidence === "high" && m.creatorId,
+          (m) => m.confidence === "high" && m.creatorSlug,
         );
         for (const match of highMatches) {
-          if (match.creatorId) {
-            if (!isCreatorSaved(match.creatorId)) {
-              toggleSavedCreator(match.creatorId);
+          if (match.creatorSlug) {
+            if (!isCreatorSaved(match.creatorSlug)) {
+              toggleSavedCreator(match.creatorSlug);
             }
-            recordCreatorView(match.creatorId);
+            recordCreatorView(match.creatorSlug);
           }
         }
 
@@ -528,9 +528,9 @@ export default function ImportPage() {
                               {match.author}
                             </p>
                           </div>
-                          {match.creatorId && (
+                          {match.creatorSlug && (
                             <Link
-                              href={`/creators/${match.creatorId}`}
+                              href={`/creators/${match.creatorSlug}`}
                               className="shrink-0 px-3 py-1.5 bg-amber-500/10 text-amber-400 text-sm rounded-lg hover:bg-amber-500/20 transition min-h-[36px] flex items-center"
                             >
                               View Lineage

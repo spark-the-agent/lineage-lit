@@ -3,7 +3,7 @@
 import { X, Sparkles } from "lucide-react";
 import { ReadingDNA } from "@/lib/social";
 import { compareDNA } from "@/lib/dna-comparison";
-import { getCreatorById } from "@/lib/data";
+import { useCreatorLookup } from "@/lib/use-convex-data";
 
 interface DNAComparisonProps {
   userA: { name: string; dna: ReadingDNA };
@@ -16,6 +16,7 @@ export default function DNAComparison({
   userB,
   onClose,
 }: DNAComparisonProps) {
+  const getCreatorBySlug = useCreatorLookup();
   const result = compareDNA(userA.dna, userB.dna);
 
   return (
@@ -159,14 +160,14 @@ export default function DNAComparison({
               Shared Top Authors
             </h4>
             <div className="flex flex-wrap gap-2">
-              {result.sharedAuthors.map((id) => {
-                const author = getCreatorById(id);
+              {result.sharedAuthors.map((slug) => {
+                const author = getCreatorBySlug(slug);
                 return (
                   <span
-                    key={id}
+                    key={slug}
                     className="px-3 py-1.5 bg-zinc-800 rounded-lg text-xs text-zinc-300"
                   >
-                    {author?.name || id}
+                    {author?.name || slug}
                   </span>
                 );
               })}

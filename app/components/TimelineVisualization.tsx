@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo } from "react";
-import { Creator, creators } from "@/lib/data";
+import type { Creator } from "@/lib/data";
+import { useCreators } from "@/lib/use-convex-data";
 import { getMovementClusters } from "@/lib/network-analysis";
 import Link from "next/link";
 
@@ -30,13 +31,14 @@ function parseYears(years: string): { start: number; end: number } {
 }
 
 export default function TimelineVisualization() {
-  const clusters = useMemo(() => getMovementClusters(creators), []);
+  const creators = useCreators();
+  const clusters = useMemo(() => getMovementClusters(creators), [creators]);
 
   const creatorClusterMap = useMemo(() => {
     const map = new Map<string, string>();
     clusters.forEach((cluster) => {
       cluster.members.forEach((member) => {
-        map.set(member.id, cluster.era);
+        map.set(member.slug, cluster.era);
       });
     });
     return map;
@@ -48,7 +50,7 @@ export default function TimelineVisualization() {
       [...creators].sort(
         (a, b) => parseYears(a.years).start - parseYears(b.years).start,
       ),
-    [],
+    [creators],
   );
 
   const decades = useMemo(() => {
@@ -114,11 +116,11 @@ export default function TimelineVisualization() {
             const { start, end } = parseYears(creator.years);
             const x1 = ((start - TIMELINE_START) / TIMELINE_RANGE) * 800 + 50;
             const x2 = ((end - TIMELINE_START) / TIMELINE_RANGE) * 800 + 50;
-            const era = creatorClusterMap.get(creator.id) || "Mid-Century";
+            const era = creatorClusterMap.get(creator.slug) || "Mid-Century";
             const color = clusterColors[era] || "#f59e0b";
 
             return (
-              <g key={creator.id}>
+              <g key={creator.slug}>
                 {/* Creator bar */}
                 <rect
                   x={x1}
@@ -157,7 +159,7 @@ export default function TimelineVisualization() {
                   const wx =
                     ((work.year - TIMELINE_START) / TIMELINE_RANGE) * 800 + 50;
                   return (
-                    <g key={work.id}>
+                    <g key={work.slug}>
                       <circle cx={wx} cy={y + 15} r={4} fill={color} />
                       <title>
                         {work.title} ({work.year})
@@ -172,7 +174,7 @@ export default function TimelineVisualization() {
           {/* Influence arrows */}
           {creators.map((creator) => {
             const fromIdx = sortedCreators.findIndex(
-              (c) => c.id === creator.id,
+              (c) => c.slug === creator.slug,
             );
             const fromY = fromIdx * 70 + 65;
             const { end: fromEnd } = parseYears(creator.years);
@@ -180,8 +182,10 @@ export default function TimelineVisualization() {
               ((fromEnd - TIMELINE_START) / TIMELINE_RANGE) * 800 + 50;
 
             return creator.influenced.map((targetId) => {
-              const toIdx = sortedCreators.findIndex((c) => c.id === targetId);
-              const target = creators.find((c) => c.id === targetId);
+              const toIdx = sortedCreators.findIndex(
+                (c) => c.slug === targetId,
+              );
+              const target = creators.find((c) => c.slug === targetId);
               if (!target || toIdx < 0) return null;
               const toY = toIdx * 70 + 50;
               const { start: toStart } = parseYears(target.years);
@@ -190,7 +194,7 @@ export default function TimelineVisualization() {
 
               return (
                 <line
-                  key={`${creator.id}-${targetId}`}
+                  key={`${creator.slug}-${targetId}`}
                   x1={fromX}
                   y1={fromY}
                   x2={toX}

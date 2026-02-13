@@ -1,4 +1,4 @@
-import { getCreatorById, Creator } from "./data";
+import { getCreatorBySlug, Creator } from "./data";
 import type { ReadingDNA } from "./social";
 import type { PersistedState } from "./persistence";
 
@@ -8,17 +8,17 @@ import type { PersistedState } from "./persistence";
  */
 export function computeDNAFromState(state: PersistedState): ReadingDNA {
   const savedCreators = state.savedCreators
-    .map((id) => getCreatorById(id))
+    .map((slug) => getCreatorBySlug(slug))
     .filter((c): c is Creator => !!c);
 
   const viewedCreators = state.viewedCreators
-    .map((v) => getCreatorById(v.id))
+    .map((v) => getCreatorBySlug(v.slug))
     .filter((c): c is Creator => !!c);
 
   // Combine saved + viewed (deduplicated), saved weighted higher
   const allCreators = new Map<string, Creator>();
-  for (const c of viewedCreators) allCreators.set(c.id, c);
-  for (const c of savedCreators) allCreators.set(c.id, c);
+  for (const c of viewedCreators) allCreators.set(c.slug, c);
+  for (const c of savedCreators) allCreators.set(c.slug, c);
   const uniqueCreators = Array.from(allCreators.values());
 
   // Count work types for genre breakdown
@@ -80,7 +80,7 @@ export function computeDNAFromState(state: PersistedState): ReadingDNA {
   const recentlyViewed = state.viewedCreators
     .sort((a, b) => b.timestamp - a.timestamp)
     .slice(0, 4)
-    .map((v) => v.id);
+    .map((v) => v.slug);
 
   return {
     totalBooks: Math.max(totalWorks, state.likedWorks.length),

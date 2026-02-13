@@ -14,10 +14,19 @@ export const creatorGenres: Record<string, string[]> = {
   tolkien: ["Fantasy", "Epic Fantasy"],
   // American Masters
   hemingway: ["Literary Fiction", "Modernism", "Minimalism"],
-  faulkner: ["Literary Fiction", "Southern Gothic", "Modernism", "Experimental"],
+  faulkner: [
+    "Literary Fiction",
+    "Southern Gothic",
+    "Modernism",
+    "Experimental",
+  ],
   oconnor: ["Literary Fiction", "Southern Gothic", "Short Stories"],
   plath: ["Poetry", "Confessional", "Literary Fiction"],
-  morrison: ["Literary Fiction", "African American Literature", "Magical Realism"],
+  morrison: [
+    "Literary Fiction",
+    "African American Literature",
+    "Magical Realism",
+  ],
   angelou: ["Memoir", "Poetry", "African American Literature"],
   didion: ["Literary Fiction", "Journalism", "Memoir"],
   kerouac: ["Literary Fiction", "Beat Literature"],
@@ -29,7 +38,11 @@ export const creatorGenres: Record<string, string[]> = {
   ford: ["Literary Fiction", "Minimalism"],
   // Southern / American Epic
   mccarthy: ["Literary Fiction", "Southern Gothic", "Western"],
-  whitehead: ["Literary Fiction", "African American Literature", "Historical Fiction"],
+  whitehead: [
+    "Literary Fiction",
+    "African American Literature",
+    "Historical Fiction",
+  ],
   ward: ["Literary Fiction", "Southern Gothic", "African American Literature"],
   vuong: ["Poetry", "Literary Fiction", "Memoir"],
   // Postmodernism
@@ -43,7 +56,11 @@ export const creatorGenres: Record<string, string[]> = {
   asimov: ["Science Fiction", "Hard SF"],
   dick: ["Science Fiction", "Cyberpunk"],
   "le-guin": ["Science Fiction", "Fantasy", "Speculative Fiction"],
-  butler: ["Science Fiction", "Speculative Fiction", "African American Literature"],
+  butler: [
+    "Science Fiction",
+    "Speculative Fiction",
+    "African American Literature",
+  ],
   atwood: ["Speculative Fiction", "Dystopia", "Feminist Literature"],
   chiang: ["Science Fiction", "Speculative Fiction", "Philosophy"],
   jemisin: ["Fantasy", "Science Fiction", "Speculative Fiction"],
@@ -67,7 +84,11 @@ export const creatorGenres: Record<string, string[]> = {
   "waller-bridge": ["Screenwriting", "Comedy", "Drama"],
   // Pulitzer Winners
   "harper-lee": ["Literary Fiction", "Southern Gothic", "Coming-of-Age"],
-  walker: ["Literary Fiction", "African American Literature", "Feminist Literature"],
+  walker: [
+    "Literary Fiction",
+    "African American Literature",
+    "Feminist Literature",
+  ],
   roth: ["Literary Fiction", "Satire"],
   robinson: ["Literary Fiction", "Philosophical Fiction"],
   chabon: ["Literary Fiction", "Genre Fiction", "Historical Fiction"],
@@ -184,8 +205,14 @@ export const eraFilters = [
   { label: "Pre-1900", match: (era: string) => /^1[0-8]\d\ds/.test(era) },
   { label: "1900s-1940s", match: (era: string) => /^19[0-3]\ds/.test(era) },
   { label: "1940s-1960s", match: (era: string) => /^19[4-5]\ds/.test(era) },
-  { label: "1960s-1980s", match: (era: string) => /^196\ds/.test(era) || /^197\ds/.test(era) },
-  { label: "1980s-2000s", match: (era: string) => /^198\ds/.test(era) || /^199\ds/.test(era) },
+  {
+    label: "1960s-1980s",
+    match: (era: string) => /^196\ds/.test(era) || /^197\ds/.test(era),
+  },
+  {
+    label: "1980s-2000s",
+    match: (era: string) => /^198\ds/.test(era) || /^199\ds/.test(era),
+  },
   { label: "2000s-2020s", match: (era: string) => /^20[0-2]\ds/.test(era) },
 ] as const;
 

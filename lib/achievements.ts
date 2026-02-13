@@ -26,8 +26,8 @@ export const achievements: Achievement[] = [
     description: "Explore the full Hemingway → Carver → Wolff chain",
     icon: "✂️",
     check: () => {
-      const viewed = getState().viewedCreators.map((v) => v.id);
-      return ["hemingway", "carver"].every((id) => viewed.includes(id));
+      const viewed = getState().viewedCreators.map((v) => v.slug);
+      return ["hemingway", "carver"].every((slug) => viewed.includes(slug));
     },
   },
   {
@@ -36,15 +36,15 @@ export const achievements: Achievement[] = [
     description: "Explore creators from 3+ different genres",
     icon: "🦘",
     check: () => {
-      const viewed = getState().viewedCreators.map((v) => v.id);
+      const viewed = getState().viewedCreators.map((v) => v.slug);
       const genreSets: Record<string, string[]> = {
         fiction: ["hemingway", "carver", "mccarthy", "faulkner"],
         scifi: ["le-guin", "chiang"],
         screenplay: ["sorkin", "chayefsky"],
       };
       let genreCount = 0;
-      for (const ids of Object.values(genreSets)) {
-        if (ids.some((id) => viewed.includes(id))) genreCount++;
+      for (const slugs of Object.values(genreSets)) {
+        if (slugs.some((slug) => viewed.includes(slug))) genreCount++;
       }
       return genreCount >= 3;
     },
@@ -55,9 +55,9 @@ export const achievements: Achievement[] = [
     description: "Discover a bridge creator who connects communities",
     icon: "🌉",
     check: () => {
-      const viewed = getState().viewedCreators.map((v) => v.id);
+      const viewed = getState().viewedCreators.map((v) => v.slug);
       const metrics = analyzeNetwork(creators);
-      return metrics.bridges.some((b) => viewed.includes(b.creator.id));
+      return metrics.bridges.some((b) => viewed.includes(b.creator.slug));
     },
   },
   {
@@ -73,8 +73,8 @@ export const achievements: Achievement[] = [
     description: "Explore both screenplay creators",
     icon: "🎬",
     check: () => {
-      const viewed = getState().viewedCreators.map((v) => v.id);
-      return ["sorkin", "chayefsky"].every((id) => viewed.includes(id));
+      const viewed = getState().viewedCreators.map((v) => v.slug);
+      return ["sorkin", "chayefsky"].every((slug) => viewed.includes(slug));
     },
   },
   {

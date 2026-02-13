@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { creators, Creator } from "@/lib/data";
+import { useCreators } from "@/lib/use-convex-data";
+import type { Creator } from "@/lib/data";
 import {
   Network,
   BookOpen,
@@ -19,7 +20,12 @@ import MobileNav, {
 import { DesktopNav } from "@/app/components/MobileNav";
 import ExportNetworkButton from "@/app/components/ExportNetworkButton";
 import DegreeBadge from "@/app/components/DegreeBadge";
-import { creatorGenres, creatorEras, eraFilters, type EraFilter } from "@/lib/filters";
+import {
+  creatorGenres,
+  creatorEras,
+  eraFilters,
+  type EraFilter,
+} from "@/lib/filters";
 
 type SortOption = "alpha" | "connections" | "chronological";
 type MediumFilter = "all" | "book" | "screenplay";
@@ -41,6 +47,7 @@ const GENRE_CHIPS = [
 ];
 
 export default function ExplorePage() {
+  const creators = useCreators();
   const [query, setQuery] = useState("");
   const [genre, setGenre] = useState<string | null>(null);
   const [era, setEra] = useState<EraFilter | null>(null);
@@ -56,15 +63,14 @@ export default function ExplorePage() {
       const q = query.toLowerCase();
       results = results.filter(
         (c) =>
-          c.name.toLowerCase().includes(q) ||
-          c.bio.toLowerCase().includes(q),
+          c.name.toLowerCase().includes(q) || c.bio.toLowerCase().includes(q),
       );
     }
 
     // Genre filter
     if (genre) {
       results = results.filter((c) => {
-        const genres = creatorGenres[c.id] || [];
+        const genres = creatorGenres[c.slug] || [];
         return genres.includes(genre);
       });
     }
@@ -74,7 +80,7 @@ export default function ExplorePage() {
       const eraConfig = eraFilters.find((e) => e.label === era);
       if (eraConfig) {
         results = results.filter((c) => {
-          const creatorEra = creatorEras[c.id];
+          const creatorEra = creatorEras[c.slug];
           return creatorEra && eraConfig.match(creatorEra);
         });
       }
@@ -82,9 +88,7 @@ export default function ExplorePage() {
 
     // Medium filter
     if (medium !== "all") {
-      results = results.filter((c) =>
-        c.works.some((w) => w.type === medium),
-      );
+      results = results.filter((c) => c.works.some((w) => w.type === medium));
     }
 
     // Sort
@@ -110,7 +114,7 @@ export default function ExplorePage() {
     }
 
     return results;
-  }, [query, genre, era, medium, sort]);
+  }, [creators, query, genre, era, medium, sort]);
 
   const hasActiveFilters = query || genre || era || medium !== "all";
 
@@ -182,7 +186,9 @@ export default function ExplorePage() {
         </button>
 
         {/* Filters */}
-        <div className={`space-y-3 mb-6 ${showFilters ? "" : "hidden sm:block"}`}>
+        <div
+          className={`space-y-3 mb-6 ${showFilters ? "" : "hidden sm:block"}`}
+        >
           {/* Genre chips */}
           <div>
             <div className="flex flex-wrap gap-2">
@@ -298,7 +304,7 @@ export default function ExplorePage() {
         {filtered.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {filtered.map((creator) => (
-              <CreatorCard key={creator.id} creator={creator} />
+              <CreatorCard key={creator.slug} creator={creator} />
             ))}
           </div>
         ) : (
@@ -330,7 +336,7 @@ function CreatorCard({ creator }: { creator: Creator }) {
   const influencedByCount = creator.influencedBy.length;
 
   return (
-    <Link href={`/creators/${creator.id}`} className="block">
+    <Link href={`/creators/${creator.slug}`} className="block">
       <div className="bg-zinc-900/50 rounded-xl p-4 sm:p-6 border border-zinc-800 hover:border-amber-500/50 transition group h-full hover-lift">
         <div className="flex items-start justify-between mb-3 sm:mb-4">
           <div className="min-w-0 flex-1">
@@ -338,7 +344,7 @@ function CreatorCard({ creator }: { creator: Creator }) {
               <h3 className="text-lg sm:text-xl font-semibold text-amber-400 group-hover:text-amber-300 transition truncate">
                 {creator.name}
               </h3>
-              <DegreeBadge creatorId={creator.id} />
+              <DegreeBadge creatorId={creator.slug} />
             </div>
             <p className="text-xs sm:text-sm text-zinc-500">{creator.years}</p>
           </div>

@@ -9,7 +9,7 @@ Lineage Lit tracks the creative lineage of ideas — discovering how books, scre
 ## Commands
 
 - `npm run dev` — Start dev server (localhost:3000)
-- `npm run build` — Build static export to `dist/`
+- `npm run build` — Production build
 - `npm run lint` — Run ESLint
 - `npm start` — Serve production build
 
@@ -17,11 +17,11 @@ No test framework is configured.
 
 ## Tech Stack
 
-- **Next.js 16** (App Router) with static export (`output: 'export'`)
+- **Next.js 16** (App Router) with SSR on **Vercel**
 - **React 19**, **TypeScript 5** (strict mode)
 - **Tailwind CSS 4** via PostCSS
+- **Clerk** (`@clerk/nextjs`) for auth, **Convex** for backend
 - **lucide-react** for icons
-- Deployed on **Vercel** (static site, no SSR)
 
 ## Architecture
 
@@ -68,14 +68,6 @@ Creator IDs are slug strings (e.g., `"hemingway"`, `"carver"`). Influence relati
 - Dark theme: zinc-900/950 backgrounds, amber-400/500 accents
 - Mobile-first responsive design with safe area inset support
 - All styling via Tailwind utility classes
-
-### Static Export Constraints
-
-`next.config.ts` sets `output: 'export'`, `trailingSlash: true`, `images: { unoptimized: true }`. This means:
-
-- No server-side features (API routes, middleware, SSR)
-- All dynamic routes must use `generateStaticParams`
-- Images cannot use Next.js optimization
 
 ### Path Alias
 

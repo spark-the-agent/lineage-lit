@@ -1,4 +1,4 @@
-import { Creator, creators, getCreatorById } from "./data";
+import { Creator, creators, getCreatorBySlug } from "./data";
 
 // User Types
 export interface UserProfile {
@@ -441,16 +441,16 @@ export function getActivityText(activity: Activity): string {
 }
 
 // Save/Unsave creators
-export function saveCreator(creatorId: string): boolean {
-  if (!currentUser.savedCreators.includes(creatorId)) {
-    currentUser.savedCreators.push(creatorId);
+export function saveCreator(creatorSlug: string): boolean {
+  if (!currentUser.savedCreators.includes(creatorSlug)) {
+    currentUser.savedCreators.push(creatorSlug);
     return true;
   }
   return false;
 }
 
-export function unsaveCreator(creatorId: string): boolean {
-  const index = currentUser.savedCreators.indexOf(creatorId);
+export function unsaveCreator(creatorSlug: string): boolean {
+  const index = currentUser.savedCreators.indexOf(creatorSlug);
   if (index > -1) {
     currentUser.savedCreators.splice(index, 1);
     return true;
@@ -458,21 +458,21 @@ export function unsaveCreator(creatorId: string): boolean {
   return false;
 }
 
-export function isCreatorSaved(creatorId: string): boolean {
-  return currentUser.savedCreators.includes(creatorId);
+export function isCreatorSaved(creatorSlug: string): boolean {
+  return currentUser.savedCreators.includes(creatorSlug);
 }
 
 // Like/Unlike works
-export function likeWork(workId: string): boolean {
-  if (!currentUser.likedWorks.includes(workId)) {
-    currentUser.likedWorks.push(workId);
+export function likeWork(workSlug: string): boolean {
+  if (!currentUser.likedWorks.includes(workSlug)) {
+    currentUser.likedWorks.push(workSlug);
     return true;
   }
   return false;
 }
 
-export function unlikeWork(workId: string): boolean {
-  const index = currentUser.likedWorks.indexOf(workId);
+export function unlikeWork(workSlug: string): boolean {
+  const index = currentUser.likedWorks.indexOf(workSlug);
   if (index > -1) {
     currentUser.likedWorks.splice(index, 1);
     return true;
@@ -480,6 +480,6 @@ export function unlikeWork(workId: string): boolean {
   return false;
 }
 
-export function isWorkLiked(workId: string): boolean {
-  return currentUser.likedWorks.includes(workId);
+export function isWorkLiked(workSlug: string): boolean {
+  return currentUser.likedWorks.includes(workSlug);
 }

@@ -31,7 +31,7 @@ function AuthButtonInner() {
 
   return (
     <SignInButton mode="modal">
-      <button className="flex items-center gap-2 px-4 py-2 bg-amber-500 text-zinc-900 font-medium rounded-lg hover:bg-amber-400 transition text-sm">
+      <button className="flex items-center gap-2 px-4 py-2 bg-amber-500 text-zinc-900 font-medium rounded-lg hover:bg-amber-400 transition text-sm cursor-pointer whitespace-nowrap shrink-0">
         <LogIn className="w-4 h-4" />
         Sign In
       </button>

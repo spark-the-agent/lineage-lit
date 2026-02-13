@@ -8,10 +8,14 @@
  * @module
  */
 
+import type * as activity from "../activity.js";
 import type * as ai from "../ai.js";
 import type * as creators from "../creators.js";
 import type * as db from "../db.js";
+import type * as lib_auth from "../lib/auth.js";
 import type * as seed from "../seed.js";
+import type * as userActions from "../userActions.js";
+import type * as users from "../users.js";
 
 import type {
   ApiFromModules,
@@ -20,10 +24,14 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  activity: typeof activity;
   ai: typeof ai;
   creators: typeof creators;
   db: typeof db;
+  "lib/auth": typeof lib_auth;
   seed: typeof seed;
+  userActions: typeof userActions;
+  users: typeof users;
 }>;
 
 /**
